@@ -1,0 +1,338 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{24-09-24}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+\lstdefinelanguage{javascript}{
+	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+	keywordstyle=\color{blue}\bfseries,
+	ndkeywords={class, export, boolean, throw, implements, import, this},
+	ndkeywordstyle=\color{darkgray}\bfseries,
+	identifierstyle=\color{black},
+	sensitive=false,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{purple}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 24-09-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Introduzione}
+Il corso di reti logiche tratta di:
+\begin{enumerate}
+	\item \textbf{Linguaggio assembler:} come scrivere programmi semplici, come avviene la compilazione in linguaggio macchina;
+	\item \textbf{Reti logiche:} reti combinatorie, reti combinatorie per l'aritmetica, reti sequenziali asincrone e sincronizzate;
+	\item \textbf{Microprogammazione:} reti sequenziali sincronizzate, come realizzare una rete logica da specifiche. 
+		"Micro" qui sta per \textit{hardware};
+	\item \textbf{Il calcolatore:} processore, interfacce comuni e convertitori.
+\end{enumerate}
+
+\subsubsection{Introduzione alle reti logiche}
+Si parla di reti \textit{logiche} in quanto si guarda all'hardware da una prospettiva funzionale, indipendente dalla sua tecnologia.
+Ad esempio, una porta NOR sarà implementata con determinati circuiti, ma tutto ciò che interessa a questo corso è come si comporta logicamente: $ y = 1 \Leftrightarrow A = B = 0 $.
+
+\subsection{Programmazione assembly}
+Il nome corretto del linguaggio sarebbe Assembly, ma noi lo chiameremo Assembler per ragioni storiche.
+L'assembler è il linguaggio con cui si scrivono le istruzioni eseguite dal processore.
+Il processore implementa effettivamente un ciclo fetch-execute dove preleva la prossima istruzione macchina (in assembler) dalla memoria e la esegue.
+
+\subsubsection{Linguaggio macchina}
+Il linguaggio macchina (LM) è dato dal contenuto effettivo della memoria che contiene le istruzioni, ergo una sequenza di zero e uno.
+Il linguaggio assembler adotta una sintassi simbolica per il linguaggio macchina: ad esempio, \texttt{MOV \%AX, \%BX}.
+
+Il processo di trasformazione dall'assembler all'LM si chiama \textbf{assemblaggio}, mentre il processo di traasformazione da un linguaggio ad alto livello all'assembler si chiama \textbf{compilazione}.
+
+\subsubsection{Generalità sull'assembler}
+Si dice che assembler è un linguaggio a basso livello.
+Mancano i costrutti a cui siamo abituati da i linguaggi di alto livello:
+\begin{enumerate}
+	\item Non esistono costrutti di flow control (for, if-else, ecc...), tutto si fa con istruzioni di salto.
+	\item Non esistono tipi variabile: gli operandi sono stringhe di bit che si riferiscono a locazioni in memoria.
+\end{enumerate}
+
+Inoltre, l'assembler è strettamente legato all'hardware, ed è specifico per ogni processore.
+Noi vedremo l'assembler dei processori della famiglia Intel x86, che non è uguale all'assembler dei processori Arm Cortex, ecc...
+Questo rende il codice in assembler mai portatile.
+Fatta questa precisazione, possiamo dire che i principi generali restano comunque validi fra famiglie di processori diverse.
+
+Esiste ancora oggi una nicchia di utilizzo del linguaggio assembler: quello dello sviluppo di sistemi embedded.
+Inoltre, il linguaggio ha un importante significato didattico e culturale.
+
+\subsection{Schema a blocchi del calcolatore}
+
+# illustrazione modello funzionale
+
+Un calcolatore è formato, in linea generale, da una rete di interconnessione (bus) che collega fra di loro:
+\begin{itemize}
+	\item Interfacce che comunicano con dispositivi;
+	\item La memoria principale che contiene dati e programmi;
+	\item Il processore, che esegue il ciclo fetch-execute. Possiamo aggiungere che ogni processore, oggi, contiene almeno due blocchi:
+		\begin{itemize}
+			\item L'\textbf{ALU}, Arithmetic Logic Unit, che si occupa di calcoli aritmetici su numeri interi (interpretando le stringhe di bit come numeri naturali o interi in complemento a 2) e operazioni logiche;
+			\item L'\textbf{FPU}, Floating Point Unit, che si occupa dei numeri a virgola mobile.
+		\end{itemize}
+\end{itemize}
+
+\subsection{Riassunto di rappresentazione dell'informazione}
+\subsubsection{Numeri naturali}
+$N$ bit rappresentano $2^N$ naturali sull'intervallo $[0, 2^N - 1]$, ovvero:
+
+$$
+b_{N-1}, b_{N-2}, ... , b_1, b_0 \Leftrightarrow X = \sum_{i=0}^{N-1} b_i \cdot 2^i
+$$
+
+Il bit più a sinistra è il Most Significant Bit (MSB) (nell'esempio $b_{N-1}$), quello più a destra il Least Significant Bit (LSD) (nell'esempio $b_0$).
+Le cifre in base due a partire da un numero in un'altra base si trovano con l'algoritmo div-mod.
+
+\subsubsection{Numeri interi in complemento a due}
+$N$ bit rappresentano $2^N$ interi sull'intervallo $ [-2^{N-1}, 2^{N-1} - 1]$, ovvero:
+
+$$
+X = 
+	\begin{cases}
+		x \quad \quad \quad \ \ x \geq 0 \\
+		2^N + x \quad x < 0
+	\end{cases}
+$$
+
+oppure, usando l'operatore modulo:
+$$ |x|_2N $$ # poco chiaro, copiaci fondamenti
+
+La legge inversa, che mi permette di trovare l'intero $x$ dalla sua rappresentazione $X$, è:
+
+$$
+x =
+	\begin{cases}
+		X \quad \quad \quad \quad \  X_{N-1} = 0 \\
+		-(\bar{X} + 1) \quad X_{N-1} = 1
+	\end{cases}
+$$
+
+dove la barra rappresenta l'operazione complemento.
+
+\subsubsection{Notazione esadecimale}
+Scrivere lunghe stringhe binarie diventa velocemente complicato. 
+Per questo si adotta una notazione esadecimale per stringhe di 4 bit ($[0, 15]$):
+
+# riporta tabella stringhe esadecimali
+
+A questo punto, possiamo denotare qualsiasi stringa binaria come una lista di numeri esadecimali prefissi da \texttt{0x} (che serve ad indicare la rappresentazione esadecimale stessa), ad esempio \texttt{0xC1}.
+
+\subsection{Struttura del calcolatore}
+\subsubsection{Spazio di memoria}
+La memoria del calcolatore, vista dal programmatore assembler, è uno spazio lineare di $2^{32}$ (su calcolatori a 32 bit) locazioni (celle) di memoria, dalla capacità di un btye ciascuna.
+Ogni cella è quindi identificata da un numero di 32 bit, detto \textbf{indirizzo}.
+
+\par\smallskip
+
+Lo spazio di memoria è in larga parte implementato attraverso Random Access Memory (RAM), ovvero memoria volatile.
+Solo una piccola parte dello spazio è implementata attraverso Read Only Memory (ROM), ovvero memoria permanente, che contiene le istruzioni da eseguire al reset.
+
+\subsubsection{Accesso allo spazio di memoria}
+Il processore può accedere (leggere/scrivere) a:
+\begin{itemize}
+	\item Singole locazioni (byte) da 8 bit;
+	\item Doppie locazioni (word) da 16 bit;
+	\item Quadruple locazioni (double word) da 32 bit.
+\end{itemize}
+
+Per gli accessi 16/32 bit si usa l'indirizzo più piccolo delle 2/4 locazioni.
+Si ricorda che l'indirizzo più grande contiene i bit più significativi.
+
+Gli indirizzi di memoria assembler sono solo simbolici, e vengono tradotti dall'assemblatore, e in parte runtime.
+Questo significa che non si può accedere a memoria appartenente al sistema operativo, o memoria fuori dai limiti fisici del sistema, ecc...
+
+\subsubsection{Spazio di Input/Output}
+Lo spazio di Input/Output è formato da $2^{16}$, ovvero 64k, locazioni o \textbf{porte}.
+Ogni porta ha una capacità di un byte ed è indirizzata da un numero di 16 bit.
+
+Il processore accede alle porte attraverso operazioni particolari di lettura o scrittura (in o out).
+Spesso le porte sono configurate per un solo tipo di operazione: sola lettura o sola scrittura.
+
+\par\smallskip
+
+Le locazioni di memoria sono solitamente identifiche fra di loro, le porte di I/O no.
+Indirizzi diversi significano dispositivi diversi, e si rende quindi necessario conoscere fisicamente gli indirizzi.
+
+\subsubsection{Processore}
+Il processore è dotato di una memoria interna formata da locazioni di memoria da 32 bit (\textbf{registri}).
+Questi si dividono in registri \textbf{generali}, riservati alle elaborazioni, e \textbf{di stato}, riservati a compiti speciali.
+
+# sii piu chiaro
+
+I 16 bit bassi dei registri sono riferibili autonomamente (retro-compatibili).
+DI alcuni registri si possono riferire parti ad 8 bit.
+
+\subsubsection{Registri generali}
+Alcuni registri vengono utilizzati per particolari funzioni, per motivi storici.
+\begin{itemize}
+	\item EAX (AX, AH od AL) è utilizzato da alcune istruzioni aritmetiche per contenere operandi e risultati. Viene detto \textbf{accumulatore}.
+	\item ESI, EDI, EBX e EBP sono a volte utilizzati come registri puntatore, base (B) e indice (I).
+		\begin{itemize}
+			\item ESI
+			\item EDI
+			\item EBX veniva usato come indirizzo di base per l'accesso in memoria. Viene solitamente detto \textbf{base}.
+			\item EBP # guarda slide!
+		\end{itemize}
+	\item ECX è utilizzato come contatore nei cicli. Vienedetto \textbf{contatore}.
+	\item EDX è utilizzato come operando di operazioni aritmetiche. Viene detto \textbf{data}.
+	\item ESP è utilizzato per indirizzare la \textbf{pila} o \textbf{stack}, ovvero una parte di memoria con disciplina LIFO che serve a gestire sottoprogrammi.
+\end{itemize}
+
+\subsubsection{Registri di stato}
+L'EIP viene detto instruction pointer, o \textbf{program counter}.
+Viene usato per contenere l'indirizzo della locazione dalla quale sarà prelevata la prossima istruzione da eseguire.
+Il contenuto dell'EIP è fissato al reset iniziale, e impostato sulla prima istruzione da eseguire (in memoria ROM).
+
+Possiamo quindi dire che il ciclo fetch-loop si svolge come segue:
+\begin{itemize}
+	\item Il processore preleva dalla memoria, all'indirizzo EIP, una nuova istruzione;
+	\item Incrementa EIP del numero di byte dell'istruzione prelevata;
+	\item Esegue l'istruzione e ripete.
+\end{itemize}
+
+Da questo si ha che le istruzioni in memoria vengono eseguite sequenzialmente nell'ordine in cui sono incontrate, a meno che non si definiscano salti attraverso altre determinate istruzioni.
+
+\end{document}
+
+
