@@ -547,6 +547,7 @@ Ricordiamo due registri di stato:
 	\item  L'\textbf{EIP} viene detto \textbf{instruction pointer}, o \textbf{program counter}.
 Viene usato per contenere l'indirizzo della locazione dalla quale sarà prelevata la prossima istruzione da eseguire.
 Il contenuto dell'EIP è fissato al reset iniziale, e impostato sulla prima istruzione da eseguire (in memoria ROM) all'indirizzo \texttt{0xFFFF0000}.
+Un po' di celle in memoria centrale da questo indirizzo in poi sono implementate in ROM.
 
 Possiamo quindi dire che il ciclo fetch-loop si svolge come segue:
 \begin{itemize}
@@ -567,6 +568,12 @@ Consiste di 32 elementi detti \textbf{flag}, fra cui ricordiamo:
 \end{itemize}
 
 \end{itemize}
+
+I flag \textbf{OF} e \textbf{SF} sono significativi per operazioni su interi.
+Il flag \textbf{CF} è significativo per operazioni su naturali.
+Il flag \textbf{ZF} è significativo per entrambi i tipi di operazione.
+
+Al reset i flag visti finora sono impostati a 0.
 
 \end{document}
 
