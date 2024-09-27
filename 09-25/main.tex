@@ -168,12 +168,16 @@ Possiamo adottare 2 metodi per codificare le istruzioni eseguite dal processore:
 
 		\begin{table}[h!]
 			\center \rowcolors{2}{white}{black!10}
-			\begin{tabular} { c | c | c }
+			\begin{tabular} { c | c | p{7cm} }
 				\bfseries Segmento & \bfseries Byte & \bfseries Funzione \\
 				\hline 
-				I Prefix (Instruction Prefix) & 0/1 byte & Usato per modificare l'istruzione \\ 
-				O Prefix (Operand-size prefix) & 0/1 byte & Usato per modificare la dimensione degli operandi \\
-				Opcode &
+				I Prefix (Instruction Prefix) & 0/1 byte & Modifica l'istruzione. \\ 
+				O Prefix (Operand-size prefix) & 0/1 byte & Modifica la dimensione degli operandi. \\
+				Opcode & 1/2 byte & Specifica l'operazione. \\
+				Mode (ModR/M Byte) & 0/1 byte & Specifica la modalità d'indirizzamento e i registri operandi. \\ 
+				SIB Byte & 0/1 byte & Viene usato in congiunzione con il Mod/RM btye quando si usa l'indirizzamento complesso (scale-index-base). \\
+				Displacement & 0/1/2/4 byte & Specifica un'offset in memoria, sempre nell'indirizzamento complesso. \\
+				Immediate & 0/1/2/4 byte & Specifica le costanti ad indirizzamento immediato.
 			\end{tabular}
 		\end{table}
 
@@ -210,16 +214,16 @@ Quando è 1, l'operando può essere sia sorgente che destinatario a seconda dell
 Si presenta un programma per contare il numero di uno trovati dalla locazione \texttt{0x00000100} a \texttt{0x0000010i3}e scriverlo nella locazione \texttt{0x00000104}. 
 
 \begin{lstlisting}[style=codestyle]	
-MOVB $0x00, %CL					% sposta $0x00 in %CL
-MOVL 0x00000100, %EAX		% sposta 32 bit da 0x00000100 a %EAX
-CMPL $0x00000000, %EAX	% confronta 32 bit di 0 con il registro %EAX
-JE   %EIP+$0x07					% salta se uguale a %EIP+$0x07, 
-												%	ergo 0x0000020C + 0x07 = 0x00000213
-SHRL %EAX								% trasla a destra %EAX
-ADCB $0x00, %CL					% aggiungi a %CL 0 + carry 
-JMP  %EIP-$0x0C					% salta incondizionato a %EIP-$0x0C,
-												% ergo 0x00000213 - 0x0C = 0x00000207
-MOVB %CL, 0x00000104		% sposta byte da %CL a 0x00000104
+MOVB $0x00, %CL					# sposta $0x00 in %CL
+MOVL 0x00000100, %EAX		# sposta 32 bit da 0x00000100 a %EAX
+CMPL $0x00000000, %EAX	# confronta 32 bit di 0 con il registro %EAX
+JE   %EIP+$0x07					# salta se uguale a %EIP+$0x07, 
+												#	ergo 0x0000020C + 0x07 = 0x00000213
+SHRL %EAX								# trasla a destra %EAX
+ADCB $0x00, %CL					# aggiungi a %CL 0 + carry 
+JMP  %EIP-$0x0C					# salta incondizionato a %EIP-$0x0C,
+												# ergo 0x00000213 - 0x0C = 0x00000207
+MOVB %CL, 0x00000104		# sposta byte da %CL a 0x00000104
 \end{lstlisting}
 
 Il programma svolge i seguenti passi:

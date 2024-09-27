@@ -1,0 +1,716 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+\lstdefinelanguage{javascript}{
+	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+	keywordstyle=\color{blue}\bfseries,
+	ndkeywords={class, export, boolean, throw, implements, import, this},
+	ndkeywordstyle=\color{darkgray}\bfseries,
+	identifierstyle=\color{black},
+	sensitive=false,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{purple}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 26-09-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Istruzioni di trasferimento}
+Le istruzioni di trasferimento spostano memoria:
+\begin{itemize}
+	\item Dalla memoria a un registro;
+	\item Da un registro a un registro;
+	\item Dallo spazio I/O a un regsitro.
+\end{itemize}
+
+Non esistono altre possibilità, ergo non si può (per quanto interessa a noi) spostare da memoria a memoria.
+In verità esistono alcune istruzioni nei processori di nuova generazione che ottimizzano operazioni di questo tipo, che verrano viste in seguito.
+Sfruttando i registri, il trasferimento da memoria a memoria si fa attraverso un registro, in due istruzioni.
+
+Nessuna istruzione di trasferimento modifica i flag.
+
+\subsubsection{MOVE}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{MOV source, destination}
+	\item \textbf{Azione:} sostituisce l'operando destinatario con una copia dell'operando sorgente.
+	\item \textbf{Flag:} nessuno.
+
+		\begin{table}[h!]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline 
+				Memoria, Registro Generale & \texttt{MOV 0x00002000, \%EDX} \\
+				Registro Generale, Memoria & \texttt{MOV \%CL, 0x12AB1024} \\
+				Registro Generale, Registro Generale & \texttt{MOV \%AX, \%DX} \\
+				Immediato, Memoria & \texttt{MOVB \$0x5B, (\%EDI)} \\ 
+				Immediato, Registro generale & \texttt{MOV \$0x54A3, \%AX}
+			\end{tabular}
+		\end{table}
+\end{itemize}
+
+\subsubsection{LOAD EFFECTIVE ADDRESS}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{LEA source, destination}
+	\item \textbf{Azione:} sostituisce l'operando destinatario con l'espressione indirizzo contenuta nell'operando sorgente.
+	\item \textbf{Flag:} nessuno.
+
+		\begin{table}[h!]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{7cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline 
+				Memoria, Registro Generale a 32 bit & \texttt{LEA 0x00002000, \%EDX} \\
+																						& \texttt{LEA 0x00213AB1 (\%EAX,\%EBX,4), \%ECX}
+			\end{tabular}
+		\end{table}
+\end{itemize}
+
+A differenza di MOV, LEA calcola l'indirizzo della locazione di memoria cercata come $ \text{base} + \text{index} \times \text{scala} \pm \text{displacement} $, e carica quell'indirizzo nella destinazione, non il valore contenuto in esso.
+Nel primo esempio, questo equivale alla MOV con indirizzamento immediato.
+In altri casi permette di ricavare esplicitamente il valore ottenuto dall'indirizzamento complesso.
+
+\subsubsection{EXCHANGE}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{XCHG source, destination}
+	\item \textbf{Azione:} sostituisce l'operando destinatario con l'operando sorgente e viceversa. Questa operazione è l'unica che modifica il sorgente.
+	\item \textbf{Flag:} nessuno.
+
+		\begin{table}[h!]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{7cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline 
+				Memoria, Registro Generale & \texttt{XCHG 0x00002000, \%DX} \\
+				Registro Generale, Memoria & \texttt{XCHG \%AL, 0x000A2003} \\
+				Registro Generale, Registro Generale & \texttt{XCHG \%EAX, \%EDX}
+			\end{tabular}
+		\end{table}
+
+		Grazie a quest'istruzione in assembler si possono scambiare due operandi con una sola istruzione (\textbf{non trasparenza} dei registri) \textbf{atomica}.
+		Questo è particolarmente utile nel caso di esecuzione concorrente.
+\end{itemize}
+
+\subsubsection{INPUT}
+\begin{itemize}
+	\item \textbf{Formato:}
+		\begin{itemize}
+			\item \texttt{IN indirizzo, \%AL} (8 bit)
+			\item \texttt{IN indirizzo, \%AX} (16 bit)
+			\item \texttt{IN (\%DX), \%AX} (8 bit) 
+			\item \texttt{IN (\%DX), \%Al} (16 bit)
+		\end{itemize}
+	\item \textbf{Azione:} sostituisce il contenuto del registro destinatario (AL 8 bit, AX 16 bit) con il contenuto di un adeguato numero di porte consecutive.
+		L'indirizzo è specificato direttamente (per porte con indirizzo $<256$), o indirettamente usando il registro DX.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{OUTPUT}
+\begin{itemize}
+	\item \textbf{Formato:}
+		\begin{itemize}
+			\item \texttt{OUT \%AL, indirizzo} (8 bit)
+			\item \texttt{IN \%AX, indirizzo} (16 bit)
+			\item \texttt{IN \%AX}, (\%DX) (8 bit) 
+			\item \texttt{IN \%Al, (\%DX)} (16 bit)
+		\end{itemize}
+	\item \textbf{Azione:} copia il contenuto del registro sorgente (AL 8 bit, AX 16 bit) su un adeguato numero di porte consecutive.
+		L'indirizzo è specificato direttamente (per porte con indirizzo $<256$), o indirettamente usando il registro DX.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{Non ortogonalità INPUT/OUTPUT}
+Le uniche due operazioni che gestiscono l'input e l'output possono trasferire solo dai o nei registri AL e AX, e indirizzare indirettamente la memoria puntando col registro DX.
+Questo rende le operazioni non ortogonali: non si possono usare altri registri, ed eventuali operazioni vanno fatte nel processore,
+
+\subsection{Pila}
+La pila, o \textbf{stack}, è una regione di memoria gestita con politica Last In First Out (LIFO), essenziale al funzionamento del calcolatore.
+Permette di annidare sottoprogrammi, funzionalità per cui l'assembler è organizzato.
+
+Generalmente, la pila viene usata come segue per eseguire i sottoprogrammi:
+\begin{itemize}
+	\item Prima di saltare al sottoprogramma, si fa \textbf{PUSH} sulla pila dell'indirizzo di ritorno (e.g. l'indirizzo della prossima istruzione);
+	\item Si esegue il sottoprogramma;
+	\item Al termine del sottoprogramma, si fa \textbf{POP} dalla pila del prossimo indirizzo.
+\end{itemize}
+
+Più sottoprogrammi possono chiamarsi a vicenda (annidarsi), ponendosi su livelli via via superiori della pila.
+Al termine della sua esecuzione, ogni sottoprogramma tornerà all'indirizzo di ripresa del sottoprogramma precedente, finché tutti i sottoprogrammi non termineranno l'esecuzione.
+
+Il registro \textbf{ESP} punta al top della pila, ergo non va usato per altri scopi.
+Va però inizializzato prima che parta il programma.
+Si deve inoltre notare che la pila in assembler si estende \textit{verso il basso}: aggiungere alla pila significa decrementare ESP, e rimuovere dalla pila significa incrementare ESP.
+I frame successivi della pila si vanno a disporre via via sotto (o "a sinistra") del frame corrente.
+
+Per lavorare sulla pila si usano le istruzioni:
+
+\subsubsection{PUSH}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{PUSH source}
+	\item \textbf{Azione:} decrementa ESP e copia il sorgente nell'indirizzo puntato da ESP.
+		Il sorgente deve essere a 16 bit o a 32 bit.
+		Nello specifico, compie le seguenti azioni:
+		\begin{itemize}
+			\item Decrementa l'indirizzo contenuto nel registro ESP di 2 o 4;
+			\item Memorizza una copia dell'operando sorgente nella word o long il cui indirizzo è contenuto in ESP.
+		\end{itemize}
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+		\begin{table}[h!]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline 
+				Memoria & \texttt{PUSHW 0x3214200A} \\ 
+				Immediato & \texttt{PUSHL \$0x4871A000} \\ 
+				Registro Generale & \texttt{PUSH \%BX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{POP}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{POP destination}
+	\item \textbf{Azione:} copia una word o un long dall'indirzzo puntato dall'ESP nel destinatario e incrementa ESP.
+		Nello specifico compie le seguenti azioni:
+		\begin{itemize}
+			\item Sostituisce all'operando destinatario una copia del contenuto nella word o long il cui indirizzo è contenuto in ESP;
+			\item Incrementa di due o quattro l'indirizzo contenuto in ESP, rimuovendo la word o il long copiato.
+		\end{itemize}
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+	
+		\begin{table}[h!]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline 
+				Memoria & \texttt{POPW 0x02AB2000} \\ 
+				Registro Generale & \texttt{POP \%BX}
+			\end{tabular}
+		\end{table}
+
+\par\medskip
+
+\noindent
+\textsf{\textbf{Dati temporanei nella pila}} \\
+Solitamente la pila viene usata per memorizzare dati temporanei, visto che i registri sono pochi e spesso hanno scopi diversi in momenti diversi. Ad esempio:
+
+\begin{lstlisting}[style=codestyle]	
+# sto usando %EAX, mi serve un dato da una porta
+PUSH %EAX
+IN 0x001A, %AL
+...
+POP %EAX # ritorno da dove ero
+\end{lstlisting}
+
+\subsubsection{PUSHAD}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{PUSHAD}
+	\item \textbf{Azione:}: salva nella pila corrente una copia degli 8 registri generali a 32 bit, nell'ordine: EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{POPAD}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{POPAD}
+	\item \textbf{Azione:}: copia dalla pila corrente gli 8 registri generali a 32 bit, nell'ordine: EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI. 
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsection{Istruzioni aritmetiche}
+Molte operazioni aritmetiche di base non distinguono numeri naturali e numeri interi, distinzione che viene fatta solo per moltiplicazioni e divisioni.
+
+Le operazioni possono modificare i flag, e in questo caso i flag da controllare dipenderanno dal tipo di numeri su cui si è fatta l'operazione (informazione nota soltanto al programmatore).
+
+Abbiamo quindi che un'operazione aritmetica si svolge seguendo i passi:
+\begin{itemize}
+	\item Si esegue l'operazione;
+	\item Si controllano i flag interessati (OF, SF e ZF sugli interi, CF e ZF sui naturali) per verificarne l'esito.
+\end{itemize}
+
+Vediamo quindi le operazioni aritmetiche:
+
+\subsubsection{ADD}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{ADD source, destination}
+	\item \textbf{Azione:} modifica l'operando destinatario sommandovi l'operando sorgente.
+		Il risultato è consistente sia che si interpretino i numeri come naturali, che come interi.
+	\item \textbf{Flag:} attiva CF se, interpretando i numeri come naturali, si è verificato un riporto; attiva OF se, interpretando gli operandi come interi, si è verificato un traboccamento.
+		Inoltre attiva opportunamente ZF e SF se il numero è rispettivamente zero o negativo (in complemento a 2).
+\end{itemize}
+
+		\begin{table}[h!]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria, Registro Generale & \texttt{ADD 0x00002000, \%EDX} \\ 
+				Registro Generale, Memoria & \texttt{ADD \%CL, 0x12AB1024} \\ 
+				Registro Generale, Registro Generale & \texttt{ADD \%AX, \%DX} \\ 
+				Immediato, Memoria & \texttt{ADDB \$0x5B, (\%EDI)} \\ 
+				Immediato, Registro Generale & \texttt{ADD \$0x54A3, \%AX}
+			\end{tabular}
+		\end{table}
+
+\par\medskip
+\noindent
+\textbf{\textsf{Funzionamento della ADD}} \\
+Il passo elementare di una somma consiste nel sommare due addendi (propriamente due cifre degli addendi) e un riporto entrante per produrre:
+	\begin{itemize}
+		\item Una cifra;
+		\item Un riporto uscente (cioè il riporto entrante per il prossimo passo).
+	\end{itemize}
+L'ultimo riporto, se non entra in memoria, attiva il carry flag (CF).
+
+L'operazione di somma ha lo stesso effetto sia su naturali che su interi in complemento a 2: la differenza sta nel controllo dell'attivazione dei flag.
+Il carry flag non ha infatti alcun significato nella somma fra interi: dobbiamo controllare l'OF.
+
+In generale, si ha overflow (OF) quando il risultato esce dall'intervallo di rappresentabilità.
+Si può capire se si è verificato un overflow controllando i segni degli operandi:
+\begin{itemize}
+	\item \textbf{Segni discordi:} non c'é overflow;
+	\item \textbf{Segni concordi:} il risultato è concorde se è concorde con gli operandi.
+\end{itemize}
+La ADD imposta quindi OF secondo queste regole.
+Il ZF viene poi impostato se il risultato è fatto da tutti zeri, e il SF viene impostato se il MSB è uno.
+
+\subsubsection{INCREMENT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{INC destination}
+	\item \textbf{Azione:} equivale all'istruzione \texttt{ADD \$1, destination}. 
+	\item \textbf{Flag:} modifica tutti i flag di ADD tranne CF (il riporto).
+\end{itemize}
+
+		\begin{table}[H]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | c }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline 
+				Memoria & \texttt{INCB (\%ESI)} \\
+				Registro Generale & \texttt{INC \%CX}
+			\end{tabular}
+		\end{table}
+
+Quest'istruzione è più compatta di ADD, e storicamente era anche più veloce.
+Questo deriva dal fatto che la circuiteria che implementava l'incremento era più efficiente di quella che implementa le somme.
+
+\subsubsection{SUBTRACT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{SUB source, destination}
+	\item \textbf{Azione:} modifica l'operando destinatario sottraendovi l'operando sorgente. 
+		Il risultato è consistente sia che si interpretino i numeri come naturali, che come interi.
+	\item \textbf{Flag:} attiva CF se, interpretando i numeri come naturali, si è verificato un riporto; attiva OF se, interpretando gli operandi come interi, si è verificato un traboccamento.
+\end{itemize}
+
+		\begin{table}[h!]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria, Registro Generale & \texttt{SUB 0x00002000, \%EDX} \\ 
+				Registro Generale, Memoria & \texttt{SUB \%CL, 0x12AB1024} \\ 
+				Registro Generale, Registro Generale & \texttt{SUB \%AX, \%DX} \\ 
+				Immediato, Memoria & \texttt{SUBB \$0x5B, (\%EDI)} \\ 
+				Immediato, Registro Generale & \texttt{SUB \$0x54A3, \%AX}
+			\end{tabular}
+		\end{table}
+
+\par\medskip
+\noindent
+\textbf{\textsf{Funzionamento della SUBTRACT}} \\
+Il passo elementare della sottrazione è effettivamente il contrario di quello della somma: si sottraggono il sottraendo e un prestito entrante al minuendo, producendo:
+\begin{itemize}
+	\item Una cifra;
+	\item Un prestito uscente.
+\end{itemize}
+
+Il carry flag (CF) memorizza il prestito.
+Se alla fine dell'operazione il CF è impostato, significa che il risultato è un numero intero.
+
+Questo funziona anche sugli interi: in questo caso, come prima, non si controlla il CF, ma l'OF, che conterrà la seguente informazione:
+\begin{itemize}
+	\item La differenza di numeri concordi è sempre rappresentabile;
+	\item La differenza di numeri discordi è rappresentabile solo se il risultato ha il segno del minuendo.
+\end{itemize}
+
+Il ZF e il SF vengono attivati secondo le regole già note.
+
+\subsubsection{DECREMENT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{DEC destination}
+	\item \textbf{Azione:} equivale all'istruzione \texttt{SUB \$1, destination}. 
+	\item \textbf{Flag:} modifica tutti i flag di SUBTRACT tranne CF (il prestito).
+\end{itemize}
+
+		\begin{table}[h!]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | c }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline 
+				Memoria & \texttt{DECB (\%EDI)} \\
+				Registro Generale & \texttt{DEC \%CX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{ADD WITH CARRY}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{ADC source, destination}
+	\item \textbf{Azione:} modifica l'operando destinatario sommandovi sia l'operando sorgente sia il contenuto del flag CF.
+	\item \textbf{Flag:} modifica tutti i flag come ADD. 
+\end{itemize}
+
+\begin{table}[h!]
+			\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria, Registro Generale & \texttt{ADC 0x00002000, \%EDX} \\ 
+				Registro Generale, Memoria & \texttt{ADC \%CL, 0x12AB1024} \\ 
+				Registro Generale, Registro Generale & \texttt{ADC \%AX, \%DX} \\ 
+				Immediato, Memoria & \texttt{ADCB \$0x5B, (\%EDI)} \\ 
+				Immediato, Registro Generale & \texttt{ADC \$0x54A3, \%AX}
+			\end{tabular}
+		\end{table}
+
+Quest'istruzione è utile per effettuare somme di numeri più grandi di 32 bit.
+In questo caso si:
+\begin{itemize}
+	\item Effettua la somma dei 32 bit meno significativi con ADD;
+	\item Sommano i successivi 32 bit con ADC portandosi quindi dietro il carry.
+\end{itemize}
+
+\subsubsection{SUBTRACT WITH BORROW}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{SBB source, destination}
+	\item \textbf{Azione:} modifica l'operando destinatario sottraendovi sia l'operando sorgente sia il contenuto del flag CF.
+	\item \textbf{Flag:} modifica tutti i flag come SUBTRACT. 
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria, Registro Generale & \texttt{SBB 0x00002000, \%EDX} \\ 
+				Registro Generale, Memoria & \texttt{SBB \%CL, 0x12AB1024} \\ 
+				Registro Generale, Registro Generale & \texttt{SBB \%AX, \%DX} \\ 
+				Immediato, Memoria & \texttt{SBBB \$0x255B, (\%EDI)} \\ 
+				Immediato, Registro Generale & \texttt{SBB \$0x54A3, \%AX}
+			\end{tabular}
+		\end{table}
+
+Come ormai dovrebbe essere chiaro, è la duale dell'ADC, e si usa per effettuare sottrazioni di numeri più grandi di 32 bit.
+
+\subsubsection{NEGATE}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{NEG destination}
+	\item \textbf{Azione:} interpreta l'operando destinatario come un numero intero e lo sostituisce con il suo opposto in complemento a 2. 
+	\item \textbf{Flag:} quando l'operazione non è possibile (l'intervallo di rappresentabilità degli interi in complemento a 2 non è simmetrico) imposta il flag OF.
+		Imposta inoltre il flag CF quando l'operando è diverso da zero, e tutti gli altri flag in base a nullità e segno del risultato. 
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria & \texttt{NEGB (\%EDI)} \\ 
+				Registro Generale & \texttt{NEG \%CX}
+			\end{tabular}
+		\end{table}
+
+
+\par\medskip
+\noindent
+\textbf{\textsf{Funzionamento della NEGATE}} \\
+L'opposto di un numero $X$ in complemento a due è:
+$$
+-X = \bar{X} + 1
+$$
+
+Si ricordi che questo ha senso \textit{solamente} se il numero è rappresentato in complemento a due.
+
+\subsubsection{COMPARE}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{CMP source, destination}
+	\item \textbf{Azione:} verifica se l'operando destinatario è maggiore, uguale o minore dell'operando sorgente, sia interpretando gli operandi come naturali che come interi, e aggiorna i flag di conseguenza.
+		Più propriamente, la compare si comporta come la SUB, ma senza sovrascrivere nessuno degli operandi.
+	\item \textbf{Flag:} come la SUB. 
+\end{itemize}
+
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria, Registro Generale & \texttt{CMP 0x00002000, \%EDX} \\ 
+				Registro Generale, Memoria & \texttt{CMP \%CL, 0x12AB1024} \\ 
+				Registro Generale, Registro Generale & \texttt{CMP \%AX, \%DX} \\ 
+				Immediato, Memoria & \texttt{CMPB \$0x255B, (\%EDI)} \\ 
+				Immediato, Registro Generale & \texttt{CMP \$0x54A3, \%AX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{Funzionamento della COMPARE}
+Solitamente la CMP si usa nei salti condizionati come:
+\begin{lstlisting}[style=codestyle]	
+CMP %AX, %BX
+JCOND # salto condizionato
+\end{lstlisting}
+\noindent
+Ciò che fa la CMP è effettivamente creare un'oggetto temporaneo:
+$$
+\text{tmp} = \text{dest} - \text{source}
+$$
+che viene poi rimosso.
+
+I flag restano però aggiornati, e questo valore può essere interpretato correttamente dalla JE per effettuare un salto condizionale.
+
+
+\subsection{Moltiplicazioni}
+Le moltiplicazioni, a differenza delle somme e delle differenze, sono diverse fra naturali ed interi.
+Bisogna inoltre notare che le dimensioni il risultato della somma di un numero a $n$ cifre sta su $n$ o $n+1$ cifre, mentre il prodotto di due numeri a $n$ cifre sta su $2n$ cifre.
+In altre parole, il numero di bit necessari a memorizzare il risultato non è più confrontabile con quello degli operatori.
+
+
+\subsubsection{MULTIPLY}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{MUL source}
+	\item \textbf{Azione:} considera l'operando sorgente come un moltiplicando, l'operando destinatario (implicito) come un moltiplicatore, e effettua la moltiplicazione assumendo i numeri naturali. Nello specifico:
+	\begin{itemize}
+		\item Sorgente a 8 bit, si ha $\text{AX} = \text{AL} \times \text{source}$;
+		\item Sorgente a 16 bit, si ha $\text{DX}\_\text{AX} = \text{AX} \times \text{source}$;
+		\item Sorgente a 32 bit, si ha $\text{EDX}\_\text{EAX} = \text{EAX} \times \text{source}$.
+	\end{itemize}
+	\item \textbf{Flag:} imposta CF e OF se il risultato non sta nel numero di bit di source. SF e ZF sono indefiniti.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria & \texttt{MULB (\%ESI)} \\ 
+				Registro Generale & \texttt{MUL \%ECX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{INTEGER MULTIPLY}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{MUL source}
+	\item \textbf{Azione:} considera l'operando sorgente come un moltiplicando, l'operando destinatario (implicito) come un moltiplicatore, e effettua la moltiplicazione assumendo i numeri interi. Nello specifico:
+	\begin{itemize}
+		\item Sorgente a 8 bit, si ha $\text{AX} = \text{AL} \times \text{source}$;
+		\item Sorgente a 16 bit, si ha $\text{DX}\_\text{AX} = \text{AX} \times \text{source}$;
+		\item Sorgente a 32 bit, si ha $\text{EDX}\_\text{EAX} = \text{EAX} \times \text{source}$.
+	\end{itemize}
+	\item \textbf{Flag:} li imposta tutti, ma non è attendibile.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria & \texttt{IMULB (\%ESI)} \\ 
+				Registro Generale & \texttt{IMUL \%ECX}
+			\end{tabular}
+		\end{table}
+
+\par\medskip
+\noindent
+\textbf{\textsf{Funzionamento delle MULTIPLY e INTEGER MULTIPLY}} \\
+Queste operazioni hanno sia un operando che il destinatario impliciti, in base al tipo dell'operando fornito.
+Questo deriva dal fatto che il risultato di una moltiplicazione raramente sta nello stesso numero di bit dei fattori.
+Di preciso, abbiamo visto i 3 tipi di moltiplicazione concessi:
+\begin{itemize}
+	\item Sorgente a 8 bit, si ha $\text{AX} = \text{AL} \times \text{source}$;
+	\item Sorgente a 16 bit, si ha $\text{DX}\_\text{AX} = \text{AX} \times \text{source}$;
+	\item Sorgente a 32 bit, si ha $\text{EDX}\_\text{EAX} = \text{EAX} \times \text{source}$.
+\end{itemize}
+
+La differenza fra le prime due operazioni e l'ultima, in particolare con sorgente a 16 bit, che usa una due registri da 16 bit separati, ha principalmente motivi storici (il registro EAX è stato introdotto dopo).
+
+Si può rimettere il valore dai due registri a 16 bit in un registro a 32 bit attraverso la pila:
+\begin{lstlisting}[style=codestyle]	
+PUSH \%DX
+PUSH \%AX
+POP \%EAX
+\end{lstlisting}
+
+\end{document}

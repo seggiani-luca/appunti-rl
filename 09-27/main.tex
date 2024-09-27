@@ -1,0 +1,801 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+\lstdefinelanguage{javascript}{
+	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+	keywordstyle=\color{blue}\bfseries,
+	ndkeywords={class, export, boolean, throw, implements, import, this},
+	ndkeywordstyle=\color{darkgray}\bfseries,
+	identifierstyle=\color{black},
+	sensitive=false,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{purple}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 27-09-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Divisioni}
+La divisone è l'operazione più complessa fra le 4 operazioni aritmetiche fondamentali.
+I risultati, di base, sono due: \textbf{quoziente} e \textbf{resto}.
+Inoltre, l'operazione non è ben definita quando il divisore vale 0.
+
+Facciamo innanzitutto delle considerazioni di dimensione dei risultati:
+$$
+X / Y \rightarrow (Q, R), \quad
+0 \leq R \leq Y - 1, \quad
+0 \leq Q \leq X
+$$
+
+In assembler, si assume il quoziente e il resto stiano sulla metà dei bit che rappresentano il dividendo.
+Bisogna fare attenzione in quanto questo non è sempre il caso.
+
+\subsubsection{DIVIDE}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{DIV source}
+	\item \textbf{Azione:} considera l'operando sorgente come un divisore, l'operando destinatario (implicito) come un dividendo, e effettua la divisione assumendo i numeri naturali. Nello specifico:
+	\begin{itemize}
+	\item Sorgente a 8 bit, si ha $\text{AL} = \text{AX} \div \text{source}$, e $ \text{AH} = \text{AX} \mod \text{source} $;
+	\item Sorgente a 16 bit, si ha $\text{AX} = \text{DX\_AX} \div \text{source}$, e $ \text{DX} = \text{DX\_AX} \mod \text{source} $;
+	\item Sorgente a 32 bit, si ha $\text{EAX} = \text{EDX\_EAX} \div \text{source}$, e $ \text{EDX} = \text{EDX\_EAX} \mod \text{source} $;
+	\end{itemize}
+		Nel caso il quoziente non sia esprimibile su un numero di bit pari a quello del divisore, allora si genera un'eccezione interna, che mette in esecuzione un sottoprogramma.
+		Da lì in poi i risultati generati non sono più attendibili
+	\item \textbf{Flag:} imposta tutti i bit, ma non è attendibile. 
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{10cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria & \texttt{DIVB (\%ESI)	\# AX destinazione implicita} \\ 
+				Registro Generale & \texttt{DIV \%ECX	\# EDX\_EAX destinazione implicita}
+			\end{tabular}
+		\end{table}
+
+Attenzione: la destinazione implicita non è quella che va a contenere il risultato, ma quella che contiene il dividendo.
+Negli esempi, le destinazioni quoziente resto sono rispettivamente AL e AH, EAX e EDX.
+
+\subsubsection{INTEGER DIVIDE}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{MUL source}
+	\item \textbf{Azione:} considera l'operando sorgente come un divisore, l'operando destinatario (implicito) come un dividendo, e effettua la divisione assumendo i numeri interi. Nello specifico:
+	\begin{itemize}
+	\item Sorgente a 8 bit, si ha $\text{AL} = \text{AX} / \text{source}$, e $ \text{AH} = \text{AX} \mod \text{source} $;
+	\item Sorgente a 16 bit, si ha $\text{AX} = \text{DX\_AX} / \text{source}$, e $ \text{DX} = \text{DX\_AX} \mod \text{source} $;
+	\item Sorgente a 32 bit, si ha $\text{EAX} = \text{EDX\_EAX} / \text{source}$, e $ \text{EDX} = \text{EDX\_EAX} \mod \text{source} $;
+	\end{itemize}
+	\item \textbf{Flag:} li imposta tutti, ma non è attendibile.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{10cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria & \texttt{IDIVB (\%ESI)	\# AX destinazione implicita} \\ 
+				Registro Generale & \texttt{IDIV \%ECX	\# EDX\_EAX destinazione implicita}
+			\end{tabular}
+		\end{table}
+
+Bisogna stare attenti ai segni della divisione intera.
+Nella divisione intera il resto ha sempre il segno del dividendo, ed è minore in modulo del divisore.
+Ciò significa che il quoziente si approssima sempre all'intero più vicino allo zero (\textit{per troncamento}).
+Ad esempio, $-7 \ \mathrm{idiv} \ 3 = -2, -1$ e $7 \ \mathrm{idiv} \ -3 = -2, +1$.
+
+\par\medskip
+\noindent
+\textbf{\textsf{Funzionamento delle DIVIDE e INTEGER DIVIDE}} \\
+Esistono quindi, come per le moltiplicazioni, tre tipi di divisione, con operando e destinatario impliciti:
+\begin{itemize}
+	\item Sorgente a 8 bit, si ha $\text{AL} = \text{AX} / \text{source}$, e $ \text{AH} = \text{AX} \mod \text{source} $;
+	\item Sorgente a 16 bit, si ha $\text{AX} = \text{DX\_AX} / \text{source}$, e $ \text{DX} = \text{DX\_AX} \mod \text{source} $;
+	\item Sorgente a 32 bit, si ha $\text{EAX} = \text{EDX\_EAX} / \text{source}$, e $ \text{EDX} = \text{EDX\_EAX} \mod \text{source} $;
+\end{itemize}
+
+In tabella questo significa:
+
+\begin{table}[h!]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c | c | c | c | c }
+		\bfseries Dim. sorgente (divisore) & \bfseries Dim. dividendo & \bfseries Dividendo & \bfseries Quoziente & \bfseries Resto \\ 
+		\hline 
+		8 bit & 16 bit & AX & AL & AH \\ 
+		16 bit & 32 bit & DX\_AX & AX & DX \\ 
+		32 bit & 64 bit & EDX\_EAX & EAX & EDX
+	\end{tabular}
+\end{table}
+
+Se il quoziente non sta nel numero di bit previsto, viene sollevata un'eccezione, e il programma va in HALT.
+Bisogna quindi decidere quali versioni usare tenendo conto delle dimensioni dei possibili quoziente.
+Questo è importante in quanto non è cosi raro avere divisioni dove il quoziente non sta nella metà dei bit del dividendo, ad esempio:
+
+\begin{lstlisting}[style=codestyle]	
+MOV $3, %CL
+MOV $15000, %AX
+DIV %CL	# come metto 5000 su una locazione da 8 bit?
+\end{lstlisting}
+
+per risolvere il problema, dobbiamo costringere il processore ad usare un altro tipo di divisione, quindi:
+\begin{lstlisting}[style=codestyle]	
+MOV $3, %CX
+MOV $15000, %AX
+MOV $0, %DX	# devo ripulire DX, verra' usato il dividendo DX_AX 
+DIV %CX	# il risultato va in AX, tutto bene 
+\end{lstlisting}
+
+\subsection{Note conclusive su moltiplicazioni e divisioni}
+Dobbiamo quindi ricordarci, riguardo a moltiplicazioni e divisioni, di:
+\begin{itemize}
+	\item Scegliere con cura la versione che usiamo (sopratutto nel caso di divisioni dove il quoziente potrebbe non stare nella metà del numero di bit del dividendo);
+	\item Azzerare di azzerare i registri DX o EDX prima della divisione, se è a più di 8 bit;
+	\item Ricordare che il contenuto di DX o EDX viene modificato per operazioni su più di 8 bit.
+\end{itemize}
+
+\subsection{Estensione di campo}
+Attraverso l'estensione di campo si rappresenta lo stesso numero su più cifre.
+Questo è banale sui naturali (si aggiunge uno zero), ma più complicato per gli interi.
+In questo caso si estende con il bit più significativo (quello di segno).
+
+\subsubsection{CONVERT BYTE TO WORD}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{CBX}
+	\item \textbf{Azione:} interpreta il contenuto di AL come un numero intero a 8 bit, la rappresenta su 16 bit e quindi lo memorizza in AX.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{CONVERT WORD TO DOUBLEWORD}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{CWDE}
+	\item \textbf{Azione:} interpreta il contenuto di AX come un numero intero a 16 bit, la rappresenta su 32 bit e quindi lo memorizza in EAX.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+Poniamo ad esempio di voler sommare due interi, uno in AX e l'altro in EBX:
+\begin{lstlisting}[style=codestyle]	
+MOV $-5, %AX
+MOV $100000, $EBX
+CWDE
+ADD %EAX, %EBX
+\end{lstlisting}
+
+\subsection{Istruzioni di traslazione e rotazione}
+Queste istruzioni variano l'ordine dei bit in un operando destinatario.
+Hanno due formati: \texttt{OCPODE source, destination} o \texttt{OPCODE destination}.
+
+Quando si specifica un sorgente, esso rappresenta il numero di iterazioni per cui si ripete l'operazione.
+Il sorgente può essere ad indirizzamento immediato o essere il registro CL.
+Inoltre, deve essere $\leq 31$ (sarebbe inutile fare $\geq32$ trasformazioni di 32 bit).
+Quando è omesso, il sorgente vale di default 1.
+
+\subsubsection{SHIFT LOGICAL LEFT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{SHL source, destination}
+	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni:
+		\begin{itemize}
+			\item Sostituisce il bit in CF con il MSB;
+			\item Sostituisce ogni bit (tranne il LSB) con il bit immediatamente a destra  (il meno significativo);
+			\item Sostituisce il LSB con 0.
+		\end{itemize}
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Immediato, Registro Generale & \texttt{SHL \$1, \%EAX} \\
+				Immediato, Memoria & \texttt{SHLB \$7, 0x00002000} \\
+				Registro CL, Registro Generale & \texttt{SHL \%CL, \%EAX} \\
+				Registro CL, Memoria & \texttt{SHLL \%CL, (\%EDI)} \\
+				Memoria & \texttt{SHLL (\%EDI)} \\ 
+				Registro Generale & \texttt{SHL \%AX}
+			\end{tabular}
+		\end{table}
+
+La SHL è utile per effettuare moltiplicazioni per 2 (shift a sinistra in binario significa $\times 2$), tranne nei casi in cui il prodotto non sta sul numero di bit del destinatario.
+
+Per questo si controlla il CF, facendo però attenzione che per $n$ iterazioni (date dal sorgente) vengono effettuati $n$ sovrascrizioni del CF.
+Ergo, se la moltiplicazione fallisce, non sappiamo \textit{quando} fallisce.
+
+\subsubsection{SHIFT ARITHMETIC LEFT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{SAL source, destination}
+	\item \textbf{Azione:} è identica alla SHL. 
+		Quindi equivale a moltiplicare per $2^\text{source}$.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+Esiste come duale della SAR, ma in questo caso non deve fare nulla di diverso dalla SHL.
+
+\subsubsection{SHIFT LOGICAL RIGHT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{SHR source, destination}
+	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni:
+		\begin{itemize}
+			\item Sostituisce il bit in CF con il LSB;
+			\item Sostituisce ogni bit (tranne il MSB) con il bit immediatamente a sinistra (il più significativo);
+			\item Sostituisce il MSB con 0.
+		\end{itemize}
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Immediato, Registro Generale & \texttt{SHR \$1, \%EAX} \\
+				Immediato, Memoria & \texttt{SHRB \$7, 0x00002000} \\
+				Registro CL, Registro Generale & \texttt{SHR \%CL, \%EAX} \\
+				Registro CL, Memoria & \texttt{SHRL \%CL, (\%EDI)} \\
+				Memoria & \texttt{SHRL (\%EDI)} \\ 
+				Registro Generale & \texttt{SHR \%AX}
+			\end{tabular}
+		\end{table}
+
+La SHR, come la SHL, è utile per effettuare divisioni per 2 (shift a destra in binario significa $\div 2$), concessa approssimazione del bit perso, tranne nei casi in cui il numero è un intero (lo 0 al MSB corrompe il segno). 
+Per questo motivo si definisce la:
+
+\subsubsection{SHIFT ARITHMETIC RIGHT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{SAR source, destination}
+	\item \textbf{Azione:} è identica alla SHR, ma non sostituisce il MSB con 0, lasciandolo tale.
+		Questo equivale a dividere per $2^\text{source}$.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+La SAR ci permette di dividere velocemente interi per 2, come avremmo fatto sui naturali con la SHR.
+
+\subsubsection{Divisioni intere}
+Le IDIV e SAR approssimano diversamente: la IDIV approssima per troncamento, mentre la SAR approssima sempre a sinistra.
+Quindi, IDIV e SAR danno lo stesso quoziente solo quando il dividendo è positivo, o il resto nullo.
+
+\subsection{Istruzioni di rotazione}
+Le istruzioni di rotazione ruotano i bit, cioè effettuano uno shift con rientro dei bit in uscita dal lato opposto, con la possibilità di includere o meno CF nella rotazione.
+
+\subsubsection{ROTATE LEFT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{ROL source, destination}
+	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni ruota verso sinistra senza usare il carry.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Immediato, Registro Generale & \texttt{ROL \$1, \%EAX} \\
+				Immediato, Memoria & \texttt{ROLB \$7, 0x00002000} \\
+				Registro CL, Registro Generale & \texttt{ROL \%CL, \%EAX} \\
+				Registro CL, Memoria & \texttt{ROLL \%CL, (\%EDI)} \\
+				Memoria & \texttt{ROLL (\%EDI)} \\ 
+				Registro Generale & \texttt{ROL \%AX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{ROTATE RIGHT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{ROR source, destination}
+	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni ruota verso destra senza usare il carry.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Immediato, Registro Generale & \texttt{ROR \$1, \%EAX} \\
+				Immediato, Memoria & \texttt{RORB \$7, 0x00002000} \\
+				Registro CL, Registro Generale & \texttt{ROR \%CL, \%EAX} \\
+				Registro CL, Memoria & \texttt{RORL \%CL, (\%EDI)} \\
+				Memoria & \texttt{RORL (\%EDI)} \\ 
+				Registro Generale & \texttt{ROR \%AX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{ROTATE CARRY LEFT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{RCL source, destination}
+	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni ruota verso sinistra usando il carry.
+	\item \textbf{Flag:} imposta il carry assumendolo a sinistra del MSB.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Immediato, Registro Generale & \texttt{RCL \$1, \%EAX} \\
+				Immediato, Memoria & \texttt{RCLB \$7, 0x00002000} \\
+				Registro CL, Registro Generale & \texttt{RCL \%CL, \%EAX} \\
+				Registro CL, Memoria & \texttt{RCLL \%CL, (\%EDI)} \\
+				Memoria & \texttt{RCLL (\%EDI)} \\ 
+				Registro Generale & \texttt{RCL \%AX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{ROTATE CARRY RIGHT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{RCR source, destination}
+	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni ruota verso destra usando il carry.
+	\item \textbf{Flag:} imposta il carry assumendolo a destra del LSB.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Immediato, Registro Generale & \texttt{RCR \$1, \%EAX} \\
+				Immediato, Memoria & \texttt{RCRB \$7, 0x00002000} \\
+				Registro CL, Registro Generale & \texttt{RCR \%CL, \%EAX} \\
+				Registro CL, Memoria & \texttt{RCRL \%CL, (\%EDI)} \\
+				Memoria & \texttt{RCRL (\%EDI)} \\ 
+				Registro Generale & \texttt{RCR \%AX}
+			\end{tabular}
+		\end{table}
+
+\subsection{Istruzioni logiche}
+Queste istruzioni applicano gli operatori dell'algebra di Boole, e solitamente modificano flag.
+
+\subsubsection{NOT}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{NOT destination}
+	\item \textbf{Azione:} modifica il destinatario applicandogli il NOT bit a bit. 
+	\item \textbf{Flag:} nessuno. 
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria & \texttt{NOTL (\%ESI)} \\ 
+				Registro Generale & \texttt{NOT \%CX} 
+			\end{tabular}
+		\end{table}
+
+\subsubsection{AND}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{AND source, destination}
+	\item \textbf{Azione:} modifica il destinatario applicando l'AND bit a bit degli operandi. 
+	\item \textbf{Flag:} modifica tutti i flag (annulla CF e OF).
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria, Registro Generale & \texttt{AND 0x00002000, \%EDX} \\ 
+				Registro Generale, Memoria & \texttt{AND \%CL, 0x12AB1024} \\ 
+				Registro Generale, Registro Generale & \texttt{AND \%AX, \%DX} \\ 
+				Immediato, Memoria & \texttt{AND 5x5B, (\%EDI)} \\ 
+				Immediato, Registro Generale & \texttt{AND \$0x45AB54A3, \%EAX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{OR}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{OR source, destination}
+	\item \textbf{Azione:} modifica il destinatario applicando l'OR bit a bit degli operandi. 
+	\item \textbf{Flag:} modifica tutti i flag (annulla CF e OF).
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria, Registro Generale & \texttt{OR 0x00002000, \%EDX} \\ 
+				Registro Generale, Memoria & \texttt{OR \%CL, 0x12AB1024} \\ 
+				Registro Generale, Registro Generale & \texttt{OR \%AX, \%DX} \\ 
+				Immediato, Memoria & \texttt{OR 5x5B, (\%EDI)} \\ 
+				Immediato, Registro Generale & \texttt{OR \$0x45AB54A3, \%EAX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{XOR}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{XOR source, destination}
+	\item \textbf{Azione:} modifica il destinatario applicando l'OR bit a bit degli operandi. 
+	\item \textbf{Flag:} modifica tutti i flag (annulla CF e OF).
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Memoria, Registro Generale & \texttt{XOR 0x00002000, \%EDX} \\ 
+				Registro Generale, Memoria & \texttt{XOR \%CL, 0x12AB1024} \\ 
+				Registro Generale, Registro Generale & \texttt{XOR \%AX, \%DX} \\ 
+				Immediato, Memoria & \texttt{XOR 5x5B, (\%EDI)} \\ 
+				Immediato, Registro Generale & \texttt{XOR \$0x45AB54A3, \%EAX}
+			\end{tabular}
+		\end{table}
+
+\subsubsection{Uso delle istruzioni logiche}
+Le istruzioni logiche vengono usate per operare su singoli bit degli operandi, usando uno specifico operatore sorgente immediato detto maschera (\textbf{bitmask}).
+Nello specifico:
+\begin{itemize}
+	\item \textbf{AND:} 
+		\begin{itemize}
+			\item si usa per testare singoli bit di un operando.
+			Ad esempio, si può implementare un salto condizionale se il quinto bit di AL vale zero:
+			\begin{lstlisting}[style=codestyle]	
+AND $0x20, %AL	# 0x20 = 00100000
+JZ # vale zero
+\end{lstlisting} 
+			\item si usa per resettare singoli bit di un operando.
+			Ad esempio, si può resettare il sesto bit di BH:
+			\begin{lstlisting}[style=codestyle]	
+AND $0xBF, $BH	# 0xBF = 10111111
+\end{lstlisting}
+			\item si usa per l'estensione di operandi \textit{naturali}.
+				Ad esempio, si possono sommare due numeri naturali, di cui uno in AL e l'altro in EBX:
+				\begin{lstlisting}[style=codestyle]	
+MOV $5, $AL
+MOV $100000, %EBX
+AND $0x000000FF, $EAX
+ADD %EAX, %EBX	
+\end{lstlisting}
+		\end{itemize} 
+	\item \textbf{OR:} si usa per settare singoli bit di un operando.
+		Ad esempio, si può settare il quarto bit di CL:
+		\begin{lstlisting}[style=codestyle]	
+OR $0x10, %CL	# =x10 = 00010000
+\end{lstlisting}
+	\item \textbf{XOR:}
+		\begin{itemize}
+			\item si usa per invertire singoli bit.
+		Ad esempio, si può invertire il quinto bit del registro AH:
+		\begin{lstlisting}[style=codestyle]	
+XOR $0x20, %AH	# 0x20 = 00100000
+\end{lstlisting}
+	\item si usa per resettare registri.
+		Ad esempio, si può resettare EAX come:
+		\begin{lstlisting}[language, style=codestyle]	
+XOR %EAX, %EAX	# equivale a dire MOV $0, %EAX, ma occupa 
+								# 1 byte invece di 5
+\end{lstlisting}
+		\end{itemize}
+\end{itemize}
+
+\subsection{Istruzioni di controllo}
+Le istruzioni di controllo permettono di alterare il flusso del programma, che altrimenti scorrerebbe normalmente in sequenza (le istruzioni vengono eseguite come vengono lette in memoria).
+
+Conosciamo il ciclo fetch-execute: il processore carica un'istruzione, incrementa EIP, e la esegue.
+Alcune istruzioni alterano il valore di EIP, implementando quindi alterazioni del flusso di esecuzione:
+\begin{itemize}
+	\item \textbf{Istruzioni di salto:} JMP, Jcon;
+	\item \textbf{Istruzioni di gestione sottoprgrammi}: CALL, RET.
+\end{itemize}
+
+\subsubsection{JUMP}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{JMP  \%EIP $\pm$ displacement}, \texttt{JMP *extended\_register}, \texttt{JMP *memory}
+	\item \textbf{Azione:} calcola un'indrizzo di salto e lo immette nel registro EIP. 
+	\item \textbf{Flag:} nessuno. 
+\end{itemize}
+
+Solitamente le istruzioni di salto si riferiscono ad un nome simbolico, ed è quindi compito dell'assemblatore ricondurre la sintassi ad una delle forme sopra riportate.
+
+\subsubsection{JUMP if CONDITION MET}
+\begin{itemize}
+	\item \textbf{Formato:} \texttt{Jcon \%EIP $\pm$ displacement}
+	\item \textbf{Azione:} esamina il contenuto dei flag.
+		Se da questo esame risulta che la condizione \textit{con} è soddisfatta, si comporta come \texttt{JMP \%EIP $\pm$ displacement}, altrimenti non fa nulla.
+	\item \textbf{Flag:} nessuno. 
+\end{itemize}
+
+I prossimi paragrafi riguardano tutti i di condizione supportati.
+
+\subsubsection{Condizioni sui flag}
+Esistono le seguenti condizioni sui singoli flag:
+
+\begin{table}[h!]
+	\center \rowcolors{1}{white}{black!5}
+	\begin{tabular} { c  p{10cm} }
+		\bfseries Condizione & \bfseries Funzionamento \\
+		\hline 
+		JZ & Jump If Zero, la condizione è soddisfatta se ZF è impostato, ergo se il risultato dell'istruzione precedente è stato 0. \\ 
+		JNZ & Jump If Not Zero, la condizione è soddisfatta se ZF non è impostato, ergo se il risultato dell'istruzione precedente non è stato 0. \\ 
+		JC & Jump if Carry, la condizione è soddisfatta se CF è impostato. \\
+		JNC & Jump if No Carry, la condizione è soddisfatta se CF non è impostato. \\ 
+		JO & Jump if Overflow, la condizione è soddisfatta se OF è impostato. \\
+		JNO & Jump if No Overflow, la condizione è soddisfatta se OF non è impostato. \\ 
+		JS & Jump if Sign, la condizione è soddisfatta se SF è impostato. \\
+		JNS & Jump if No Sign, la condizione è soddisfatta se SF non è impostato. \\ 
+	\end{tabular}
+\end{table}
+
+\par\medskip
+\noindent
+\textbf{\textsf{Esempi}} \\
+\begin{itemize}
+	\item 
+\begin{lstlisting}[style=codestyle]	
+ADD %AX, %BX
+JC ...
+# continua
+\end{lstlisting}
+Se la somma dei contenuti di AX e BX presi come naturali non è rappresentabile su 16 bit, salta.
+
+	\item 
+\begin{lstlisting}[style=codestyle]	
+ADD %AX, %BX
+JO ...
+# continua
+\end{lstlisting}
+Se la somma dei contenuti di AX e BX presi come interi non è rappresentabile su 16 bit, salta.
+
+	\item 
+\begin{lstlisting}[style=codestyle]	
+SUB %AL, %BL
+JS ...
+# continua
+\end{lstlisting}
+Se la somma differenza dei contenuti di BL ed AL (in quest'ordine) presi come interi è negativa, salta.
+\end{itemize}
+
+\subsubsection{Condizioni sui naturali}
+Esistono le seguenti condizioni sui confronti fra naturali:
+
+\begin{table}[h!]
+	\center \rowcolors{2}{white}{black!5}
+	\begin{tabular} { c  p{10cm} }
+		\bfseries Condizione & \bfseries Funzionamento \\
+		\hline 
+		JE & Jump if Equal, la condizione è soddisfatta se ZF contiene 1, cioè dopo CMP su due numeri uguali. \\
+		JNE & Jump if Not Equal, la condizione è soddisfatta se ZF contiene 0, cioè dopo CMP su due numeri non uguali. \\ 
+		JA & Jump if Above, la condizione è soddisfatta se CF contiene 0 e ZF contiene 1, cioè dopo CMP su un destinatario maggiore del sorgente. \\
+		JAE & Jump if Above or Equal, la condizione è soddisfatta se CF contiene 0, cioè dopo CMP su un destinatario maggiore o uguale del sorgente. \\ 
+		JB & Jump if Below, la condizione è soddisfatta se CF contiene 1, cioè dopo CMP su un destinatario minore del sorgente. \\
+		JBE & Jump if Below or Equal, la condizione è soddisfatta se CF contiene 1 o ZF contiene 1, cioè dopo CMP su un destinatario minore o uguale del sorgente. \\ 
+	\end{tabular}
+\end{table}
+
+Tutte queste condizioni seguono sempre una CMP, che aggiorna i flag in modo da permettere il confronto.
+I risultati dei confronti possono sempre evincersi dai flag.
+
+\par\medskip
+\noindent
+\textbf{\textsf{Esempi}} \\
+\begin{itemize}
+	\item 
+\begin{lstlisting}[style=codestyle]	
+CMP %AX, %BX
+JAE ...
+# continua
+\end{lstlisting}
+Se BX è maggiore o uguale di AX, presi come naturali, salta.
+
+	\item 
+\begin{lstlisting}[style=codestyle]	
+CMP %EDX, %ECX
+JB ...
+# continua
+\end{lstlisting}
+Se ECX è minore stretto di EDX, presi come naturali, salta.
+\end{itemize}
+
+\subsubsection{Condizioni sui interi}
+Esistono le seguenti condizioni sui confronti fra interi:
+
+\begin{table}[h!]
+	\center \rowcolors{2}{white}{black!5}
+	\begin{tabular} { c  p{10cm} }
+		\bfseries Condizione & \bfseries Funzionamento \\
+		\hline 
+		JE & Jump if Equal, la condizione è soddisfatta se ZF contiene 1, cioè dopo CMP su due numeri uguali. \\
+		JNE & Jump if Not Equal, la condizione è soddisfatta se ZF contiene 0, cioè dopo CMP su due numeri non uguali. \\ 
+		JG & Jump if Greater, la condizione è soddisfatta se ZF contiene 0 o se SF è uguale a OF, cioè dopo CMP su un destinatario maggiore del sorgente. \\
+		JGE & Jump if Greater or Equal, la condizione è soddisfatta se SF è uguale a OF, cioè dopo CMP su un destinatario maggiore o uguale del sorgente. \\ 
+		JB & Jump if Less, la condizione è soddisfatta se SF è diverso da OF, cioè dopo CMP su un destinatario minore del sorgente. \\
+		JBE & Jump if Less or Equal, la condizione è soddisfatta se ZF contiene 1 o se Sf è diverso da OF, cioè dopo CMP su un destinatario minore o uguale del sorgente. \\ 
+	\end{tabular}
+\end{table}
+
+Come prima, queste operazioni seguono sempre una CMP ed evincono il risultato del confronto dai flag.
+
+\par\medskip
+\noindent
+\textbf{\textsf{Esempi}} \\
+\begin{itemize}
+	\item 
+\begin{lstlisting}[style=codestyle]	
+CMP %AX, %BX
+JGE ...
+# continua
+\end{lstlisting}
+Se BX è maggiore o uguale di AX, presi come interi, salta.
+
+	\item 
+\begin{lstlisting}[style=codestyle]	
+CMP %EDX, %ECX
+JL ...
+# continua
+\end{lstlisting}
+Se ECX è minore stretto di EDX, presi come interi, salta.
+\end{itemize}
+
+\end{document}
