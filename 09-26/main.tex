@@ -78,6 +78,11 @@
 \usepackage{listings}
 \usepackage[table]{xcolor}
 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
 \lstdefinestyle{codestyle}{
 		backgroundcolor=\color{black!5}, 
 		commentstyle=\color{codegreen},
@@ -112,20 +117,43 @@
 		breaklines=true
 }
 
-\lstdefinelanguage{javascript}{
-	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
-	keywordstyle=\color{blue}\bfseries,
-	ndkeywords={class, export, boolean, throw, implements, import, this},
-	ndkeywordstyle=\color{darkgray}\bfseries,
-	identifierstyle=\color{black},
-	sensitive=false,
-	comment=[l]{//},
-	morecomment=[s]{/*}{*/},
-	commentstyle=\color{purple}\ttfamily,
-	stringstyle=\color{red}\ttfamily,
-	morestring=[b]',
-	morestring=[b]"
+
+\lstdefinelanguage{assembler}{
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPA, POPAD, POPF, POPFD, PUSH, PUSHA, PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW,
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
 }
+
+\lstset{language=assembler, style=codestyle}
 
 % disponi sezioni
 \usepackage{titlesec}
@@ -204,7 +232,7 @@ Nessuna istruzione di trasferimento modifica i flag.
 
 \subsubsection{MOVE}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{MOV source, destination}
+	\item \textbf{Formato:} \lstinline|MOV source, destination|
 	\item \textbf{Azione:} sostituisce l'operando destinatario con una copia dell'operando sorgente.
 	\item \textbf{Flag:} nessuno.
 
@@ -213,18 +241,18 @@ Nessuna istruzione di trasferimento modifica i flag.
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline 
-				Memoria, Registro Generale & \texttt{MOV 0x00002000, \%EDX} \\
-				Registro Generale, Memoria & \texttt{MOV \%CL, 0x12AB1024} \\
-				Registro Generale, Registro Generale & \texttt{MOV \%AX, \%DX} \\
-				Immediato, Memoria & \texttt{MOVB \$0x5B, (\%EDI)} \\ 
-				Immediato, Registro generale & \texttt{MOV \$0x54A3, \%AX}
+				Memoria, Registro Generale & \lstinline|MOV 0x00002000, \%EDX| \\
+				Registro Generale, Memoria & \lstinline|MOV \%CL, 0x12AB1024| \\
+				Registro Generale, Registro Generale & \lstinline|MOV \%AX, \%DX| \\
+				Immediato, Memoria & \lstinline|MOVB \$0x5B, (\%EDI)| \\ 
+				Immediato, Registro generale & \lstinline|MOV \$0x54A3, \%AX|
 			\end{tabular}
 		\end{table}
 \end{itemize}
 
 \subsubsection{LOAD EFFECTIVE ADDRESS}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{LEA source, destination}
+	\item \textbf{Formato:} \lstinline|LEA source, destination|
 	\item \textbf{Azione:} sostituisce l'operando destinatario con l'espressione indirizzo contenuta nell'operando sorgente.
 	\item \textbf{Flag:} nessuno.
 
@@ -233,8 +261,8 @@ Nessuna istruzione di trasferimento modifica i flag.
 			\begin{tabular} { c | p{7cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline 
-				Memoria, Registro Generale a 32 bit & \texttt{LEA 0x00002000, \%EDX} \\
-																						& \texttt{LEA 0x00213AB1 (\%EAX,\%EBX,4), \%ECX}
+				Memoria, Registro Generale a 32 bit & \lstinline|LEA 0x00002000, \%EDX| \\
+																						& \lstinline|LEA 0x00213AB1 (\%EAX,\%EBX,4), \%ECX|
 			\end{tabular}
 		\end{table}
 \end{itemize}
@@ -245,7 +273,7 @@ In altri casi permette di ricavare esplicitamente il valore ottenuto dall'indiri
 
 \subsubsection{EXCHANGE}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{XCHG source, destination}
+	\item \textbf{Formato:} \lstinline|XCHG source, destination|
 	\item \textbf{Azione:} sostituisce l'operando destinatario con l'operando sorgente e viceversa. Questa operazione è l'unica che modifica il sorgente.
 	\item \textbf{Flag:} nessuno.
 
@@ -254,9 +282,9 @@ In altri casi permette di ricavare esplicitamente il valore ottenuto dall'indiri
 			\begin{tabular} { c | p{7cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline 
-				Memoria, Registro Generale & \texttt{XCHG 0x00002000, \%DX} \\
-				Registro Generale, Memoria & \texttt{XCHG \%AL, 0x000A2003} \\
-				Registro Generale, Registro Generale & \texttt{XCHG \%EAX, \%EDX}
+				Memoria, Registro Generale & \lstinline|XCHG 0x00002000, \%DX| \\
+				Registro Generale, Memoria & \lstinline|XCHG \%AL, 0x000A2003| \\
+				Registro Generale, Registro Generale & \lstinline|XCHG \%EAX, \%EDX|
 			\end{tabular}
 		\end{table}
 
@@ -268,10 +296,10 @@ In altri casi permette di ricavare esplicitamente il valore ottenuto dall'indiri
 \begin{itemize}
 	\item \textbf{Formato:}
 		\begin{itemize}
-			\item \texttt{IN indirizzo, \%AL} (8 bit)
-			\item \texttt{IN indirizzo, \%AX} (16 bit)
-			\item \texttt{IN (\%DX), \%AX} (8 bit) 
-			\item \texttt{IN (\%DX), \%Al} (16 bit)
+			\item \lstinline|IN indirizzo, \%AL| (8 bit)
+			\item \lstinline|IN indirizzo, \%AX| (16 bit)
+			\item \lstinline|IN (\%DX), \%AX| (8 bit) 
+			\item \lstinline|IN (\%DX), \%Al| (16 bit)
 		\end{itemize}
 	\item \textbf{Azione:} sostituisce il contenuto del registro destinatario (AL 8 bit, AX 16 bit) con il contenuto di un adeguato numero di porte consecutive.
 		L'indirizzo è specificato direttamente (per porte con indirizzo $<256$), o indirettamente usando il registro DX.
@@ -282,10 +310,10 @@ In altri casi permette di ricavare esplicitamente il valore ottenuto dall'indiri
 \begin{itemize}
 	\item \textbf{Formato:}
 		\begin{itemize}
-			\item \texttt{OUT \%AL, indirizzo} (8 bit)
-			\item \texttt{IN \%AX, indirizzo} (16 bit)
-			\item \texttt{IN \%AX}, (\%DX) (8 bit) 
-			\item \texttt{IN \%Al, (\%DX)} (16 bit)
+			\item \lstinline|OUT \%AL, indirizzo| (8 bit)
+			\item \lstinline|IN \%AX, indirizzo| (16 bit)
+			\item \lstinline|IN \%AX|, (\%DX) (8 bit) 
+			\item \lstinline|IN \%Al, (\%DX)| (16 bit)
 		\end{itemize}
 	\item \textbf{Azione:} copia il contenuto del registro sorgente (AL 8 bit, AX 16 bit) su un adeguato numero di porte consecutive.
 		L'indirizzo è specificato direttamente (per porte con indirizzo $<256$), o indirettamente usando il registro DX.
@@ -319,7 +347,7 @@ Per lavorare sulla pila si usano le istruzioni:
 
 \subsubsection{PUSH}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{PUSH source}
+	\item \textbf{Formato:} \lstinline|PUSH source|
 	\item \textbf{Azione:} decrementa ESP e copia il sorgente nell'indirizzo puntato da ESP.
 		Il sorgente deve essere a 16 bit o a 32 bit.
 		Nello specifico, compie le seguenti azioni:
@@ -335,15 +363,15 @@ Per lavorare sulla pila si usano le istruzioni:
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline 
-				Memoria & \texttt{PUSHW 0x3214200A} \\ 
-				Immediato & \texttt{PUSHL \$0x4871A000} \\ 
-				Registro Generale & \texttt{PUSH \%BX}
+				Memoria & \lstinline|PUSHW 0x3214200A| \\ 
+				Immediato & \lstinline|PUSHL \$0x4871A000| \\ 
+				Registro Generale & \lstinline|PUSH \%BX|
 			\end{tabular}
 		\end{table}
 
 \subsubsection{POP}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{POP destination}
+	\item \textbf{Formato:} \lstinline|POP destination|
 	\item \textbf{Azione:} copia una word o un long dall'indirzzo puntato dall'ESP nel destinatario e incrementa ESP.
 		Nello specifico compie le seguenti azioni:
 		\begin{itemize}
@@ -358,8 +386,8 @@ Per lavorare sulla pila si usano le istruzioni:
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline 
-				Memoria & \texttt{POPW 0x02AB2000} \\ 
-				Registro Generale & \texttt{POP \%BX}
+				Memoria & \lstinline|POPW 0x02AB2000| \\ 
+				Registro Generale & \lstinline|POP \%BX|
 			\end{tabular}
 		\end{table}
 
@@ -369,7 +397,7 @@ Per lavorare sulla pila si usano le istruzioni:
 \textsf{\textbf{Dati temporanei nella pila}} \\
 Solitamente la pila viene usata per memorizzare dati temporanei, visto che i registri sono pochi e spesso hanno scopi diversi in momenti diversi. Ad esempio:
 
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 # sto usando %EAX, mi serve un dato da una porta
 PUSH %EAX
 IN 0x001A, %AL
@@ -379,14 +407,14 @@ POP %EAX # ritorno da dove ero
 
 \subsubsection{PUSHAD}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{PUSHAD}
+	\item \textbf{Formato:} \lstinline|PUSHAD|
 	\item \textbf{Azione:}: salva nella pila corrente una copia degli 8 registri generali a 32 bit, nell'ordine: EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI.
 	\item \textbf{Flag:} nessuno.
 \end{itemize}
 
 \subsubsection{POPAD}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{POPAD}
+	\item \textbf{Formato:} \lstinline|POPAD|
 	\item \textbf{Azione:}: copia dalla pila corrente gli 8 registri generali a 32 bit, nell'ordine: EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI. 
 	\item \textbf{Flag:} nessuno.
 \end{itemize}
@@ -406,7 +434,7 @@ Vediamo quindi le operazioni aritmetiche:
 
 \subsubsection{ADD}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{ADD source, destination}
+	\item \textbf{Formato:} \lstinline|ADD source, destination|
 	\item \textbf{Azione:} modifica l'operando destinatario sommandovi l'operando sorgente.
 		Il risultato è consistente sia che si interpretino i numeri come naturali, che come interi.
 	\item \textbf{Flag:} attiva CF se, interpretando i numeri come naturali, si è verificato un riporto; attiva OF se, interpretando gli operandi come interi, si è verificato un traboccamento.
@@ -418,11 +446,11 @@ Vediamo quindi le operazioni aritmetiche:
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria, Registro Generale & \texttt{ADD 0x00002000, \%EDX} \\ 
-				Registro Generale, Memoria & \texttt{ADD \%CL, 0x12AB1024} \\ 
-				Registro Generale, Registro Generale & \texttt{ADD \%AX, \%DX} \\ 
-				Immediato, Memoria & \texttt{ADDB \$0x5B, (\%EDI)} \\ 
-				Immediato, Registro Generale & \texttt{ADD \$0x54A3, \%AX}
+				Memoria, Registro Generale & \lstinline|ADD 0x00002000, \%EDX| \\ 
+				Registro Generale, Memoria & \lstinline|ADD \%CL, 0x12AB1024| \\ 
+				Registro Generale, Registro Generale & \lstinline|ADD \%AX, \%DX| \\ 
+				Immediato, Memoria & \lstinline|ADDB \$0x5B, (\%EDI)| \\ 
+				Immediato, Registro Generale & \lstinline|ADD \$0x54A3, \%AX|
 			\end{tabular}
 		\end{table}
 
@@ -450,8 +478,8 @@ Il ZF viene poi impostato se il risultato è fatto da tutti zeri, e il SF viene 
 
 \subsubsection{INCREMENT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{INC destination}
-	\item \textbf{Azione:} equivale all'istruzione \texttt{ADD \$1, destination}. 
+	\item \textbf{Formato:} \lstinline|INC destination|
+	\item \textbf{Azione:} equivale all'istruzione \lstinline|ADD \$1, destination|. 
 	\item \textbf{Flag:} modifica tutti i flag di ADD tranne CF (il riporto).
 \end{itemize}
 
@@ -460,8 +488,8 @@ Il ZF viene poi impostato se il risultato è fatto da tutti zeri, e il SF viene 
 			\begin{tabular} { c | c }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline 
-				Memoria & \texttt{INCB (\%ESI)} \\
-				Registro Generale & \texttt{INC \%CX}
+				Memoria & \lstinline|INCB (\%ESI)| \\
+				Registro Generale & \lstinline|INC \%CX|
 			\end{tabular}
 		\end{table}
 
@@ -470,7 +498,7 @@ Questo deriva dal fatto che la circuiteria che implementava l'incremento era pi�
 
 \subsubsection{SUBTRACT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{SUB source, destination}
+	\item \textbf{Formato:} \lstinline|SUB source, destination|
 	\item \textbf{Azione:} modifica l'operando destinatario sottraendovi l'operando sorgente. 
 		Il risultato è consistente sia che si interpretino i numeri come naturali, che come interi.
 	\item \textbf{Flag:} attiva CF se, interpretando i numeri come naturali, si è verificato un riporto; attiva OF se, interpretando gli operandi come interi, si è verificato un traboccamento.
@@ -481,11 +509,11 @@ Questo deriva dal fatto che la circuiteria che implementava l'incremento era pi�
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria, Registro Generale & \texttt{SUB 0x00002000, \%EDX} \\ 
-				Registro Generale, Memoria & \texttt{SUB \%CL, 0x12AB1024} \\ 
-				Registro Generale, Registro Generale & \texttt{SUB \%AX, \%DX} \\ 
-				Immediato, Memoria & \texttt{SUBB \$0x5B, (\%EDI)} \\ 
-				Immediato, Registro Generale & \texttt{SUB \$0x54A3, \%AX}
+				Memoria, Registro Generale & \lstinline|SUB 0x00002000, \%EDX| \\ 
+				Registro Generale, Memoria & \lstinline|SUB \%CL, 0x12AB1024| \\ 
+				Registro Generale, Registro Generale & \lstinline|SUB \%AX, \%DX| \\ 
+				Immediato, Memoria & \lstinline|SUBB \$0x5B, (\%EDI)| \\ 
+				Immediato, Registro Generale & \lstinline|SUB \$0x54A3, \%AX|
 			\end{tabular}
 		\end{table}
 
@@ -511,8 +539,8 @@ Il ZF e il SF vengono attivati secondo le regole già note.
 
 \subsubsection{DECREMENT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{DEC destination}
-	\item \textbf{Azione:} equivale all'istruzione \texttt{SUB \$1, destination}. 
+	\item \textbf{Formato:} \lstinline|DEC destination|
+	\item \textbf{Azione:} equivale all'istruzione \lstinline|SUB \$1, destination|. 
 	\item \textbf{Flag:} modifica tutti i flag di SUBTRACT tranne CF (il prestito).
 \end{itemize}
 
@@ -521,14 +549,14 @@ Il ZF e il SF vengono attivati secondo le regole già note.
 			\begin{tabular} { c | c }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline 
-				Memoria & \texttt{DECB (\%EDI)} \\
-				Registro Generale & \texttt{DEC \%CX}
+				Memoria & \lstinline|DECB (\%EDI)| \\
+				Registro Generale & \lstinline|DEC \%CX|
 			\end{tabular}
 		\end{table}
 
 \subsubsection{ADD WITH CARRY}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{ADC source, destination}
+	\item \textbf{Formato:} \lstinline|ADC source, destination|
 	\item \textbf{Azione:} modifica l'operando destinatario sommandovi sia l'operando sorgente sia il contenuto del flag CF.
 	\item \textbf{Flag:} modifica tutti i flag come ADD. 
 \end{itemize}
@@ -538,11 +566,11 @@ Il ZF e il SF vengono attivati secondo le regole già note.
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria, Registro Generale & \texttt{ADC 0x00002000, \%EDX} \\ 
-				Registro Generale, Memoria & \texttt{ADC \%CL, 0x12AB1024} \\ 
-				Registro Generale, Registro Generale & \texttt{ADC \%AX, \%DX} \\ 
-				Immediato, Memoria & \texttt{ADCB \$0x5B, (\%EDI)} \\ 
-				Immediato, Registro Generale & \texttt{ADC \$0x54A3, \%AX}
+				Memoria, Registro Generale & \lstinline|ADC 0x00002000, \%EDX| \\ 
+				Registro Generale, Memoria & \lstinline|ADC \%CL, 0x12AB1024| \\ 
+				Registro Generale, Registro Generale & \lstinline|ADC \%AX, \%DX| \\ 
+				Immediato, Memoria & \lstinline|ADCB \$0x5B, (\%EDI)| \\ 
+				Immediato, Registro Generale & \lstinline|ADC \$0x54A3, \%AX|
 			\end{tabular}
 		\end{table}
 
@@ -555,7 +583,7 @@ In questo caso si:
 
 \subsubsection{SUBTRACT WITH BORROW}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{SBB source, destination}
+	\item \textbf{Formato:} \lstinline|SBB source, destination|
 	\item \textbf{Azione:} modifica l'operando destinatario sottraendovi sia l'operando sorgente sia il contenuto del flag CF.
 	\item \textbf{Flag:} modifica tutti i flag come SUBTRACT. 
 \end{itemize}
@@ -565,11 +593,11 @@ In questo caso si:
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria, Registro Generale & \texttt{SBB 0x00002000, \%EDX} \\ 
-				Registro Generale, Memoria & \texttt{SBB \%CL, 0x12AB1024} \\ 
-				Registro Generale, Registro Generale & \texttt{SBB \%AX, \%DX} \\ 
-				Immediato, Memoria & \texttt{SBBB \$0x255B, (\%EDI)} \\ 
-				Immediato, Registro Generale & \texttt{SBB \$0x54A3, \%AX}
+				Memoria, Registro Generale & \lstinline|SBB 0x00002000, \%EDX| \\ 
+				Registro Generale, Memoria & \lstinline|SBB \%CL, 0x12AB1024| \\ 
+				Registro Generale, Registro Generale & \lstinline|SBB \%AX, \%DX| \\ 
+				Immediato, Memoria & \lstinline|SBBB \$0x255B, (\%EDI)| \\ 
+				Immediato, Registro Generale & \lstinline|SBB \$0x54A3, \%AX|
 			\end{tabular}
 		\end{table}
 
@@ -577,7 +605,7 @@ Come ormai dovrebbe essere chiaro, è la duale dell'ADC, e si usa per effettuare
 
 \subsubsection{NEGATE}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{NEG destination}
+	\item \textbf{Formato:} \lstinline|NEG destination|
 	\item \textbf{Azione:} interpreta l'operando destinatario come un numero intero e lo sostituisce con il suo opposto in complemento a 2. 
 	\item \textbf{Flag:} quando l'operazione non è possibile (l'intervallo di rappresentabilità degli interi in complemento a 2 non è simmetrico) imposta il flag OF.
 		Imposta inoltre il flag CF quando l'operando è diverso da zero, e tutti gli altri flag in base a nullità e segno del risultato. 
@@ -588,8 +616,8 @@ Come ormai dovrebbe essere chiaro, è la duale dell'ADC, e si usa per effettuare
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria & \texttt{NEGB (\%EDI)} \\ 
-				Registro Generale & \texttt{NEG \%CX}
+				Memoria & \lstinline|NEGB (\%EDI)| \\ 
+				Registro Generale & \lstinline|NEG \%CX|
 			\end{tabular}
 		\end{table}
 
@@ -606,7 +634,7 @@ Si ricordi che questo ha senso \textit{solamente} se il numero è rappresentato 
 
 \subsubsection{COMPARE}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{CMP source, destination}
+	\item \textbf{Formato:} \lstinline|CMP source, destination|
 	\item \textbf{Azione:} verifica se l'operando destinatario è maggiore, uguale o minore dell'operando sorgente, sia interpretando gli operandi come naturali che come interi, e aggiorna i flag di conseguenza.
 		Più propriamente, la compare si comporta come la SUB, ma senza sovrascrivere nessuno degli operandi.
 	\item \textbf{Flag:} come la SUB. 
@@ -618,17 +646,17 @@ Si ricordi che questo ha senso \textit{solamente} se il numero è rappresentato 
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria, Registro Generale & \texttt{CMP 0x00002000, \%EDX} \\ 
-				Registro Generale, Memoria & \texttt{CMP \%CL, 0x12AB1024} \\ 
-				Registro Generale, Registro Generale & \texttt{CMP \%AX, \%DX} \\ 
-				Immediato, Memoria & \texttt{CMPB \$0x255B, (\%EDI)} \\ 
-				Immediato, Registro Generale & \texttt{CMP \$0x54A3, \%AX}
+				Memoria, Registro Generale & \lstinline|CMP 0x00002000, \%EDX| \\ 
+				Registro Generale, Memoria & \lstinline|CMP \%CL, 0x12AB1024| \\ 
+				Registro Generale, Registro Generale & \lstinline|CMP \%AX, \%DX| \\ 
+				Immediato, Memoria & \lstinline|CMPB \$0x255B, (\%EDI)| \\ 
+				Immediato, Registro Generale & \lstinline|CMP \$0x54A3, \%AX|
 			\end{tabular}
 		\end{table}
 
 \subsubsection{Funzionamento della COMPARE}
 Solitamente la CMP si usa nei salti condizionati come:
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 CMP %AX, %BX
 JCOND # salto condizionato
 \end{lstlisting}
@@ -650,7 +678,7 @@ In altre parole, il numero di bit necessari a memorizzare il risultato non è pi
 
 \subsubsection{MULTIPLY}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{MUL source}
+	\item \textbf{Formato:} \lstinline|MUL source|
 	\item \textbf{Azione:} considera l'operando sorgente come un moltiplicando, l'operando destinatario (implicito) come un moltiplicatore, e effettua la moltiplicazione assumendo i numeri naturali. Nello specifico:
 	\begin{itemize}
 		\item Sorgente a 8 bit, si ha $\text{AX} = \text{AL} \times \text{source}$;
@@ -665,14 +693,14 @@ In altre parole, il numero di bit necessari a memorizzare il risultato non è pi
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria & \texttt{MULB (\%ESI)} \\ 
-				Registro Generale & \texttt{MUL \%ECX}
+				Memoria & \lstinline|MULB (\%ESI)| \\ 
+				Registro Generale & \lstinline|MUL \%ECX|
 			\end{tabular}
 		\end{table}
 
 \subsubsection{INTEGER MULTIPLY}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{MUL source}
+	\item \textbf{Formato:} \lstinline|MUL source|
 	\item \textbf{Azione:} considera l'operando sorgente come un moltiplicando, l'operando destinatario (implicito) come un moltiplicatore, e effettua la moltiplicazione assumendo i numeri interi. Nello specifico:
 	\begin{itemize}
 		\item Sorgente a 8 bit, si ha $\text{AX} = \text{AL} \times \text{source}$;
@@ -687,8 +715,8 @@ In altre parole, il numero di bit necessari a memorizzare il risultato non è pi
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria & \texttt{IMULB (\%ESI)} \\ 
-				Registro Generale & \texttt{IMUL \%ECX}
+				Memoria & \lstinline|IMULB (\%ESI)| \\ 
+				Registro Generale & \lstinline|IMUL \%ECX|
 			\end{tabular}
 		\end{table}
 
@@ -707,7 +735,7 @@ Di preciso, abbiamo visto i 3 tipi di moltiplicazione concessi:
 La differenza fra le prime due operazioni e l'ultima, in particolare con sorgente a 16 bit, che usa una due registri da 16 bit separati, ha principalmente motivi storici (il registro EAX è stato introdotto dopo).
 
 Si può rimettere il valore dai due registri a 16 bit in un registro a 32 bit attraverso la pila:
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 PUSH \%DX
 PUSH \%AX
 POP \%EAX

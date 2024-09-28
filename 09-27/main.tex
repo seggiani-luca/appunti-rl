@@ -78,6 +78,11 @@
 \usepackage{listings}
 \usepackage[table]{xcolor}
 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
 \lstdefinestyle{codestyle}{
 		backgroundcolor=\color{black!5}, 
 		commentstyle=\color{codegreen},
@@ -112,20 +117,43 @@
 		breaklines=true
 }
 
-\lstdefinelanguage{javascript}{
-	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
-	keywordstyle=\color{blue}\bfseries,
-	ndkeywords={class, export, boolean, throw, implements, import, this},
-	ndkeywordstyle=\color{darkgray}\bfseries,
-	identifierstyle=\color{black},
-	sensitive=false,
-	comment=[l]{//},
-	morecomment=[s]{/*}{*/},
-	commentstyle=\color{purple}\ttfamily,
-	stringstyle=\color{red}\ttfamily,
-	morestring=[b]',
-	morestring=[b]"
+
+\lstdefinelanguage{assembler}{
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPA, POPAD, POPF, POPFD, PUSH, PUSHA, PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW,
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
 }
+
+\lstset{language=assembler, style=codestyle}
 
 % disponi sezioni
 \usepackage{titlesec}
@@ -205,7 +233,7 @@ Bisogna fare attenzione in quanto questo non è sempre il caso.
 
 \subsubsection{DIVIDE}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{DIV source}
+	\item \textbf{Formato:} \lstinline|DIV source|
 	\item \textbf{Azione:} considera l'operando sorgente come un divisore, l'operando destinatario (implicito) come un dividendo, e effettua la divisione assumendo i numeri naturali. Nello specifico:
 	\begin{itemize}
 	\item Sorgente a 8 bit, si ha $\text{AL} = \text{AX} \div \text{source}$, e $ \text{AH} = \text{AX} \mod \text{source} $;
@@ -222,8 +250,8 @@ Bisogna fare attenzione in quanto questo non è sempre il caso.
 			\begin{tabular} { c | p{10cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria & \texttt{DIVB (\%ESI)	\# AX destinazione implicita} \\ 
-				Registro Generale & \texttt{DIV \%ECX	\# EDX\_EAX destinazione implicita}
+				Memoria & \lstinline!DIVB (\%ESI)	\# AX destinazione implicita! \\ 
+				Registro Generale & \lstinline|DIV \%ECX	\# EDX\_EAX destinazione implicita|
 			\end{tabular}
 		\end{table}
 
@@ -232,7 +260,7 @@ Negli esempi, le destinazioni quoziente resto sono rispettivamente AL e AH, EAX 
 
 \subsubsection{INTEGER DIVIDE}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{MUL source}
+	\item \textbf{Formato:} \lstinline|MUL source|
 	\item \textbf{Azione:} considera l'operando sorgente come un divisore, l'operando destinatario (implicito) come un dividendo, e effettua la divisione assumendo i numeri interi. Nello specifico:
 	\begin{itemize}
 	\item Sorgente a 8 bit, si ha $\text{AL} = \text{AX} / \text{source}$, e $ \text{AH} = \text{AX} \mod \text{source} $;
@@ -247,8 +275,8 @@ Negli esempi, le destinazioni quoziente resto sono rispettivamente AL e AH, EAX 
 			\begin{tabular} { c | p{10cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria & \texttt{IDIVB (\%ESI)	\# AX destinazione implicita} \\ 
-				Registro Generale & \texttt{IDIV \%ECX	\# EDX\_EAX destinazione implicita}
+				Memoria & \lstinline|IDIVB (\%ESI)	\# AX destinazione implicita| \\ 
+				Registro Generale & \lstinline|IDIV \%ECX	\# EDX\_EAX destinazione implicita|
 			\end{tabular}
 		\end{table}
 
@@ -284,14 +312,14 @@ Se il quoziente non sta nel numero di bit previsto, viene sollevata un'eccezione
 Bisogna quindi decidere quali versioni usare tenendo conto delle dimensioni dei possibili quoziente.
 Questo è importante in quanto non è cosi raro avere divisioni dove il quoziente non sta nella metà dei bit del dividendo, ad esempio:
 
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 MOV $3, %CL
 MOV $15000, %AX
 DIV %CL	# come metto 5000 su una locazione da 8 bit?
 \end{lstlisting}
 
 per risolvere il problema, dobbiamo costringere il processore ad usare un altro tipo di divisione, quindi:
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 MOV $3, %CX
 MOV $15000, %AX
 MOV $0, %DX	# devo ripulire DX, verra' usato il dividendo DX_AX 
@@ -313,20 +341,20 @@ In questo caso si estende con il bit più significativo (quello di segno).
 
 \subsubsection{CONVERT BYTE TO WORD}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{CBX}
+	\item \textbf{Formato:} \lstinline|CBX|
 	\item \textbf{Azione:} interpreta il contenuto di AL come un numero intero a 8 bit, la rappresenta su 16 bit e quindi lo memorizza in AX.
 	\item \textbf{Flag:} nessuno.
 \end{itemize}
 
 \subsubsection{CONVERT WORD TO DOUBLEWORD}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{CWDE}
+	\item \textbf{Formato:} \lstinline|CWDE|
 	\item \textbf{Azione:} interpreta il contenuto di AX come un numero intero a 16 bit, la rappresenta su 32 bit e quindi lo memorizza in EAX.
 	\item \textbf{Flag:} nessuno.
 \end{itemize}
 
 Poniamo ad esempio di voler sommare due interi, uno in AX e l'altro in EBX:
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 MOV $-5, %AX
 MOV $100000, $EBX
 CWDE
@@ -335,7 +363,7 @@ ADD %EAX, %EBX
 
 \subsection{Istruzioni di traslazione e rotazione}
 Queste istruzioni variano l'ordine dei bit in un operando destinatario.
-Hanno due formati: \texttt{OCPODE source, destination} o \texttt{OPCODE destination}.
+Hanno due formati: \lstinline|OCPODE source, destination| o \lstinline|OPCODE destination|.
 
 Quando si specifica un sorgente, esso rappresenta il numero di iterazioni per cui si ripete l'operazione.
 Il sorgente può essere ad indirizzamento immediato o essere il registro CL.
@@ -344,7 +372,7 @@ Quando è omesso, il sorgente vale di default 1.
 
 \subsubsection{SHIFT LOGICAL LEFT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{SHL source, destination}
+	\item \textbf{Formato:} \lstinline|SHL source, destination|
 	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni:
 		\begin{itemize}
 			\item Sostituisce il bit in CF con il MSB;
@@ -359,12 +387,12 @@ Quando è omesso, il sorgente vale di default 1.
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Immediato, Registro Generale & \texttt{SHL \$1, \%EAX} \\
-				Immediato, Memoria & \texttt{SHLB \$7, 0x00002000} \\
-				Registro CL, Registro Generale & \texttt{SHL \%CL, \%EAX} \\
-				Registro CL, Memoria & \texttt{SHLL \%CL, (\%EDI)} \\
-				Memoria & \texttt{SHLL (\%EDI)} \\ 
-				Registro Generale & \texttt{SHL \%AX}
+				Immediato, Registro Generale & \lstinline|SHL \$1, \%EAX| \\
+				Immediato, Memoria & \lstinline|SHLB \$7, 0x00002000| \\
+				Registro CL, Registro Generale & \lstinline|SHL \%CL, \%EAX| \\
+				Registro CL, Memoria & \lstinline|SHLL \%CL, (\%EDI)| \\
+				Memoria & \lstinline|SHLL (\%EDI)| \\ 
+				Registro Generale & \lstinline|SHL \%AX|
 			\end{tabular}
 		\end{table}
 
@@ -375,7 +403,7 @@ Ergo, se la moltiplicazione fallisce, non sappiamo \textit{quando} fallisce.
 
 \subsubsection{SHIFT ARITHMETIC LEFT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{SAL source, destination}
+	\item \textbf{Formato:} \lstinline|SAL source, destination|
 	\item \textbf{Azione:} è identica alla SHL. 
 		Quindi equivale a moltiplicare per $2^\text{source}$.
 	\item \textbf{Flag:} nessuno.
@@ -385,7 +413,7 @@ Esiste come duale della SAR, ma in questo caso non deve fare nulla di diverso da
 
 \subsubsection{SHIFT LOGICAL RIGHT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{SHR source, destination}
+	\item \textbf{Formato:} \lstinline|SHR source, destination|
 	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni:
 		\begin{itemize}
 			\item Sostituisce il bit in CF con il LSB;
@@ -400,12 +428,12 @@ Esiste come duale della SAR, ma in questo caso non deve fare nulla di diverso da
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Immediato, Registro Generale & \texttt{SHR \$1, \%EAX} \\
-				Immediato, Memoria & \texttt{SHRB \$7, 0x00002000} \\
-				Registro CL, Registro Generale & \texttt{SHR \%CL, \%EAX} \\
-				Registro CL, Memoria & \texttt{SHRL \%CL, (\%EDI)} \\
-				Memoria & \texttt{SHRL (\%EDI)} \\ 
-				Registro Generale & \texttt{SHR \%AX}
+				Immediato, Registro Generale & \lstinline|SHR \$1, \%EAX| \\
+				Immediato, Memoria & \lstinline|SHRB \$7, 0x00002000| \\
+				Registro CL, Registro Generale & \lstinline|SHR \%CL, \%EAX| \\
+				Registro CL, Memoria & \lstinline|SHRL \%CL, (\%EDI)| \\
+				Memoria & \lstinline|SHRL (\%EDI)| \\ 
+				Registro Generale & \lstinline|SHR \%AX|
 			\end{tabular}
 		\end{table}
 
@@ -414,7 +442,7 @@ Per questo motivo si definisce la:
 
 \subsubsection{SHIFT ARITHMETIC RIGHT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{SAR source, destination}
+	\item \textbf{Formato:} \lstinline|SAR source, destination|
 	\item \textbf{Azione:} è identica alla SHR, ma non sostituisce il MSB con 0, lasciandolo tale.
 		Questo equivale a dividere per $2^\text{source}$.
 	\item \textbf{Flag:} nessuno.
@@ -431,7 +459,7 @@ Le istruzioni di rotazione ruotano i bit, cioè effettuano uno shift con rientro
 
 \subsubsection{ROTATE LEFT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{ROL source, destination}
+	\item \textbf{Formato:} \lstinline|ROL source, destination|
 	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni ruota verso sinistra senza usare il carry.
 	\item \textbf{Flag:} nessuno.
 \end{itemize}
@@ -441,18 +469,18 @@ Le istruzioni di rotazione ruotano i bit, cioè effettuano uno shift con rientro
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Immediato, Registro Generale & \texttt{ROL \$1, \%EAX} \\
-				Immediato, Memoria & \texttt{ROLB \$7, 0x00002000} \\
-				Registro CL, Registro Generale & \texttt{ROL \%CL, \%EAX} \\
-				Registro CL, Memoria & \texttt{ROLL \%CL, (\%EDI)} \\
-				Memoria & \texttt{ROLL (\%EDI)} \\ 
-				Registro Generale & \texttt{ROL \%AX}
+				Immediato, Registro Generale & \lstinline|ROL \$1, \%EAX| \\
+				Immediato, Memoria & \lstinline|ROLB \$7, 0x00002000| \\
+				Registro CL, Registro Generale & \lstinline|ROL \%CL, \%EAX| \\
+				Registro CL, Memoria & \lstinline|ROLL \%CL, (\%EDI)| \\
+				Memoria & \lstinline|ROLL (\%EDI)| \\ 
+				Registro Generale & \lstinline|ROL \%AX|
 			\end{tabular}
 		\end{table}
 
 \subsubsection{ROTATE RIGHT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{ROR source, destination}
+	\item \textbf{Formato:} \lstinline|ROR source, destination|
 	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni ruota verso destra senza usare il carry.
 	\item \textbf{Flag:} nessuno.
 \end{itemize}
@@ -462,18 +490,18 @@ Le istruzioni di rotazione ruotano i bit, cioè effettuano uno shift con rientro
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Immediato, Registro Generale & \texttt{ROR \$1, \%EAX} \\
-				Immediato, Memoria & \texttt{RORB \$7, 0x00002000} \\
-				Registro CL, Registro Generale & \texttt{ROR \%CL, \%EAX} \\
-				Registro CL, Memoria & \texttt{RORL \%CL, (\%EDI)} \\
-				Memoria & \texttt{RORL (\%EDI)} \\ 
-				Registro Generale & \texttt{ROR \%AX}
+				Immediato, Registro Generale & \lstinline|ROR \$1, \%EAX| \\
+				Immediato, Memoria & \lstinline|RORB \$7, 0x00002000| \\
+				Registro CL, Registro Generale & \lstinline|ROR \%CL, \%EAX| \\
+				Registro CL, Memoria & \lstinline|RORL \%CL, (\%EDI)| \\
+				Memoria & \lstinline|RORL (\%EDI)| \\ 
+				Registro Generale & \lstinline|ROR \%AX|
 			\end{tabular}
 		\end{table}
 
 \subsubsection{ROTATE CARRY LEFT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{RCL source, destination}
+	\item \textbf{Formato:} \lstinline|RCL source, destination|
 	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni ruota verso sinistra usando il carry.
 	\item \textbf{Flag:} imposta il carry assumendolo a sinistra del MSB.
 \end{itemize}
@@ -483,18 +511,18 @@ Le istruzioni di rotazione ruotano i bit, cioè effettuano uno shift con rientro
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Immediato, Registro Generale & \texttt{RCL \$1, \%EAX} \\
-				Immediato, Memoria & \texttt{RCLB \$7, 0x00002000} \\
-				Registro CL, Registro Generale & \texttt{RCL \%CL, \%EAX} \\
-				Registro CL, Memoria & \texttt{RCLL \%CL, (\%EDI)} \\
-				Memoria & \texttt{RCLL (\%EDI)} \\ 
-				Registro Generale & \texttt{RCL \%AX}
+				Immediato, Registro Generale & \lstinline|RCL \$1, \%EAX| \\
+				Immediato, Memoria & \lstinline|RCLB \$7, 0x00002000| \\
+				Registro CL, Registro Generale & \lstinline|RCL \%CL, \%EAX| \\
+				Registro CL, Memoria & \lstinline|RCLL \%CL, (\%EDI)| \\
+				Memoria & \lstinline|RCLL (\%EDI)| \\ 
+				Registro Generale & \lstinline|RCL \%AX|
 			\end{tabular}
 		\end{table}
 
 \subsubsection{ROTATE CARRY RIGHT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{RCR source, destination}
+	\item \textbf{Formato:} \lstinline|RCR source, destination|
 	\item \textbf{Azione:} interpreta l'operando sorgente come un naturale $n$, e per $n$ iterazioni ruota verso destra usando il carry.
 	\item \textbf{Flag:} imposta il carry assumendolo a destra del LSB.
 \end{itemize}
@@ -504,12 +532,12 @@ Le istruzioni di rotazione ruotano i bit, cioè effettuano uno shift con rientro
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Immediato, Registro Generale & \texttt{RCR \$1, \%EAX} \\
-				Immediato, Memoria & \texttt{RCRB \$7, 0x00002000} \\
-				Registro CL, Registro Generale & \texttt{RCR \%CL, \%EAX} \\
-				Registro CL, Memoria & \texttt{RCRL \%CL, (\%EDI)} \\
-				Memoria & \texttt{RCRL (\%EDI)} \\ 
-				Registro Generale & \texttt{RCR \%AX}
+				Immediato, Registro Generale & \lstinline|RCR \$1, \%EAX| \\
+				Immediato, Memoria & \lstinline|RCRB \$7, 0x00002000| \\
+				Registro CL, Registro Generale & \lstinline|RCR \%CL, \%EAX| \\
+				Registro CL, Memoria & \lstinline|RCRL \%CL, (\%EDI)| \\
+				Memoria & \lstinline|RCRL (\%EDI)| \\ 
+				Registro Generale & \lstinline|RCR \%AX|
 			\end{tabular}
 		\end{table}
 
@@ -518,7 +546,7 @@ Queste istruzioni applicano gli operatori dell'algebra di Boole, e solitamente m
 
 \subsubsection{NOT}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{NOT destination}
+	\item \textbf{Formato:} \lstinline|NOT destination|
 	\item \textbf{Azione:} modifica il destinatario applicandogli il NOT bit a bit. 
 	\item \textbf{Flag:} nessuno. 
 \end{itemize}
@@ -528,14 +556,14 @@ Queste istruzioni applicano gli operatori dell'algebra di Boole, e solitamente m
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria & \texttt{NOTL (\%ESI)} \\ 
-				Registro Generale & \texttt{NOT \%CX} 
+				Memoria & \lstinline|NOTL (\%ESI)| \\ 
+				Registro Generale & \lstinline|NOT \%CX| 
 			\end{tabular}
 		\end{table}
 
 \subsubsection{AND}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{AND source, destination}
+	\item \textbf{Formato:} \lstinline|AND source, destination|
 	\item \textbf{Azione:} modifica il destinatario applicando l'AND bit a bit degli operandi. 
 	\item \textbf{Flag:} modifica tutti i flag (annulla CF e OF).
 \end{itemize}
@@ -545,17 +573,17 @@ Queste istruzioni applicano gli operatori dell'algebra di Boole, e solitamente m
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria, Registro Generale & \texttt{AND 0x00002000, \%EDX} \\ 
-				Registro Generale, Memoria & \texttt{AND \%CL, 0x12AB1024} \\ 
-				Registro Generale, Registro Generale & \texttt{AND \%AX, \%DX} \\ 
-				Immediato, Memoria & \texttt{AND 5x5B, (\%EDI)} \\ 
-				Immediato, Registro Generale & \texttt{AND \$0x45AB54A3, \%EAX}
+				Memoria, Registro Generale & \lstinline|AND 0x00002000, \%EDX| \\ 
+				Registro Generale, Memoria & \lstinline|AND \%CL, 0x12AB1024| \\ 
+				Registro Generale, Registro Generale & \lstinline|AND \%AX, \%DX| \\ 
+				Immediato, Memoria & \lstinline|AND 5x5B, (\%EDI)| \\ 
+				Immediato, Registro Generale & \lstinline|AND \$0x45AB54A3, \%EAX|
 			\end{tabular}
 		\end{table}
 
 \subsubsection{OR}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{OR source, destination}
+	\item \textbf{Formato:} \lstinline|OR source, destination|
 	\item \textbf{Azione:} modifica il destinatario applicando l'OR bit a bit degli operandi. 
 	\item \textbf{Flag:} modifica tutti i flag (annulla CF e OF).
 \end{itemize}
@@ -565,17 +593,17 @@ Queste istruzioni applicano gli operatori dell'algebra di Boole, e solitamente m
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria, Registro Generale & \texttt{OR 0x00002000, \%EDX} \\ 
-				Registro Generale, Memoria & \texttt{OR \%CL, 0x12AB1024} \\ 
-				Registro Generale, Registro Generale & \texttt{OR \%AX, \%DX} \\ 
-				Immediato, Memoria & \texttt{OR 5x5B, (\%EDI)} \\ 
-				Immediato, Registro Generale & \texttt{OR \$0x45AB54A3, \%EAX}
+				Memoria, Registro Generale & \lstinline|OR 0x00002000, \%EDX| \\ 
+				Registro Generale, Memoria & \lstinline|OR \%CL, 0x12AB1024| \\ 
+				Registro Generale, Registro Generale & \lstinline|OR \%AX, \%DX| \\ 
+				Immediato, Memoria & \lstinline|OR 5x5B, (\%EDI)| \\ 
+				Immediato, Registro Generale & \lstinline|OR \$0x45AB54A3, \%EAX|
 			\end{tabular}
 		\end{table}
 
 \subsubsection{XOR}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{XOR source, destination}
+	\item \textbf{Formato:} \lstinline|XOR source, destination|
 	\item \textbf{Azione:} modifica il destinatario applicando l'OR bit a bit degli operandi. 
 	\item \textbf{Flag:} modifica tutti i flag (annulla CF e OF).
 \end{itemize}
@@ -585,11 +613,11 @@ Queste istruzioni applicano gli operatori dell'algebra di Boole, e solitamente m
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
 				\hline
-				Memoria, Registro Generale & \texttt{XOR 0x00002000, \%EDX} \\ 
-				Registro Generale, Memoria & \texttt{XOR \%CL, 0x12AB1024} \\ 
-				Registro Generale, Registro Generale & \texttt{XOR \%AX, \%DX} \\ 
-				Immediato, Memoria & \texttt{XOR 5x5B, (\%EDI)} \\ 
-				Immediato, Registro Generale & \texttt{XOR \$0x45AB54A3, \%EAX}
+				Memoria, Registro Generale & \lstinline|XOR 0x00002000, \%EDX| \\ 
+				Registro Generale, Memoria & \lstinline|XOR \%CL, 0x12AB1024| \\ 
+				Registro Generale, Registro Generale & \lstinline|XOR \%AX, \%DX| \\ 
+				Immediato, Memoria & \lstinline|XOR 5x5B, (\%EDI)| \\ 
+				Immediato, Registro Generale & \lstinline|XOR \$0x45AB54A3, \%EAX|
 			\end{tabular}
 		\end{table}
 
@@ -601,18 +629,18 @@ Nello specifico:
 		\begin{itemize}
 			\item si usa per testare singoli bit di un operando.
 			Ad esempio, si può implementare un salto condizionale se il quinto bit di AL vale zero:
-			\begin{lstlisting}[style=codestyle]	
+			\begin{lstlisting}[language=assembler,style=codestyle]	
 AND $0x20, %AL	# 0x20 = 00100000
 JZ # vale zero
 \end{lstlisting} 
 			\item si usa per resettare singoli bit di un operando.
 			Ad esempio, si può resettare il sesto bit di BH:
-			\begin{lstlisting}[style=codestyle]	
+			\begin{lstlisting}[language=assembler,style=codestyle]	
 AND $0xBF, $BH	# 0xBF = 10111111
 \end{lstlisting}
 			\item si usa per l'estensione di operandi \textit{naturali}.
 				Ad esempio, si possono sommare due numeri naturali, di cui uno in AL e l'altro in EBX:
-				\begin{lstlisting}[style=codestyle]	
+				\begin{lstlisting}[language=assembler,style=codestyle]	
 MOV $5, $AL
 MOV $100000, %EBX
 AND $0x000000FF, $EAX
@@ -621,19 +649,19 @@ ADD %EAX, %EBX
 		\end{itemize} 
 	\item \textbf{OR:} si usa per settare singoli bit di un operando.
 		Ad esempio, si può settare il quarto bit di CL:
-		\begin{lstlisting}[style=codestyle]	
+		\begin{lstlisting}[language=assembler,style=codestyle]	
 OR $0x10, %CL	# =x10 = 00010000
 \end{lstlisting}
 	\item \textbf{XOR:}
 		\begin{itemize}
 			\item si usa per invertire singoli bit.
 		Ad esempio, si può invertire il quinto bit del registro AH:
-		\begin{lstlisting}[style=codestyle]	
+		\begin{lstlisting}[language=assembler,style=codestyle]	
 XOR $0x20, %AH	# 0x20 = 00100000
 \end{lstlisting}
 	\item si usa per resettare registri.
 		Ad esempio, si può resettare EAX come:
-		\begin{lstlisting}[language, style=codestyle]	
+		\begin{lstlisting}[language=assembler,style=codestyle]	
 XOR %EAX, %EAX	# equivale a dire MOV $0, %EAX, ma occupa 
 								# 1 byte invece di 5
 \end{lstlisting}
@@ -652,7 +680,7 @@ Alcune istruzioni alterano il valore di EIP, implementando quindi alterazioni de
 
 \subsubsection{JUMP}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{JMP  \%EIP $\pm$ displacement}, \texttt{JMP *extended\_register}, \texttt{JMP *memory}
+	\item \textbf{Formato:} \lstinline|JMP  \%EIP $\pm$ displacement|, \lstinline|JMP *extended\_register|, \lstinline|JMP *memory|
 	\item \textbf{Azione:} calcola un'indrizzo di salto e lo immette nel registro EIP. 
 	\item \textbf{Flag:} nessuno. 
 \end{itemize}
@@ -661,9 +689,9 @@ Solitamente le istruzioni di salto si riferiscono ad un nome simbolico, ed è qu
 
 \subsubsection{JUMP if CONDITION MET}
 \begin{itemize}
-	\item \textbf{Formato:} \texttt{Jcon \%EIP $\pm$ displacement}
+	\item \textbf{Formato:} \lstinline|Jcon \%EIP $\pm$ displacement|
 	\item \textbf{Azione:} esamina il contenuto dei flag.
-		Se da questo esame risulta che la condizione \textit{con} è soddisfatta, si comporta come \texttt{JMP \%EIP $\pm$ displacement}, altrimenti non fa nulla.
+		Se da questo esame risulta che la condizione \textit{con} è soddisfatta, si comporta come \lstinline|JMP \%EIP $\pm$ displacement|, altrimenti non fa nulla.
 	\item \textbf{Flag:} nessuno. 
 \end{itemize}
 
@@ -693,7 +721,7 @@ Esistono le seguenti condizioni sui singoli flag:
 \textbf{\textsf{Esempi}} \\
 \begin{itemize}
 	\item 
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 ADD %AX, %BX
 JC ...
 # continua
@@ -701,7 +729,7 @@ JC ...
 Se la somma dei contenuti di AX e BX presi come naturali non è rappresentabile su 16 bit, salta.
 
 	\item 
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 ADD %AX, %BX
 JO ...
 # continua
@@ -709,7 +737,7 @@ JO ...
 Se la somma dei contenuti di AX e BX presi come interi non è rappresentabile su 16 bit, salta.
 
 	\item 
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 SUB %AL, %BL
 JS ...
 # continua
@@ -742,7 +770,7 @@ I risultati dei confronti possono sempre evincersi dai flag.
 \textbf{\textsf{Esempi}} \\
 \begin{itemize}
 	\item 
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 CMP %AX, %BX
 JAE ...
 # continua
@@ -750,7 +778,7 @@ JAE ...
 Se BX è maggiore o uguale di AX, presi come naturali, salta.
 
 	\item 
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 CMP %EDX, %ECX
 JB ...
 # continua
@@ -782,7 +810,7 @@ Come prima, queste operazioni seguono sempre una CMP ed evincono il risultato de
 \textbf{\textsf{Esempi}} \\
 \begin{itemize}
 	\item 
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 CMP %AX, %BX
 JGE ...
 # continua
@@ -790,7 +818,7 @@ JGE ...
 Se BX è maggiore o uguale di AX, presi come interi, salta.
 
 	\item 
-\begin{lstlisting}[style=codestyle]	
+\begin{lstlisting}[language=assembler,style=codestyle]	
 CMP %EDX, %ECX
 JL ...
 # continua

@@ -57,6 +57,11 @@
 \usepackage{listings}
 \usepackage[table]{xcolor}
 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
 \lstdefinestyle{codestyle}{
 		backgroundcolor=\color{black!5}, 
 		commentstyle=\color{codegreen},
@@ -91,20 +96,43 @@
 		breaklines=true
 }
 
-\lstdefinelanguage{javascript}{
-	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
-	keywordstyle=\color{blue}\bfseries,
-	ndkeywords={class, export, boolean, throw, implements, import, this},
-	ndkeywordstyle=\color{darkgray}\bfseries,
-	identifierstyle=\color{black},
-	sensitive=false,
-	comment=[l]{//},
-	morecomment=[s]{/*}{*/},
-	commentstyle=\color{purple}\ttfamily,
-	stringstyle=\color{red}\ttfamily,
-	morestring=[b]',
-	morestring=[b]"
+
+\lstdefinelanguage{assembler}{
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPA, POPAD, POPF, POPFD, PUSH, PUSHA, PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW,
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
 }
+
+\lstset{language=assembler, style=codestyle}
 
 % disponi sezioni
 \usepackage{titlesec}
@@ -182,11 +210,11 @@ Possiamo adottare 2 metodi per codificare le istruzioni eseguite dal processore:
 		\end{table}
 
 	\item \textbf{Codifica mnemonica:} un modo \textbf{simbolico} per riferirsi alle istruzioni.
-		Un'istruzione può quindi essere semplicemente: \texttt{MOV \%EAX, 0x01F4E39}.
+		Un'istruzione può quindi essere semplicemente: \lstinline|MOV \%EAX, 0x01F4E39|.
 \end{itemize}
 
 Il linguaggio assembler usa la codifica mnemonica delle istruzioni, e dispone di sovrastrutture sintattiche che lo rendono più comprensibile agli umani.
-Ad esempio, permette l'uso di nomi simbolici per locazioni di memoria: \texttt{MOV \%EAX, pippo}.
+Ad esempio, permette l'uso di nomi simbolici per locazioni di memoria: \lstinline|MOV \%EAX, pippo|.
 
 \subsubsection{Istruzioni in codifica mnemonica}
 Un'istruzione ha 3 campi:
@@ -199,8 +227,8 @@ Un'istruzione ha 3 campi:
 
 Il suffisso di lunghezza può essere omesso quando è chiaro (essenzialmente quando si usa un registro).
 
-Sintatticamente la struttura è \texttt{OPCODEsuffix source, dest}, che diventa qualcosa come \texttt{ADD \%BX, pluto}.
-Questa istruzione effettua l'operazione \texttt{ADD} (aggiungi), aggiungendo al registro \texttt{BX} ciò che è contenuto nel simbolo \texttt{pluto}.
+Sintatticamente la struttura è \lstinline|OPCODEsuffix source, dest|, che diventa qualcosa come \lstinline|ADD \%BX, pluto|.
+Questa istruzione effettua l'operazione \lstinline|ADD| (aggiungi), aggiungendo al registro \lstinline|BX| ciò che è contenuto nel simbolo \lstinline|pluto|.
 
 \par\medskip
 \noindent
@@ -211,7 +239,7 @@ Quando è 1, l'operando può essere sia sorgente che destinatario a seconda dell
 
 \subsubsection{Primo esempio di programma}
 
-Si presenta un programma per contare il numero di uno trovati dalla locazione \texttt{0x00000100} a \texttt{0x0000010i3}e scriverlo nella locazione \texttt{0x00000104}. 
+Si presenta un programma per contare il numero di uno trovati dalla locazione \lstinline|0x00000100| a \lstinline|0x0000010i3|e scriverlo nella locazione \lstinline|0x00000104|. 
 
 \begin{lstlisting}[style=codestyle]	
 MOVB $0x00, %CL					# sposta $0x00 in %CL
@@ -231,7 +259,7 @@ Il programma svolge i seguenti passi:
 \caption{Conta 0}
 \begin{algorithmic}
 	\STATE Inizializza il registro CL (Counter Low) a 0
-	\STATE Sposta i 32 bit da \texttt{0x00000000} a \texttt{0x00000103} in EAX
+	\STATE Sposta i 32 bit da \lstinline|0x00000000| a \lstinline|0x00000103| in EAX
 	\WHILE{true}	
 		\IF{EAX è vuoto (tutti zeri)}
 			\STATE Salta all'ultima istruzione
@@ -239,7 +267,7 @@ Il programma svolge i seguenti passi:
 		\STATE Sposta EAX a destra
 		\STATE Aggiungi il flag carry (che prende il valore rimosso da EAX) al registro CL
 	\ENDWHILE
-	\STATE Sposta il byte in CL nella locazione \texttt{0x00000104}
+	\STATE Sposta il byte in CL nella locazione \lstinline|0x00000104|
 \end{algorithmic}
 \end{algorithm}
 
@@ -282,20 +310,20 @@ $$ \text{indirizzo} = \text{base} + \text{indice} \times \text{scala} \pm \text{
 
 dove base e indice sono due registri generali da 32 bit, scala una costante dal valore 1 (default), 2, 4, 8, e displacement una costante intera.
 
-La sintassi è \texttt{OPCODEsfx $\pm$disp(base,indice,scala)}.
+La sintassi è \lstinline|OPCODEsfx $\pm$disp(base,indice,scala)|.
 
 Si distingue poi l'indirizzamento di tipo:
 
 \begin{itemize}
 	\item 
-		\textbf{Diretto}, dove si indica soltanto il displacement, che coincide con l'indirizzo. \texttt{OPCODEW 0x00002001} significa prendi la word a partire da \texttt{0x00002001}.
+		\textbf{Diretto}, dove si indica soltanto il displacement, che coincide con l'indirizzo. \lstinline|OPCODEW 0x00002001| significa prendi la word a partire da \lstinline|0x00002001|.
 	\item
-		\textbf{Indiretto}, o con registro puntatore, dove si sfrutta un registro: \texttt{OPCODEL (\%EBX)} significa indirizzare il valore indirizzato da EBX. Si può specificare una scala: \texttt{OPCODEL (,\%EBX,4)} significa il valore nel registro EBX moltiplicato per 4.
+		\textbf{Indiretto}, o con registro puntatore, dove si sfrutta un registro: \lstinline|OPCODEL (\%EBX)| significa indirizzare il valore indirizzato da EBX. Si può specificare una scala: \lstinline|OPCODEL (,\%EBX,4)| significa il valore nel registro EBX moltiplicato per 4.
 		Si noti come a essere moltiplicato è l'indice e non la base.
 	\item
-		\textbf{Displacement e registro di modifica}, ad esempio da \texttt{OPCODEW 0x002A3A2B (\%EDI)} si ottiene l'operando a 16 bit ottenuto sommando al displacement \texttt{0x002A3A2B} il contenuto di EDI, modulo $2^32$.
-	\item \textbf{Bimodificato senza displacement}, ad esempio \texttt{OPCODEW (\%EBX, \%EDI)}, che dipende sia da EBX che da EDI. Si può anche includere una scala: \texttt{OPCODEW (\%EBX, \%EDI, 8)}.
-\item \textbf{Bimodificato con displacement}, come prima ma con displacement: \texttt{OPCODEB 0x002F9000 (\%EBX, \%EDI)}, ovvero l'indirizzo dato da base in EBX + indice in EDI + l'offset modulo $2^32$. Si può avere anche negativo: \texttt{OPCODEB -0x9000 (\%EBX, \%EDI)}, dove si sottrae l'offset invece di sommarlo.
+		\textbf{Displacement e registro di modifica}, ad esempio da \lstinline|OPCODEW 0x002A3A2B (\%EDI)| si ottiene l'operando a 16 bit ottenuto sommando al displacement \lstinline|0x002A3A2B| il contenuto di EDI, modulo $2^32$.
+	\item \textbf{Bimodificato senza displacement}, ad esempio \lstinline|OPCODEW (\%EBX, \%EDI)|, che dipende sia da EBX che da EDI. Si può anche includere una scala: \lstinline|OPCODEW (\%EBX, \%EDI, 8)|.
+\item \textbf{Bimodificato con displacement}, come prima ma con displacement: \lstinline|OPCODEB 0x002F9000 (\%EBX, \%EDI)|, ovvero l'indirizzo dato da base in EBX + indice in EDI + l'offset modulo $2^32$. Si può avere anche negativo: \lstinline|OPCODEB -0x9000 (\%EBX, \%EDI)|, dove si sottrae l'offset invece di sommarlo.
 \end{itemize}
 
 Notare che senza il \$ i numeri in formato esadecimale sono interpretati automaticamente come indirizzi.
@@ -307,9 +335,9 @@ In particolare si ha indirizzamento di tipo:
 
 \begin{itemize}
 	\item \textbf{Diretto}, solo per indirizzi $ < 256 $, in quanto nel formato macchina ci sono 8 bit.
-		Ad esempio \texttt{IN 0x001A, \%AL} o \texttt{OUT \%AL, 0x003A}.
+		Ad esempio \lstinline|IN 0x001A, \%AL| o \lstinline|OUT \%AL, 0x003A|.
 	\item \textbf{Indiretto con registro puntatore}, usando come registro puntatore soltanto DX.
-		Ad esempio \texttt{IN (\%DX), \%AX} o \texttt{OUT \%AL, (\%DX)}.
+		Ad esempio \lstinline|IN (\%DX), \%AX| o \lstinline|OUT \%AL, (\%DX)|.
 \end{itemize}
 
 \end{itemize}
