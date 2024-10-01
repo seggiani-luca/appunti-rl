@@ -1,0 +1,603 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW,
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 01-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Istruzioni per sottoprogrammi}
+Nei sottoprogrammi vengono coninvolte due istruzioni \lstinline|CALL|, e \lstinline|RET|.
+Entrambe si riferiscono alla pila.
+
+
+\subsubsection{CALL}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|CALL %EIP +/- $displacement|, \lstinline|CALL *extended_register|, \lstinline|CALL *memory| 
+	\item \textbf{Azione:} effettua la chiamata di un sottoprogramma, ovvero:
+		\begin{itemize}
+			\item Salva il valore corrente di EIP nella pila;
+			\item Modifica EIP come farebbe JMP.
+		\end{itemize}
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+		\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+			\begin{tabular} { c | p{5cm} }
+				\bfseries Operandi & \bfseries Esempi \\
+				\hline
+				Displacement & \lstinline|CALL 0x00400010| \\ 
+				Registro & \lstinline|CALL *%EAX| \\ 
+				Memoria & \lstinline|CALL *0x00400010|
+			\end{tabular}
+		\end{table}
+
+\subsubsection{RET}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|RET|
+	\item \textbf{Azione:} ritorna da un sottoprogramma, ovvero:
+		\begin{itemize}
+			\item Rimuove un long dalla pila;
+			\item Lo inserisce in EIP.
+		\end{itemize}
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\par\medskip 
+Esistono poi altre istruzioni di controllo, ovvero:
+
+\subsubsection{NOP}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|NOP|
+	\item \textbf{Azione:} è l'istruzione nulla. 
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{HLT}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|HLT|
+	\item \textbf{Azione:} arresta l'esecuzione fino al prossimo interrupt. 
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{HLF}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|HLF|
+	\item \textbf{Azione:} arresta l'esecuzione e causa l'autocombustione del processore. 
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsection{Istruzioni privilegiate}
+Il codice in assembler può girare secondo due modalità sul sistema:
+\begin{itemize}
+	\item \textbf{Sistema:} con accesso totale a tutte le istruzioni;
+	\item \textbf{Utente:} senza l'accesso ad alcune istruzioni dette privilegiate.
+\end{itemize}
+
+Tra le istruzioni privilegiate ci sono \lstinline|HLT|, \lstinline|IN| e \lstinline|OUT|.
+La \lstinline|HLT| non è un grande problema, ma lo sono \lstinline|IN| e \lstinline|OUT|.
+Per ottenere input e output dal sistema, adoperiamo quindi determinati sottoprogrammi di servizio atti a fornire esattamente queste informazioni.
+
+L'uso di sottoprogrammi di servizio per l'input/output è dovuto al fatto che le interfacce sono sistemi complessi, facili da portare in stato inconsistente, mentre i sottoprogrammi si assicurano di farne un corretto uso.
+
+\subsection{Struttura di un programma assembler}
+Vediamo adesso come strutturare un programma assembler scritto nell'ambiente GAS (Gnu Assembler).
+Un programma assembler è diviso in due sezioni
+\begin{itemize}
+	\item \textbf{Sezione dati:} qui si dichiarano le variabili, ergo nomi simbolici per indirizzi di memoria che contengono i dati del programma;
+	\item \textbf{Sezione codice:} istruzioni.
+
+
+In un programma abbiamo bisogno di:
+\end{itemize}
+
+
+\begin{itemize}
+	\item \textbf{Istruzioni}, viste finora;
+	\item \textbf{Direttive}, necessarie all'assemblaggio e alla dichiarazione di variabili.
+\end{itemize}
+
+Ad esempio, potremo avere:
+\begin{lstlisting}	
+.GLOBAL _main
+
+.DATA
+...
+
+.TEXT
+_main:	NOP
+...
+				RET
+\end{lstlisting}
+
+Le linee che iniziano col punto sono direttive, le altre istruzioni.
+Una riga qualsiasi del codice è fatta come:
+\begin{lstlisting}	
+nome:	OPCODE operandi # commento [\CR]
+\end{lstlisting}
+dove abbiamo una label, l'istruzione e un commento.
+
+Tutto qui può mancare, tranne il ritorno carrello.
+Tutte le righe, inclusa l'ultima, vanno terminate.
+Inoltre, l'ultima riga dovrebbe essere una RET, che restituisce l'esecuzione al chiamante (qui l'ambiente).
+
+Conviene iniziare il programma con una NOP, per assicurarsi che in fase di inizializzazione esso non faccia effettivamente nulla.
+
+Vediamo ad esempio il programma visto prima per il conteggio degli uni, reso in questa struttura:
+\begin{lstlisting} 
+.GLOBAL _main
+.DATA
+dato:				.LONG 0x0F0F0101
+conteggio:	.BYTE 0x00
+
+.TEXT
+_main:			NOP
+						MOVB $0x00, %CL
+						MOVL dato, %EAX
+comp:				CMPL $0x00, %EAX
+						JE fine
+						SHRL %EAX
+						ADCB $0x00, %CL
+						JMP comp
+fine:				MOVB %CL, conteggio
+						RET
+\end{lstlisting}
+
+\subsubsection{Direttive}
+Tutte le direttive iniziano con il carattere punto.
+Esse sono:
+\begin{itemize}
+	\item \textbf{Dichiarazione di variabili:}
+		Variabili dichiarate di seguito sono sempre consecutive in memoria. Si ha, di base:
+		\begin{itemize}
+			\item \lstinline|.BYTE|: riserva 1 byte;
+			\item \lstinline|.WORD|: riserva 2 byte;
+			\item \lstinline|.LONG|: riserva 4 byte.
+		\end{itemize}
+	\textsf{\textbf{Esempi}}
+\begin{lstlisting}	
+var0:	.WORD									# scalare, 2 byte, valore 0x0000 
+														#	(considerato brutto, non inizializzare
+														#	 si fa con .FILL)
+var1: .BYTE 0x30						# scalare, 1 byte, valore 0x30
+var2: .BYTE 0x30,0x31				# vettore, 2 componenti da 1 byte, 
+														#	valore 0x30 e 0x31
+var3:	.WORD 0x1020, 0x32AB	# vettore, 2 componenti da 2 byte, 
+														#	valore 0x1020e 0x32AB
+var4: .LONG var3+2					# scalare, 4 byte, valore 0xAB
+\end{lstlisting}
+\par\smallskip 
+Esistono altri modi di inizializzare variabili particolari:
+\begin{itemize}
+	\item \lstinline|.FILL numero, dim, espressione|: dichiara \lstinline|numero| variabili di lunghezza \lstinline|dim| e le inizializza ad espression (0 di default).
+		Dim può essere 1, 2 o 4.
+	\item \textbf{ASCII}: si può usare la codifica ASCII fra single tick ', coi caratteri speciali dopo sequenze di escape, per indicare singoli byte. Ad esempio:
+\begin{lstlisting}	
+var5: .BYTE 'S', 'o', 'n', 'n', 'o'				# vettore, 4 componenti 
+																					# da 1 byte
+var6: .BYTE 0x53, 0x6F, 0x6E, 0x6E, 0x6F	# vettore, 4 componenti 
+																					# da 1 byte
+var7: .ASCII "Stea"												# vettore, 4 componenti
+																					# da 1 byte
+var8: .ASCIZ "Stea"												# vettore, 5 componenti 
+																					# da 1 byte (include il 
+																					# terminatore)
+	\end{lstlisting} 
+\end{itemize}
+\item \textbf{Altre direttive:}
+	\begin{itemize}
+		\item \lstinline|.INCLUDE "path"|: include un sorgente nel presente file, prima dell'assemblamento;
+		\item \lstinline|.SET nome, espressione|: serve a creare \textbf{costanti simboliche}. 
+			Tali costanti hanno nome \lstinline|nome| e valore \lstinline|espressione|. Ad esempio:
+\begin{lstlisting}	
+.SET dimensione, 4
+.SET n_iter, (100 * dimensione)
+...
+MOV $n_iter, %CX	# e' accesso immediato
+\end{lstlisting}
+	\end{itemize}
+\end{itemize}
+
+\subsection{Costanti numeriche}
+Possiamo indicare costanti numeriche attraverso le seguenti convenzioni:
+\begin{itemize}
+	\item \textbf{Naturali:} non hanno segno, e vengono convertite nella loro rappresentazione in base 2;
+	\item \textbf{Intere:} hanno un segno + o - davanti, e vengono convertite nella loro rappresentazione in complemento a 2.
+\end{itemize}
+
+Inoltre possiamo scrivere costanti in base 2, 8, 10 e 16 attraverso i prefissi \lstinline|0b|, \lstinline|0|, nessun prefisso e \lstinline|0x|.
+
+Le variabili, quando non sono della dimensione giusta, vengono solitamente troncate (con avviso dall'assemblatore) o estese (senza avvisi dall'assemblatore).
+
+\subsection{Controllo di flusso}
+I costrutti di flusso a cui siamo abituati vengono implementati attraverso istruzioni di salto.
+Conviene comunque ragionare in costrutti ad alto livello, e limitarsi a tradurli in assembler.
+Da qui in puoi useremo una sintassi pseudo-C per indicare questi costrutti ad alto livello.
+
+\subsubsection{If-then-else}
+Prendiamo la sintassi:
+\begin{lstlisting}[language=C++, style=codestyle]	
+if(%AX < variabile) {
+	//ramo if
+	...
+} else {
+	//ramo else
+	...
+}
+//prosegui
+...
+\end{lstlisting}
+potremo tradurla in due modi:
+\begin{itemize}
+	\item Invertendo i rami then e else:
+\begin{lstlisting}	
+					CMP variabile, %AX
+					JB ramothen
+ramoelse:	... # ramo else
+					JMP segue
+ramothen: ... # ramo then
+segue:		# prosegui
+					...
+\end{lstlisting}
+	\item Invertendo la condizione:
+\begin{lstlisting}[language=C++, style=codestyle]	
+					CMP variabile, %AX
+					JAE ramoelse
+ramothen:	... # ramo then
+					JMP segue
+ramoelse: ... # ramo else
+segue:		... # prosegui
+\end{lstlisting}
+\end{itemize}
+
+\subsubsection{Ciclo for}
+Prendiamo:
+\begin{lstlisting}[language=C++, style=codestyle]	
+for(int i = 0; i < variabile; i++) {
+	//iter
+	...
+}
+//prosegui
+...
+\end{lstlisting}
+si rende attraverso il registro CX, come:
+\begin{lstlisting}	
+				MOV $0, %CX
+ciclo:	CMP var, %CX
+				JE segue
+				...	# iter
+				INC %CX
+				JMP ciclo
+segue:	... # prosegui
+\end{lstlisting}
+
+\subsubsection{Ciclo do-while}
+Prendiamo infine:
+\begin{lstlisting}[language=C++, style=codestyle]	
+do {
+	//iter
+	...
+} while(AX < var)
+//prosegui
+...
+\end{lstlisting}
+si rende come:
+\begin{lstlisting}	
+ciclo:	... # iter
+				CMP var, %AX
+				JB ciclo
+				... # prosegui
+\end{lstlisting}
+
+\subsubsection{Un piatto di spaghetti}
+In assembler ci è concesso fare ciò che non è permesso da linguaggi strutturati come il C o il Pascal.
+In questi linguaggi, un costrutto ha un solo punto di ingresso e un solo punto di uscita.
+
+In assembler, invece, possiamo saltare fuori e dentro cicli e costrutti quando e dove vogliamo, ed è il programmatore che deve pensare a cosa il programma sta effettivamente facendo. Ad esempio, nessuno ci vieta di dire:
+\begin{lstlisting}	
+ciclo: 	... # inizio ciclo
+			 	...
+label1:	... # meta' ciclo
+				CMP var, %AX
+				JB ciclo
+				...
+				JMP label1 # salto dentro un ciclo a meta' esecuzione?
+\end{lstlisting}
+\par\medskip
+In assembler abbiamo a disposizione un'istruzione dedicata per i loop, che è:
+
+\subsubsection{LOOP}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|LOOP destination|
+	\item \textbf{Azione:} decrementa ECX e salta alla destinazione se ECX $\neq0$. ECX va inizializzato al numero di iterazioni desiderate, e non va toccato durante il ciclo. 
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+Si nota che la LOOP decrementa sempre ECX, quindi si applica difficilmente a cicli FOR dove vogliamo che la variabile di controllo incrementi, e ci serve che il suo valore nel corpo del ciclo. Si noti la differenza nei due esempi:
+
+\begin{minipage}{0.45\textwidth}
+\begin{lstlisting}[language=C++, style=codestyle]	
+for(int i = var; i > 0; i--) {
+	//iter (usa i)
+}
+\end{lstlisting}
+diventa:
+\begin{lstlisting}
+				MOV var, %ECX
+ciclo:	... # iter
+				LOOP ciclo
+\end{lstlisting}
+\end{minipage}%
+\hfill % This adds horizontal space between the two minipages
+\begin{minipage}{0.45\textwidth}
+\begin{lstlisting}[language=C++, style=codestyle]	
+for(int i = 0; i < var; i++) {
+	//iter (usa i)
+}
+\end{lstlisting}
+diventa:
+\begin{lstlisting}
+				MOV $0, %EBX # usa EBX
+ciclo:	... # iter
+				INC EBX
+				CMP var, %EBX
+				JE ciclo
+\end{lstlisting}
+\end{minipage}
+
+\subsubsection{LOOP condizionali}
+Esistono versioni condizionali della LOOP, che sono \lstinline|LOOPE| e \lstinline|LOOPNE|, simili alle Jump condizionali. In questo caso, oltre al registro ECX, si verifica la condizione e nel caso si salta. Ad esempio:
+
+\begin{lstlisting}	
+				MOV $10, %ECX
+ciclo: 	CMP src, dest
+				LOOPcond ciclo
+\end{lstlisting}
+
+\par\smallskip
+Queste istruzioni non sono indispensabili, in quanto possono essere rimpiazzate facilmente dalla \lstinline|CMP| unita ad un Jump condizionale.
+
+\subsection{Passaggio di argomenti a sottoprogrammi}
+Le \lstinline|CALL| e \lstinline|RET| prima definite non fornisicono modi per passare parametri ai sottoprogrammi, o restituire valori ai chiamanti.
+
+Dobbiamo quindi stabilire delle convenzioni, scegliendo se:
+\begin{itemize}
+	\item Usare locazioni di memoria condivise;
+	\item Usare registri;
+	\item Usare la pila (che non verrà visto nel corso).
+\end{itemize}
+
+In assembler non esiste il concetto di visibilità o variabili locali, tutta la memoria è indirizzabile a qualsiasi livello.
+Comunque, quando si scrive un sottoprogramma, bisogna specificare i parametri di ingresso e di uscita con un'opportuno commento, come:
+\begin{lstlisting}	
+# sottoprogramma "sottoprog", [descrizione]
+# ingresso: %AX, [descrizione]
+#					  %EBX, [descrizione]
+# uscita:	  CAX, [descrizione]
+
+sottoprog: 	...
+						MOV ..., %CX # preparo il ritorno
+						RET
+\end{lstlisting} 
+
+adesso potremo usare il sottoprogramma come:
+\begin{lstlisting}	
+MOV ..., %AX # preparo i parametri
+MOV ..., %EBX
+CALL sottoprog # chiamo
+MOV %CX, var # var contiene il ritorno
+\end{lstlisting}
+
+\end{document}

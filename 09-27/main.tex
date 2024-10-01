@@ -680,7 +680,7 @@ Alcune istruzioni alterano il valore di EIP, implementando quindi alterazioni de
 
 \subsubsection{JUMP}
 \begin{itemize}
-	\item \textbf{Formato:} \lstinline|JMP  \%EIP $\pm$ displacement|, \lstinline|JMP *extended\_register|, \lstinline|JMP *memory|
+	\item \textbf{Formato:} \lstinline|JMP  \%EIP +/- displacement|, \lstinline|JMP *extended\_register|, \lstinline|JMP *memory|
 	\item \textbf{Azione:} calcola un'indrizzo di salto e lo immette nel registro EIP. 
 	\item \textbf{Flag:} nessuno. 
 \end{itemize}
@@ -689,9 +689,9 @@ Solitamente le istruzioni di salto si riferiscono ad un nome simbolico, ed è qu
 
 \subsubsection{JUMP if CONDITION MET}
 \begin{itemize}
-	\item \textbf{Formato:} \lstinline|Jcon \%EIP $\pm$ displacement|
+	\item \textbf{Formato:} \lstinline|Jcon \%EIP +/- displacement|
 	\item \textbf{Azione:} esamina il contenuto dei flag.
-		Se da questo esame risulta che la condizione \textit{con} è soddisfatta, si comporta come \lstinline|JMP \%EIP $\pm$ displacement|, altrimenti non fa nulla.
+		Se da questo esame risulta che la condizione \textit{con} è soddisfatta, si comporta come \lstinline|JMP \%EIP +/- displacement|, altrimenti non fa nulla.
 	\item \textbf{Flag:} nessuno. 
 \end{itemize}
 
@@ -786,7 +786,7 @@ JB ...
 Se ECX è minore stretto di EDX, presi come naturali, salta.
 \end{itemize}
 
-\subsubsection{Condizioni sui interi}
+\subsubsection{Condizioni sugli interi}
 Esistono le seguenti condizioni sui confronti fra interi:
 
 \begin{table}[h!]
@@ -825,5 +825,4 @@ JL ...
 \end{lstlisting}
 Se ECX è minore stretto di EDX, presi come interi, salta.
 \end{itemize}
-
 \end{document}
