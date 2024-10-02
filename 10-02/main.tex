@@ -1,0 +1,553 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 02-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Effetti collaterali}
+I sottoprogrammi non dovrebbero avere effetti collaterali, ergo dovrebbero lasciare i registri come li trovano.
+Per fare ciò, si sfrutta la pila per immagazzinare i loro valori precedenti:
+\begin{lstlisting}	
+sottoprog:	PUSH ... # fai push dei registri
+						PUSH ...
+						...	# esegui il sottoprogramma
+						MOV ..., %CX
+
+						POP ... # riprendi i resisti
+						POP ...
+						RET
+\end{lstlisting}
+
+Sono fondamentali due linee guida:
+\begin{itemize}
+	\item Bisogna stare attenti ad operazioni come \lstinline|IDIV| e \lstinline|IMUL|, che sporcano registri come EDX implictamente;
+	\item Bisogna far corrispondere una \lstinline|POP| ad ogni \lstinline|PUSH|, altrimenti si lascia la pila in uno stato inconsistente per il prossimo \lstinline|RET|.
+\end{itemize}
+
+\subsection{Sottoprogramma principale}
+Il \lstinline|_main| va in esecuzione come un sottoprogramma, ergo deve terminare con una \lstinline|RET| e lasciare in EAX un valore di ritorno (0 significa tutto ok, $\neq0$ significa codice di errore).
+Per quanto ci riguarda, basterà scrivere \lstinline|XOR %EAX, %EAX|.
+
+\subsection{Dichiarazione dello stack}
+Lo stack esiste se viene:
+\begin{enumerate}
+	\item Dichiarato con una direttiva;
+	\item Inizializzato con il registro ESP.
+\end{enumerate}
+
+Dichiarare significa allocare abbastanza memoria, e inizializzare significa impostare ESP alla cella successiva al fondo dello stack (si ricorda che lo stack si evolve verso sinistra). Ad esempio, potremo avere:
+
+\begin{lstlisting}	
+.DATA
+...
+mystack:	.FILL 1024, 4 #dichiarazione stack
+.SET			initial_esp, (mystack + 1024*4)
+
+.TEXT
+_main:		NOP
+					MOV $initial_esp, %ESP	# inizializzazione stack
+\end{lstlisting}
+
+Lo stack può essere grande a piacere del programmatore.
+Nel nostro ambiente (ma non in generale) possiamo omettere la dichiarazione.
+
+La pila può essere anche usata per il passaggio dei documanti (è il metodo che usano i compilatori). 
+Questo risulta difficile da fare a mano, e quindi è sconsigliato per programmi più semplici.
+
+\subsection{Sottoprogrammi di Input/Output}
+In assembler non esistono istruzioni di ingresso e uscita (tranne le \lstinline|IN| e \lstinline|OUT|, che però sappiamo essere privilegiate).
+Si usano quindi i servizi del sistema (DOS), ovvero sottoprogrammi scritti da altri che girano in modalità sistema.
+Questi servizi sono molto primitivi: permettono l'uscita di singoli caratteri.
+Esistono quindi sottoprogrammi (leggermente) più sofisticati per l'output di numeri, ecc...
+
+\subsubsection{I/O tastiera e video}
+Le informazioni che entrano ed escono da interfacce sono solo codifice ASCII di singoli caratteri.
+Infatti in assembler non esiste il concetto di I/O tipato di variabili.
+
+Ricevere il numero 32 significa ottenere i caratteri '3' e '2', mentre stamparlo significa inviare i caratteri '3' e '2'.
+Questo chiaramente sui decimale si traduce in moltiplicazioni per 10 (in entrata) e divisioni per 10 con resto (in uscita) atte ad ottenere queste cifre.
+
+\subsubsection{I/O di caratteri e stringhe}
+Nel corso si userà il file di utilità \lstinline|.INCLUDE "./files/utility.s"|.
+Questo file mette a disposizione alcuni sottoprogrammi fra cui:
+\begin{itemize}
+	\item \textbf{inchar:} mette in AL la codifica ASCII del tasto premuto;
+	\item \textbf{outchar:} mette sul video la codifica ascii contenuta in AL;
+	\item \textbf{newline:} stampa \lstinline|0x0D| (Carriage Return) e \lstinline|0x0A| (Line Feed), ergo va a capo;
+	\item \textbf{pauseN:} mette in pausa il programma e stampa a video:
+\begin{lstlisting}	
+Checkpoint number N. Press any key to continue
+\end{lstlisting}
+dove N deve essere una cifra decimale.
+\end{itemize}
+
+Sopra questi sottoprogrammi sono state scritte routine più complesse:
+\begin{itemize}
+	
+	\item \textbf{inline:} 
+	\begin{itemize}
+		\item \textbf{Descrizione:} porta una stringa di massimo 80 caratteri in un buffer di memoria, digitando con eco su video.
+		\item \textbf{Parametri di ingresso:} 
+			\begin{itemize}
+				\item EBX: indirizzo di memoria del buffer;
+				\item CX: numero di caratteri da leggere (massimo 80, una linea).
+			\end{itemize}
+	\end{itemize}
+		Questo programma legge effettivamente 78 caratteri utili, in quanto gli ultimi 2 sono obbligatoriamente il nuova linea.
+		Il programma inoltre gestisce la pressione dei tasti invio (finisci di ottenere caratteri) e backspace (cancella caratteri).
+	
+	\item \textbf{outline, outmess:}
+		\begin{itemize}
+		\item \textbf{Descrizione:} stampa a video massimo 80 caratteri da un buffer di memoria. Si ferma prima se trova un carattere di ritorno carrello, andando anche a capo. 
+		\item \textbf{Parametri di ingresso:} 
+			\begin{itemize}
+				\item EBX: indirizzo di memoria del buffer;
+			\end{itemize}
+		\end{itemize}
+		
+	\item \textbf{inbyte, inword, inlong:}
+		\begin{itemize}
+		\item \textbf{Descrizione:} prelevano da tastiera (con eco sul video) 2, 4 o 8 caratteri.
+			Interpretano tale sequenza di caratteri come un numero esadecimale a 2, 4 o 8 cifre.
+			Ignorano tutti gli altri caratteri.
+		\item \textbf{Parametri di ingresso:} 
+			\begin{itemize}
+				\item AL, AX, o EAX: il numero esadecimale digitato.
+			\end{itemize}
+		\end{itemize}
+
+	\item \textbf{outbyte, outword, outlong:}
+		\begin{itemize}
+		\item \textbf{Descrizione:} stampano a video 2, 4 o 8 caratteri, corrispondenti a cifre esadecimali.
+		\item \textbf{Parametri di ingresso:} 
+			\begin{itemize}
+				\item AL, AX, o EAX: il numero esadecimale da stampare.
+			\end{itemize}
+		\end{itemize}
+
+
+	\item \textbf{indecimal\_byte, indecimal\_word, indecimal\_long:}
+		\begin{itemize}
+		\item \textbf{Descrizione:} prelevano da tastiera (con eco sul video) fino a 3, 5 o 10 cifre decimali.
+			Interpretano tale sequenza di caratteri come un numero decimale.
+		\item \textbf{Parametri di ingresso:} 
+			\begin{itemize}
+				\item AL, AX, o EAX: il numero decimale digitato.
+			\end{itemize}
+		\end{itemize}
+	Se il numero decimale è troppo grande viene troncato.
+	Inoltre si può usare invio per dare ingresso a meno cifre.
+
+	
+	\item \textbf{outdecimal\_byte, outdecimal\_word, outdecimal\_long:}
+		\begin{itemize}
+		\item \textbf{Descrizione:} stampano a video caratteri corrispondenti a cifre decimali.
+		\item \textbf{Parametri di ingresso:} 
+			\begin{itemize}
+				\item AL, AX, o EAX: il numero decimale da stampare.
+			\end{itemize}
+		\end{itemize}
+
+\end{itemize}
+
+\subsection{Manipolazione di stringhe e vettori}
+In assembler non esistono tipi di dati né strutture dati.
+Si supporta però il concetto di vettore: si dichiarano vettori di variabili di una certa dimensione, e si indirizzano i loro elementi attraverso l'indirizzamento complesso ($\text{displacement} + \text{base} + \text{indice} * \text{scala}$).
+
+In verità esistono istruzioni stringa, che servono a copiare interi buffer di memoria, che sfruttano i registri ESI e EDI.
+Ad esempio, copiare un vettore a mano significherebbe:
+\begin{lstlisting}	
+vett_sorg:	.FILL 1000,4
+vett_dest:	.FILL 1000,4
+
+						MOV $1000, %ECX
+						LEA vett_sorg, %ESI
+						LEA vett_dest, $EDI
+ciclo:			MOV (%ESI), %EAX
+						MOV %EAX , (%EDI)
+						ADD $4, %ESI
+						ADD $4, %EDI
+						LOOP ciclo
+\end{lstlisting}
+ma abbiamo la possibilità di scrivere la stessa cosa come:
+\begin{lstlisting}	
+vett_sorg:	.FILL 1000,4
+vett_dest:	.FILL 1000,4
+
+MOV $1000, %ECX
+					LEA vett_sorg, %ESI
+					LEA vett_dest, %EDI
+					REP MOVSL
+\end{lstlisting}
+dove l'istruzione \lstinline|REP MOVSL| indica ripetizione (prefisso \lstinline|REP|), di movimento da stringa a stringa su long (\lstinline|MOVSL|) finché ECX $\neq 0$.
+
+\subsubsection{Direction Flag}
+Esiste un'altro bit utile nel registro dei flag: il Direction Flag, o DF.
+Si imposta con le istruzioni:
+\begin{itemize}
+	\item \textbf{\textsf{STD}}: \textsf{SET DIRECTION FLAG}, la imposta ad 1;
+	\item \textbf{\textsf{CLD}}: \textsf{CLEAR DIRECTION FLAG}, la imposta a  0;
+\end{itemize}
+
+Si usa questo flag per dare indicazioni alla prossima istruzione:
+
+\subsubsection{MOVE DATA FROM STRING TO STRING (with REPEAT)}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|MOVSsuf|, \lstinline|REP MOVSsuf| 
+	\item \textbf{Azione:} copia il numero di byte indicato dal suffisso $suf$ dall'indirizzo di memoria puntato da ESI all'indirizzo di memoria puntato da EDI.
+		Successivamente, SE DF è 1, sottrae da ESI e EDI il numero di byte indicati da $suf$, altrimenti li somma.
+
+		Se si include il prefisso, le operazioni vengono ripetute decrementando ECX (come per \lstinline|LOOP|).
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+\par\medskip
+Esistono poi altre istruzioni di stringa, fra cui:
+
+\subsubsection{LOAD DATA FROM STRING}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|LODSsuf| 
+	\item \textbf{Azione:} copia in AL, AX, oppure EAX, il contenuto della memoria all'indirizzo puntato da ESI. Successivamente incrementa o decrementa ESI di 1, 2 o 4 a seconda di DF.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{STORE DATA TO STRING}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|LODSsuf| 
+	\item \textbf{Azione:} copia il registro AL, AX, oppure EAX, in memoria all'indirizzo puntato da EDI. Successivamente incrementa o decrementa EDI di 1, 2 o 4 a seconda di DF.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+Si dovrebbe essere notato che ESI sta per sorgente, ed EDI per destinatario.
+Vediamo quindi degli esempi:
+
+\begin{minipage}{0.45\textwidth}
+Copia un vettore da una parte all'altra, eseguendo un'operazione su tutti i suoi elementi:
+\begin{lstlisting}	
+				MOV $1000, %CX
+				LEA buffer_src, %ESI
+				LEA buffer_dst, %EDI
+				CLD
+ciclo:	LODSL
+				...	#modifica %EAX
+				STOSL
+				LOOP ciclo
+\end{lstlisting}
+
+\end{minipage}%
+\hfill % This adds horizontal space between the two minipages
+\begin{minipage}{0.45\textwidth}
+Riempi un buffer in memoria di zeri:
+\begin{lstlisting}	
+MOV $1000, %ECX
+LEA buffer, %EDI
+XOR %EAX, %EAX
+CLD
+REP STOSL
+\end{lstlisting}
+\end{minipage}
+
+\subsubsection{Istruzioni stringa per l'I/O}
+Esistono delle istruzioni stringa di ingresso e uscita: 
+
+
+\subsubsection{INSERT STRING}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|INSsuf| 
+	\item \textbf{Azione:} fa ingresso di 1, 2 o 4 byte dalla porta di I/O il cui offset è contenuto in DX. L'operando viene inserito in memoria a partire dall'indirizzo contenuto in EDI.
+		Successivamente incrementa o decrementa EDI di 1, 2, o 4 a seconda di DF.
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{OUTPUT STRING}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|INSsuf| 
+	\item \textbf{Azione:} fa uscita di 1, 2 o 4 byte dall'indirizzo di memoria contenuto in EDI. L'operando viene inserito nella porta di I/O il cui offset è contenuto in DX.
+		Successivamente incrementa o decrementa ESI di 1, 2, o 4 a seconda di DF. 
+
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{Istruzioni di confronto su stringhe}
+Vediamo infine alcune istruzioni per effettuare confronti su e fra stringhe:
+
+\subsubsection{COMPARE STRINGS}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|CMPSsuf| 
+	\item \textbf{Azione:} confronta il valore delle locazioni (singole, doppie o quadruple) indicate da ESI (sorgente) ed EDI (destinatario). 
+		Successivamente incrementa o decrementa ESI di 1, 2, o 4 a seconda di DF. 
+
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+\subsubsection{SCAN STRING}
+\begin{itemize}
+	\item \textbf{Formato:} \lstinline|SCASsuf| 
+	\item \textbf{Azione:} confronta il contenuto del registro AL, AX o EAX con la locazione (singola, doppia o quadrupla) di memoria indirizzata da EDI. L'algoritmo di confronto è lo stesso di CMP. 
+		Successivamente incrementa o decrementa ESI di 1, 2, o 4 a seconda di DF. 
+
+	\item \textbf{Flag:} nessuno.
+\end{itemize}
+
+Quest'espressione si usa per trovare valori noti dentro un vettore con, DF $=0$ che cerca la prima occorrenza, e DF $=1$ che cerca l'ultima. Ad esempio, poniamo di voler trovare il primo elemento differente fra due vettori:
+\begin{lstlisting}	
+arrayl: .WORD 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+array2: .WORD 1, 2, 3, 4, 7, 6, 7, 8, 9, 10
+
+CLD
+LEA array 1, %ESI
+LEA array2, %EDI
+MOV $10, %ECX
+REPE CMPSW
+\end{lstlisting}
+
+dove si noti che alla fine del ciclo EDI e ESI puntano all'elemento successivo. 
+
+\subsubsection{Prefissi di ripetizione}
+Vediamo nel dettaglio il prefisso \lstinline|REP|, e le sue varianti \lstinline|REPE| e \lstinline|REPNE|.
+Bisogna ricordare che questi prefissi si applicano ad istruzioni, non a blocchi di codice.
+Nel dettaglio sono.
+\begin{itemize}
+	\item \lstinline|REP|: si può usare con \lstinline|MOVS|, \lstinline|LODS|, \lstinline|STOS|, \lstinline|INS| e \lstinline|OUTS|, anche se l'utilizzo con \lstinline|LODS| è privo di senso (almeno che non si voglia ottenere l'ultimo elemento...).
+	\item \lstinline|REPE| e \lstinline|REPNE|: si può usare con \lstinline|CMPS| e \lstinline|SCAS|, ed effettua al massimo ECX ripetizioni, finché la condizione specificata è vera.
+\end{itemize}
+
+\subsubsection{Perchè due direzioni?}
+L'uso di due direzioni di scorrimento di stringhe attraverso il flag DF è utile, sopratutto nel caso si debbano fare traslazioni del vettore (copia di buffer \textbf{parzialmente sovrapposti}).
+Infatti, cercando si spostare il vettore a destra spostandoci verso destra, finiremo per copiare sempre gli stessi dati.
+
+\subsection{Note sull'efficienza}
+Un compilatore ottimizza il codice in alto livello per il sistema su cui quel codice dovrà girare.
+Un assemblatore, invece, traduce le istruzioni una per una.
+
+\subsubsection{Tempo di esecuzione di un processo}
+Un processo è un programma in esecuzione con dei dati.
+In questo, dipende dai dati, dallo stato del sistema, e da cosa sta facendo il processore (chi lo sta usando?).
+Questo rende il calcolatore una macchina poco prevedibile, e il tempo di esecuzione del processo difficile da calcolare a priori. Di base, infatti:
+\begin{itemize}
+	\item Il clock non va a velocità costante;
+	\item Il vostro processo non necessariamente gira su un solo core;
+	\item Altri meccanismi introducono variabilità considerevoli:
+		\begin{itemize}
+			\item Memorie cache;
+			\item Code di prefetch;
+			\item Esecuzione in pipeline: eseguire un'istruzione significa fare fetch dell'istruzione, recuperare l'OPCODE, il sorgente, scrivere sul destinatario, ecc... conviene eseguire queste operazioni in pipeline, cioè eseguendo in parallelo più istruzioni possibili contemporaneamente;
+			\item Esecuzione non sequenziale: il processore non esegue necessariamente il codice nell'ordine in cui è scritto: se possibile, modifica l'ordine in modo dal caricare in modo più efficiente possibile la pipeline;
+			\item Branch prediction: quando si esegue in pipeline, le istruzioni condizionali creano forti bottleneck di prestazioni. Per ovviare a questo problema, il processore cerca di predire il tipo della prossima istruzione, pagando un prezzo nel caso si sbagli, ma ottenendo un significativo incremento di velocità nel caso abbia successo.
+		\end{itemize}
+\end{itemize}
+
+\end{document}
