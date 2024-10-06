@@ -366,7 +366,7 @@ Sopra questi sottoprogrammi sono state scritte routine più complesse:
 
 \subsection{Manipolazione di stringhe e vettori}
 In assembler non esistono tipi di dati né strutture dati.
-Si supporta però il concetto di vettore: si dichiarano vettori di variabili di una certa dimensione, e si indirizzano i loro elementi attraverso l'indirizzamento complesso ($\text{displacement} + \text{base} + \text{indice} * \text{scala}$).
+Si supporta però il concetto di vettore: si dichiarano vettori di variabili di una certa dimensione, e si indirizzano i loro elementi attraverso l'indirizzamento complesso ($\text{displacement} + \text{base} + \text{indice} \times \text{scala}$).
 
 In verità esistono istruzioni stringa, che servono a copiare interi buffer di memoria, che sfruttano i registri ESI e EDI.
 Ad esempio, copiare un vettore a mano significherebbe:
@@ -376,7 +376,7 @@ vett_dest:	.FILL 1000,4
 
 						MOV $1000, %ECX
 						LEA vett_sorg, %ESI
-						LEA vett_dest, $EDI
+						LEA vett_dest, %EDI
 ciclo:			MOV (%ESI), %EAX
 						MOV %EAX , (%EDI)
 						ADD $4, %ESI
@@ -388,10 +388,10 @@ ma abbiamo la possibilità di scrivere la stessa cosa come:
 vett_sorg:	.FILL 1000,4
 vett_dest:	.FILL 1000,4
 
-MOV $1000, %ECX
-					LEA vett_sorg, %ESI
-					LEA vett_dest, %EDI
-					REP MOVSL
+						MOV $1000, %ECX
+						LEA vett_sorg, %ESI
+						LEA vett_dest, %EDI
+						REP MOVSL
 \end{lstlisting}
 dove l'istruzione \lstinline|REP MOVSL| indica ripetizione (prefisso \lstinline|REP|), di movimento da stringa a stringa su long (\lstinline|MOVSL|) finché ECX $\neq 0$.
 
@@ -408,8 +408,8 @@ Si usa questo flag per dare indicazioni alla prossima istruzione:
 \subsubsection{MOVE DATA FROM STRING TO STRING (with REPEAT)}
 \begin{itemize}
 	\item \textbf{Formato:} \lstinline|MOVSsuf|, \lstinline|REP MOVSsuf| 
-	\item \textbf{Azione:} copia il numero di byte indicato dal suffisso $suf$ dall'indirizzo di memoria puntato da ESI all'indirizzo di memoria puntato da EDI.
-		Successivamente, SE DF è 1, sottrae da ESI e EDI il numero di byte indicati da $suf$, altrimenti li somma.
+	\item \textbf{Azione:} copia il numero di byte indicato dal suffisso \textit{suf} dall'indirizzo di memoria puntato da ESI all'indirizzo di memoria puntato da EDI.
+		Successivamente, SE DF è 1, sottrae da ESI e EDI il numero di byte indicati da \textit{suf}, altrimenti li somma.
 
 		Se si include il prefisso, le operazioni vengono ripetute decrementando ECX (come per \lstinline|LOOP|).
 	\item \textbf{Flag:} nessuno.
@@ -433,8 +433,8 @@ Esistono poi altre istruzioni di stringa, fra cui:
 
 Si dovrebbe essere notato che ESI sta per sorgente, ed EDI per destinatario.
 Vediamo quindi degli esempi:
-
-\begin{minipage}{0.45\textwidth}
+\par\smallskip
+\begin{minipage}[t]{0.45\textwidth}
 Copia un vettore da una parte all'altra, eseguendo un'operazione su tutti i suoi elementi:
 \begin{lstlisting}	
 				MOV $1000, %CX
@@ -449,7 +449,7 @@ ciclo:	LODSL
 
 \end{minipage}%
 \hfill % This adds horizontal space between the two minipages
-\begin{minipage}{0.45\textwidth}
+\begin{minipage}[t]{0.45\textwidth}
 Riempi un buffer in memoria di zeri:
 \begin{lstlisting}	
 MOV $1000, %ECX
@@ -519,7 +519,6 @@ dove si noti che alla fine del ciclo EDI e ESI puntano all'elemento successivo.
 \subsubsection{Prefissi di ripetizione}
 Vediamo nel dettaglio il prefisso \lstinline|REP|, e le sue varianti \lstinline|REPE| e \lstinline|REPNE|.
 Bisogna ricordare che questi prefissi si applicano ad istruzioni, non a blocchi di codice.
-Nel dettaglio sono.
 \begin{itemize}
 	\item \lstinline|REP|: si può usare con \lstinline|MOVS|, \lstinline|LODS|, \lstinline|STOS|, \lstinline|INS| e \lstinline|OUTS|, anche se l'utilizzo con \lstinline|LODS| è privo di senso (almeno che non si voglia ottenere l'ultimo elemento...).
 	\item \lstinline|REPE| e \lstinline|REPNE|: si può usare con \lstinline|CMPS| e \lstinline|SCAS|, ed effettua al massimo ECX ripetizioni, finché la condizione specificata è vera.
@@ -550,4 +549,21 @@ Questo rende il calcolatore una macchina poco prevedibile, e il tempo di esecuzi
 		\end{itemize}
 \end{itemize}
 
+\subsubsection{Lunghezza delle istruzioni e tempo di fetch}
+Il numero di byte occupati da un'istruzione dipende dall'OPCODE e dal tipo di indirizzamento.
+Se gli operandi sono \textbf{registri}, le istruzioni stanno normalmente su 1 byte; gli operandi \textbf{immediati} devono essere codificati (in 1, 2 o 4 byte); i \textbf{displacement} occupano 4 byte.
+
+La lunghezza delle istruzioni, oltre alle dimensioni dei file binari, influenza anche il tempo di fetch delle stesse, e va quindi tenuto in considerazione.
+
+\subsubsection{Tempo di esecuzione delle istruzioni}
+Il tempo di esecuzione delle istruzioni dipende molto dall'architettura specifica del processore (anche in processori della stessa famiglia).
+
+Abbiamo che le istruzioni ALU (escluse MUL e DIV) costano poco, su O(1) cicli di clock. Le MUL e DIV costano sui O(10) cicli di clock, e per questo vengono tradotte in procedure alternative (attraverso LEA o le istruzioni di shift) dai compilatori attraverso apposite tablle di corrispondenza.
+
+Le operazioni più costose sono quelle dellA FPU (Floating Point Unit), che richiedono sulle O(100) istruzioni.
+
+Anche le istruzioni condizionali sono molto costose, ma per i motivi visti prima che rallentano le pipeline.
+
+
 \end{document}
+

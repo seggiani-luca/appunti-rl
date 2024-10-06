@@ -210,11 +210,11 @@ Possiamo adottare 2 metodi per codificare le istruzioni eseguite dal processore:
 		\end{table}
 
 	\item \textbf{Codifica mnemonica:} un modo \textbf{simbolico} per riferirsi alle istruzioni.
-		Un'istruzione può quindi essere semplicemente: \lstinline|MOV \%EAX, 0x01F4E39|.
+		Un'istruzione può quindi essere semplicemente: \lstinline|MOV %EAX, 0x01F4E39|.
 \end{itemize}
 
 Il linguaggio assembler usa la codifica mnemonica delle istruzioni, e dispone di sovrastrutture sintattiche che lo rendono più comprensibile agli umani.
-Ad esempio, permette l'uso di nomi simbolici per locazioni di memoria: \lstinline|MOV \%EAX, pippo|.
+Ad esempio, permette l'uso di nomi simbolici per locazioni di memoria: \lstinline|MOV %EAX, pippo|.
 
 \subsubsection{Istruzioni in codifica mnemonica}
 Un'istruzione ha 3 campi:
@@ -227,7 +227,7 @@ Un'istruzione ha 3 campi:
 
 Il suffisso di lunghezza può essere omesso quando è chiaro (essenzialmente quando si usa un registro).
 
-Sintatticamente la struttura è \lstinline|OPCODEsuffix source, dest|, che diventa qualcosa come \lstinline|ADD \%BX, pluto|.
+Sintatticamente la struttura è \lstinline|OPCODEsuffix source, dest|, che diventa qualcosa come \lstinline|ADD %BX, pluto|.
 Questa istruzione effettua l'operazione \lstinline|ADD| (aggiungi), aggiungendo al registro \lstinline|BX| ciò che è contenuto nel simbolo \lstinline|pluto|.
 
 \par\medskip
@@ -300,7 +300,7 @@ MOVB pippo, pluto
 ma devo scrivere:
 
 \begin{lstlisting}[style=codestyle]	
-MOV pippo, %EAX	% qua il suffisso di lunghezza e' implicito
+MOV pippo, %EAX	# qua il suffisso di lunghezza e' implicito
 MOVL %EAX, pluto
 \end{lstlisting}
 
@@ -318,15 +318,16 @@ Si distingue poi l'indirizzamento di tipo:
 	\item 
 		\textbf{Diretto}, dove si indica soltanto il displacement, che coincide con l'indirizzo. \lstinline|OPCODEW 0x00002001| significa prendi la word a partire da \lstinline|0x00002001|.
 	\item
-		\textbf{Indiretto}, o con registro puntatore, dove si sfrutta un registro: \lstinline|OPCODEL (\%EBX)| significa indirizzare il valore indirizzato da EBX. Si può specificare una scala: \lstinline|OPCODEL (,\%EBX,4)| significa il valore nel registro EBX moltiplicato per 4.
+		\textbf{Indiretto}, o con registro puntatore, dove si sfrutta un registro: \lstinline|OPCODEL (%EBX)| significa indirizzare il valore indirizzato da EBX. Si può specificare una scala: \lstinline|OPCODEL (,%EBX,4)| significa il valore nel registro EBX moltiplicato per 4.
 		Si noti come a essere moltiplicato è l'indice e non la base.
 	\item
-		\textbf{Displacement e registro di modifica}, ad esempio da \lstinline|OPCODEW 0x002A3A2B (\%EDI)| si ottiene l'operando a 16 bit ottenuto sommando al displacement \lstinline|0x002A3A2B| il contenuto di EDI, modulo $2^32$.
-	\item \textbf{Bimodificato senza displacement}, ad esempio \lstinline|OPCODEW (\%EBX, \%EDI)|, che dipende sia da EBX che da EDI. Si può anche includere una scala: \lstinline|OPCODEW (\%EBX, \%EDI, 8)|.
-\item \textbf{Bimodificato con displacement}, come prima ma con displacement: \lstinline|OPCODEB 0x002F9000 (\%EBX, \%EDI)|, ovvero l'indirizzo dato da base in EBX + indice in EDI + l'offset modulo $2^32$. Si può avere anche negativo: \lstinline|OPCODEB -0x9000 (\%EBX, \%EDI)|, dove si sottrae l'offset invece di sommarlo.
+		\textbf{Displacement e registro di modifica}, ad esempio da \lstinline|OPCODEW 0x002A3A2B (%EDI)| si ottiene l'operando a 16 bit ottenuto sommando al displacement \lstinline|0x002A3A2B| il contenuto di EDI, modulo $2^{32}$.
+	\item \textbf{Bimodificato senza displacement}, ad esempio \lstinline|OPCODEW (%EBX, %EDI)|, che dipende dalla somma di EBX e EDI. Si può anche includere una scala: \lstinline|OPCODEW (%EBX, %EDI, 8)|, che va a moltiplicare solo \lstinline|%EDI|.
+	\item \textbf{Bimodificato con displacement}, come prima ma con displacement: \lstinline|OPCODEB 0x002F9000 (%EBX, %EDI)|, ovvero l'indirizzo dato da base in EBX + indice in EDI + l'offset modulo $2^{32}$. Si può avere anche negativo: \lstinline|OPCODEB -0x9000 (%EBX, %EDI)|, dove si sottrae l'offset invece di sommarlo.
 \end{itemize}
 
 Notare che senza il \$ i numeri in formato esadecimale sono interpretati automaticamente come indirizzi.
+Inoltre, i suffissi di dimensione si riferiscono al numero di locazioni all'indirizzo \textit{puntato} dai registri, non alla dimensione dei registri o altre cose ridicole. 
 
 \item
 Si possono \textbf{indirizzare le porte I/O}, come prima in uno solo dei due operandi. 
@@ -335,9 +336,9 @@ In particolare si ha indirizzamento di tipo:
 
 \begin{itemize}
 	\item \textbf{Diretto}, solo per indirizzi $ < 256 $, in quanto nel formato macchina ci sono 8 bit.
-		Ad esempio \lstinline|IN 0x001A, \%AL| o \lstinline|OUT \%AL, 0x003A|.
+		Ad esempio \lstinline|IN 0x001A, %AL| o \lstinline|OUT %AL, 0x003A|.
 	\item \textbf{Indiretto con registro puntatore}, usando come registro puntatore soltanto DX.
-		Ad esempio \lstinline|IN (\%DX), \%AX| o \lstinline|OUT \%AL, (\%DX)|.
+		Ad esempio \lstinline|IN (%DX), %AX| o \lstinline|OUT %AL, (%DX)|.
 \end{itemize}
 
 \end{itemize}

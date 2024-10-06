@@ -457,24 +457,46 @@ Vediamo quindi le operazioni aritmetiche:
 \par\medskip
 \noindent
 \textbf{\textsf{Funzionamento della ADD}} \\
-Il passo elementare di una somma consiste nel sommare due addendi (propriamente due cifre degli addendi) e un riporto entrante per produrre:
+Il passo elementare di una somma consiste nel sommare le cifre degli addendi, $x_i$ e $y_i$ e un riporto entrante $r_i$ per produrre:
 	\begin{itemize}
-		\item Una cifra;
-		\item Un riporto uscente (cioè il riporto entrante per il prossimo passo).
+		\item La possima cifra $s_i$ del risultato;
+		\item Un riporto uscente $r_{i+1}$ (cioè il riporto entrante per il prossimo passo).
 	\end{itemize}
 L'ultimo riporto, se non entra in memoria, attiva il carry flag (CF).
 
-L'operazione di somma ha lo stesso effetto sia su naturali che su interi in complemento a 2: la differenza sta nel controllo dell'attivazione dei flag.
-Il carry flag non ha infatti alcun significato nella somma fra interi: dobbiamo controllare l'OF.
+Possiamo facilmente ricavare il risultato che dà ogni tripla di argomenti su un singolo bit del risultato, e il riporto entrante generato:
+\begin{table}[h!]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c | c | c || c || c | c }
+		$\bold{x_i}$ & $\bold{y_i}$ & $\bold{r_i}$ & $(\bold{x_i + y_i + r_i})_{10}$ & $\bold{s_i}$ & $\bold{r_{i+1}}$ \\
+		\hline 
+		0 & 0 & 0 & 0 & 0 & 0 \\
+		1 & 0 & 0 & 1 & 1 & 0 \\
+		0 & 1 & 0 & 1 & 1 & 0 \\
+		0 & 0 & 1 & 1 & 1 & 0 \\
+		1 & 1 & 0 & 2 & 0 & 1 \\
+		1 & 0 & 1 & 2 & 0 & 1 \\
+		0 & 1 & 1 & 2 & 0 & 1 \\
+		1 & 1 & 1 & 3 & 1 & 1 \\
+	\end{tabular}
+\end{table}
 
-In generale, si ha overflow (OF) quando il risultato esce dall'intervallo di rappresentabilità.
-Si può capire se si è verificato un overflow controllando i segni degli operandi:
+Questa tabella viene evaluta su ogni tripla di cifre $x_i$, $y_i$ e riporto $r_i$ incontrata, generando $r_n$ riporti consecutivi.
+
+L'operazione di somma ha lo stesso effetto sia su naturali che su interi in complemento a 2: la differenza sta nel controllo dell'attivazione dei flag.
+Si ha infatti che, se $X$ e $Y$ sono le rappresentazioni su $n$ bit di due interi $x$ e $y$, allora la rappresentazione di $s$ = $x$ + $y$ (se esprimibile su $n$ bit) è data da $S$ = $X$ + $Y$.
+
+Tolto il CF, il processore attiva i flag OF, ZF e SF secondo le modalità:
 \begin{itemize}
-	\item \textbf{Segni discordi:} non c'é overflow;
-	\item \textbf{Segni concordi:} il risultato è concorde se è concorde con gli operandi.
+	\item \textbf{OF:} rappresenta l'overflow, ergo la non rappresentabilità, nel caso di somme intere, e guarda ai segni (il MSB):
+	\begin{itemize}
+		\item \textbf{Segni discordi:} non c'é overflow;
+		\item \textbf{Segni concordi:} il risultato è corretto se è concorde con gli operandi.
+	\end{itemize}
+	Alternativamente, si può pensare che l'OF viene attivato sulla base degli ultimi dure riporti. Se sono discordi (cioè $r_n \neq r_{n-1}$), si attiva;
+	\item \textbf{ZF:} si attiva se la rappresentazione $S$ finale è uguale a 0 (si ricorda che lo 0 è tale sia in base che in complemento a 2);
+	\item \textbf{SF:} si attiva se il MSB è uguale a 1, che in complemento a due significa segno negativo.
 \end{itemize}
-La ADD imposta quindi OF secondo queste regole.
-Il ZF viene poi impostato se il risultato è fatto da tutti zeri, e il SF viene impostato se il MSB è uno.
 
 \subsubsection{INCREMENT}
 \begin{itemize}
@@ -493,8 +515,8 @@ Il ZF viene poi impostato se il risultato è fatto da tutti zeri, e il SF viene 
 			\end{tabular}
 		\end{table}
 
-Quest'istruzione è più compatta di ADD, e storicamente era anche più veloce.
-Questo deriva dal fatto che la circuiteria che implementava l'incremento era più efficiente di quella che implementa le somme.
+Quest'istruzione è più compatta di ADD, e (forse solo storicamente) è anche più veloce.
+Questo deriva dal fatto che la circuiteria che implementa l'incremento è (in teoria) più efficiente di quella che implementa le somme.
 
 \subsubsection{SUBTRACT}
 \begin{itemize}
@@ -504,7 +526,7 @@ Questo deriva dal fatto che la circuiteria che implementava l'incremento era pi�
 	\item \textbf{Flag:} attiva CF se, interpretando i numeri come naturali, si è verificato un riporto; attiva OF se, interpretando gli operandi come interi, si è verificato un traboccamento.
 \end{itemize}
 
-		\begin{table}[h!]
+		\begin{table}[H]
 			\center \rowcolors{2}{white}{black!10}
 			\begin{tabular} { c | p{5cm} }
 				\bfseries Operandi & \bfseries Esempi \\
@@ -520,23 +542,33 @@ Questo deriva dal fatto che la circuiteria che implementava l'incremento era pi�
 \par\medskip
 \noindent
 \textbf{\textsf{Funzionamento della SUBTRACT}} \\
-Il passo elementare della sottrazione è effettivamente il contrario di quello della somma: si sottraggono il sottraendo e un prestito entrante al minuendo, producendo:
+Il passo elementare della sottrazione potrebbe sembrare effettivamente il contrario di quello della somma: si sottraggono le cifre del sottraendo e del minuendo, $x_i$ e $y_i$, e un riporto entrante $r_i$ al minuendo, per produrre:
+	\begin{itemize}
+		\item La possima cifra $d_i$ del risultato;
+		\item Un riporto uscente $r_{i+1}$ (cioè il riporto entrante per il prossimo passo).
+	\end{itemize}
+
+	
+In verità risulta più conveniente usare la stessa circuiteria della somma, e adottare quindi semplicemente il complemento a 2.
+Abbiamo che:
+$$ X - Y = X + \bar{Y} + 1 $$
+ergo possiamo sfruttare il carry bit (che prendiamo come già impostato), ed eseguire la somma fra $X$ e il complemento di $Y$.
+Questo ci dà il risultato corretto sia che si parli di naturali che di interi, visto che equivale a $X + (-Y)$.
+
+In generale, l'algoritmo esatto usato per la sottrazione (sottrazione manuale con prestiti, o addizione del complemento) non è poi così importante.
+Dobbiamo però fare attenzione ai flag, che vengono impostati in modo diverso rispetto alla somma, ovvero:
 \begin{itemize}
-	\item Una cifra;
-	\item Un prestito uscente.
+	\item \textbf{CF:} non viene impostato sul riporto effettivamente generato dalla somma (in quanto 1) sarebbe irrilevante; 2) non siamo nemmeno sicuri che il complemento a 2 sia il modo in cui viene effettivamente svolta la sottrazione a livello ALU), ma sul \textbf{prestito} che si sarebbe dovuto fare nel caso si avesse avuto $Y > X$. In altre parole, nel caso di numeri naturali, il CF rappresenta se la somma è un naturale (quando è 0) o se è un intero negativo (quando è 1).
+	\item \textbf{OF:} rappresenta l'overflow, ergo la non rappresentabilità, nel caso di sottrazioni intere, e guarda come per le somme, ai segni (il MSB):
+		\begin{itemize}
+		\item \textbf{Segni concordi:} non c'è overflow;
+		\item \textbf{Segni discordi:} il risultato è corretto se è concorde col minuendo.
+		\end{itemize}	
+	\item \textbf{ZF:} si attiva se la rappresentazione $S$ finale è uguale a 0 (si ricorda che lo 0 è tale sia in base che in complemento a 2);
+	\item \textbf{SF:} si attiva se il MSB è uguale a 1, che in complemento a due significa segno negativo.
 \end{itemize}
 
-Il carry flag (CF) memorizza il prestito.
-Se alla fine dell'operazione il CF è impostato, significa che il risultato è un numero intero.
-
-Questo funziona anche sugli interi: in questo caso, come prima, non si controlla il CF, ma l'OF, che conterrà la seguente informazione:
-\begin{itemize}
-	\item La differenza di numeri concordi è sempre rappresentabile;
-	\item La differenza di numeri discordi è rappresentabile solo se il risultato ha il segno del minuendo.
-\end{itemize}
-
-Il ZF e il SF vengono attivati secondo le regole già note.
-
+Si ricorda un'ultima volta: la circuiteria per la somma (e per la sottrazione) non è diversa fra naturali ed interi: è controllando i flag giusti che si riesce ad ottenere informazioni riguardo all'esito della somma, e i flag giusti sono noti solo se lo è il tipo di rappresentazione degli operandi (nozione che conosce solo il programmatore).
 \subsubsection{DECREMENT}
 \begin{itemize}
 	\item \textbf{Formato:} \lstinline|DEC destination|

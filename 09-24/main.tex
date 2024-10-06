@@ -190,7 +190,7 @@ Il processore implementa effettivamente un ciclo fetch-execute dove preleva la p
 Il linguaggio macchina (LM) è dato dal contenuto effettivo della memoria che contiene le istruzioni, ergo una sequenza di zero e uno.
 Il linguaggio assembler adotta una sintassi simbolica per il linguaggio macchina: ad esempio, \texttt{MOV \%AX, \%BX}.
 
-Il processo di trasformazione dall'assembler all'LM si chiama \textbf{assemblaggio}, mentre il processo di traasformazione da un linguaggio ad alto livello all'assembler si chiama \textbf{compilazione}.
+Il processo di trasformazione dall'assembler all'LM si chiama \textbf{assemblaggio}, mentre il processo di trasformazione da un linguaggio ad alto livello all'assembler si chiama \textbf{compilazione}.
 
 \subsubsection{Generalità sull'assembler}
 Si dice che assembler è un linguaggio a basso livello.
@@ -268,7 +268,7 @@ $$
 x =  b_{n-1} \cdot 2^{n-1} + b_{n-2} \cdot 2^{n-2} + ... + b_1 \cdot 2 + b_0 = \sum_{i=0}^{n-1} b_n \cdot 2^i
 $$
 
-Il bit più a sinistra è il Most Significant Bit (MSB), cioé $b_{n-1}$, quello più a destra il Least Significant Bit (LSD) cioè $b_0$.
+Il bit più a sinistra è il Most Significant Bit (MSB), cioé $b_{n-1}$, quello più a destra il Least Significant Bit (LSD), cioè $b_0$.
 
 \par\medskip
 \noindent
@@ -282,7 +282,7 @@ Per portare un'intero in base 10 nella sua rappresentazione binaria, si usa l'al
     \STATE \textbf{Output:} $X$ rappresentazione in base 2
     
     % Body
-    \STATE Inizializza $q \gets x$, $r \gets 0$, and $i \gets 0$ % Initialize variables
+    \STATE Inizializza $q \gets x$, $r \gets 0$, e $i \gets 0$ % Initialize variables
     \STATE Crea un'array vuota $R$ per i resti 
 
     \WHILE{$q \neq 0$}
@@ -292,7 +292,7 @@ Per portare un'intero in base 10 nella sua rappresentazione binaria, si usa l'al
         \STATE $i \gets i + 1$ % Increment index
     \ENDWHILE
     
-    \STATE Gli $R[n-1], R[n-2], ..., R[0]$ rimasti (letti al contrario) sono le cifre di $X$.
+    \STATE Gli $R[n-1], R[n-2], ..., R[0]$ rimasti (quindi letti al contrario) sono le cifre di $X$.
 \end{algorithmic}
 \end{algorithm}
 
@@ -391,7 +391,7 @@ da cui notiamo la relazione fra un'intero e il naturale che lo rappresenta in co
 Vale la pena notare alcuni valori notevoli del complemento a 2 su $n$ bit.
 \begin{itemize}
 	\item Innanzitutto, 0 rimane 0, ergo una fila di di $n$ zeri.
-	\item Uno zero seguito da $n-1$ uni è il numero più positivo positivo, ergo $2^{n-1} -1$.
+	\item Uno zero seguito da $n-1$ uni è il numero più positivo possibile, ergo $2^{n-1} -1$.
 	\item Aggiungendo uno, si arriva ad un uno seguito da $n - 1$ zeri, che è il numero negativo possibile, ergo $-2^{n-1}$. 
 		Notare che questo combacia col prendere il numero più positivo $2^{n-1} -1$, e ricavare uno meno del suo opposto $-2^{n-1}$, che abbiamo appurato essere ciò che accade quando si complementa (e infatti i due numeri sono l'uno il complemento dell'altro).
 	\item Infine, una sequenza di $n$ uno rappresenta il più piccolo numero negativo, ergo $-1$.
@@ -493,7 +493,7 @@ Il processore può accedere (leggere/scrivere) a:
 \end{itemize}
 
 Per gli accessi 16/32 bit si usa l'indirizzo più piccolo delle 2/4 locazioni.
-Si ricorda che l'indirizzo più grande contiene i bit più significativi.
+Si ricorda che l'indirizzo più grande contiene i bit più significativi (lo spazio di memoria è \textit{little-endian}).
 
 Gli indirizzi di memoria assembler sono solo simbolici, e vengono tradotti dall'assemblatore, e in parte runtime.
 Questo significa che non si può accedere a memoria appartenente al sistema operativo, o memoria fuori dai limiti fisici del sistema, ecc...
@@ -502,10 +502,8 @@ Questo significa che non si può accedere a memoria appartenente al sistema oper
 Lo spazio di Input/Output è formato da $2^{16}$, ovvero 64k, locazioni o \textbf{porte}.
 Ogni porta ha una capacità di un byte ed è indirizzata da un numero di 16 bit.
 
-Il processore accede alle porte attraverso operazioni particolari di lettura o scrittura (in o out).
+Il processore accede alle porte attraverso operazioni particolari di lettura o scrittura (\textsf{\textbf{IN}} o \textsf{\textbf{OUT}}).
 Spesso le porte sono configurate per un solo tipo di operazione: sola lettura o sola scrittura.
-
-\par\smallskip
 
 Le locazioni di memoria sono solitamente identiche fra di loro, le porte di I/O no.
 Indirizzi diversi significano dispositivi diversi, e si rende quindi necessario conoscere fisicamente gli indirizzi.
@@ -563,10 +561,10 @@ Da questo si ha che le istruzioni in memoria vengono eseguite sequenzialmente ne
 \item L'\textbf{EF} viene detto \textbf{extended flag}.
 Consiste di 32 elementi detti \textbf{flag}, fra cui ricordiamo:
 \begin{itemize}
-	\item \textbf{OF:} flag di overflow (traboccamento) delle operazioni aritmetiche;
-	\item \textbf{SF:} flag di segno, impostato quando l'ultima operazione restituisce un complemento a 2 con $MSB = 1$ (ergo negativo);
+	\item \textbf{OF:} flag di overflow (traboccamento) delle operazioni aritmetiche, si imposta se l'ultima operazioni, presi gli operandi come interi, ha prodotto un risultato non rappresentabile su $n$ bit;
+	\item \textbf{SF:} flag di segno, impostato quando l'ultima operazione restituisce un complemento a 2 con MSB $= 1$ (ergo negativo);
 	\item \textbf{ZF:} flag zero, che viene impostato quando l'ultima operazione restituisce qualcosa di nullo;
-	\item \textbf{CF:} flag di carry (riporto), che viene impostato quando l'ultima operazione richiede un riporto o un prestito.
+	\item \textbf{CF:} flag di carry (riporto), che viene impostato quando l'ultima operazione richiede un riporto o un prestito, ergo presi gli operandi come naturali il risultato non è rappresentabile su $n$ bit.
 \end{itemize}
 
 \end{itemize}
