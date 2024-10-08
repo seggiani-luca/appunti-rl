@@ -1,0 +1,755 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 08-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Descrizione funzionale}
+La caratteristica più importante di una rete combinatoria è la funzione $F$, cioé la descrizione funzionale.
+Esistono più modi per esprimere questa funzione:
+\begin{itemize}
+	\item A parole;
+	\item Usando notazioni testuali (e..g. il Verilog);
+	\item Attraverso \textbf{tabelle di verità}.
+		In una tabella di verità contiene due insiemi di colonne: gli ingressi e le uscite.
+		Ogni riga mostra una configurazione di stati di ingresso e il corrispondente stato d'uscita. Ad esempio:
+	\begin{table}[H]
+		\center 
+		\begin{tabular} { c  c  c | c c }
+			$x_2$ & $x_1$ & $x_0$ & $z_1$ & $z_0$ \\ 
+			\hline 
+			$0$ & $0$ & $0$ & $0$ & $0$ \\
+			$0$ & $0$ & $1$ & $-$ & $1$ \\
+			$0$ & $1$ & $0$ & $1$ & $0$ \\
+			...
+		\end{tabular}
+	\end{table}
+	Si dice che la variabile di uscita \textbf{riconosce} particolari stati quando si attiva in presenza di essi.
+	Inoltre, i trattini indicano stati \textbf{non specificati}, in inglese DC, \textit{don't care}.
+	Questi non equivalgono alla fascia di indeterminazione, ma a uno dei due stati accettati, anche se non è importante quale.
+	I \textit{don't care} vanno conservati, e non fissati a variabili come $0$ o $1$, in quanto è importante mantenere il funzionamento interno delle reti il più semplice possibile. 
+\end{itemize}
+
+\subsubsection{Descrizione e sintesi}
+Una \textbf{descrizione} di una rete deve essere formale, in modo che si possa capire esattamente cosa fa quella rete.
+La \textbf{sintesi} di una rete è il progetto stesso di realizzazione della rete, cioè quali componenti combinare in quale modo, ecc...
+Prima si fa la descrizione, e poi la sintesi.
+
+Notiamo una proprietà fondamentale: ogni rete combinatoria di $N$ ingressi e $M$ uscite può essere realizzata interconnettendo $M$ reti combinatorie ad $N$ ingressi ed una uscita.
+Questo ci permette di trattare tutte le reti con reti con una sola uscita.
+
+\subsection{Reti a 0 ingressi}
+Le reti a 0 ingresso di uscita si chiamano \textbf{generatori di costante}, e rappresentano un caso degenere.
+Si indicano come: 
+
+\begin{center}
+	\begin{circuitikz}
+		\draw[->] (0.5,0) to (1,0);
+    \draw (0,0) node[draw, rectangle, minimum width = 1cm, minimum height = 1cm] {1};
+
+		\draw[->] (2.5,0) to (3,0);
+    \draw (2,0) node[draw, rectangle, minimum width = 1cm, minimum height = 1cm] {0};
+	\end{circuitikz}
+\end{center}
+
+La loro uscita chiaramente vale $1$ o $0$ costante.
+Fisicamente, i generatori di costante si realizzano collegando resistori in serie al VCC (genera $1$) o a massa (genera $0$), ergo:
+
+\begin{center}
+	\begin{circuitikz}
+		\draw[->] (1,0) to (1.5,0);
+    \draw (0,0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm] {};
+
+		\draw (0,-1) node[below] {1};
+		
+		\draw (0, 1) to[ american voltage source, l=VCC, transform shape, scale=0.5] (0,0);
+		\draw (0,0) to [ R, transform shape, scale=0.5] (2,0);
+
+	\end{circuitikz}
+	\hspace{1cm}
+	\begin{circuitikz}
+		\draw[->] (1,0) to (1.5,0);
+    \draw (0,0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm] {};
+
+		\draw (0,-1) node[below] {0};
+
+		\draw (0,0) to [ R, transform shape, scale=0.5] (2,0);
+		\draw (0, 0) node[ground] {};
+
+	\end{circuitikz}
+\end{center}
+
+\subsection{Reti a 1 ingresso}
+\subsubsection{Invertitore}
+L'invertitore è una rete descritta dalla tabella di verità:
+
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c | c }
+		$x$ & $z$ \\ 
+		\hline 
+		$0$ & $1$ \\
+		$1$ & $0$ \\
+	\end{tabular}
+\end{table}
+
+e indicata come:
+
+\begin{center}
+	\begin{circuitikz}
+			\draw
+			(0,0) node[not port] (mynot) {};
+	\end{circuitikz}
+\end{center}
+
+Essenzialmente nega il suo ingresso.
+
+\subsubsection{Elemento neutro}
+L'elemento neutro, detto anche \textit{buffer}, è una rete descritta dalla tabella di verità:
+
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c | c }
+		$x$ & $z$ \\ 
+		\hline 
+		$0$ & $0$ \\
+		$1$ & $1$ \\
+	\end{tabular}
+\end{table}
+
+e indicata come:
+
+\begin{center}
+	\begin{circuitikz}
+			\draw
+			(0,0) node[buffer port] (mynot) {};
+	\end{circuitikz}
+\end{center}
+
+Lascia il suo ingresso invariato.
+Può avere un utilità come rete di rallentamento, in quanto, inevitabilmente, si perde tempo per attraversarla (pensa alla NOP).
+Questo è utile per le temporizzazioni delle reti.
+
+Inoltre, dal punto di vista elettrico, l'elemento neutro ha anche un utilità per la \textbf{rigenerazione} dei segnali.
+Infatti, essendo collegato a massa e al VCC, può prendere segnali scadenti (vicini alla fascia di indeterminazione) e trasformarli in segnali di buona qualità (vicini al fondoscala).
+Questa proprietà, veramente, è comune a tutte le reti logiche, ma l'elemento neutro è l'unico che non ha altri effetti collaterali.
+
+\subsubsection{Reti costanti}
+Si possono interpretare i generatori di costante come reti ad un ingresso degeneri.
+Effettivamente, restano tali a se stesse, in quanto gli ingressi sono ignorati.
+Le loro tabelle di verità sono:
+
+\begin{center}
+\begin{minipage}[t]{0.2\textwidth} % Left half of the page
+	Generatore di 1:
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c | c }
+		$x$ & $z$ \\ 
+		\hline 
+		$0$ & $1$ \\
+		$1$ & $1$ \\
+	\end{tabular}
+\end{table}
+\end{minipage}%
+\hspace{2cm}
+\begin{minipage}[t]{0.2\textwidth} % Right half of the page
+	Generatore di 0:
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c | c }
+		$x$ & $z$ \\ 
+		\hline 
+		$0$ & $0$ \\
+		$1$ & $0$ \\
+	\end{tabular}
+\end{table}
+\end{minipage}
+\end{center}
+
+\subsection{Reti a 2 ingressi}
+La prima domanda da porsi quando si parla di reti a 2 (come $N$) ingressi, è quante reti possiamo creare in tutto.
+Su $N$ ingressi, la tabella di verità avrà $2^N$ righe.
+Le configurazioni possibili di $0$ e $1$ su $2^N$ righe sono $2^{2^N}$.
+Ergo, nel caso $N=2$, abbiamo $2^{2^2} = 16$ possibili combinazioni, che sono:
+
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c  c | c >{\columncolor{green!40!white}}c c c 
+										c c >{\columncolor{red!40!white}}c >{\columncolor{blue!40!white}}c
+										>{\columncolor{purple!40!white}}c >{\columncolor{orange!40!white}}c c c 
+										c c >{\columncolor{cyan!40!white}}c c }
+		$x_1$ & $x_0$ & $z^0$ & $z^1$ & $z^2$ & $z^3$ & $z^4$ & $z^5$ & $z^6$ & $z^7$ & $z^8$ & $z^9$ & $z^{10}$ & $z^{11}$ & $z^{12}$ & $z^{13}$ & $z^{14}$ & $z^{15}$ \\ 
+		\hline 
+		0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\  
+		0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\ 
+		1 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 \\ 
+		1 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 1 \\ 
+	\end{tabular}
+\end{table}
+
+Ad alcune di queste corrispondono nomi speciali.
+Vediamole nel dettaglio:
+
+\subsubsection{Porta AND}
+La porta AND, indicata in \color{green!50!black} $z^1$ \color{black}, corrisponde al $\wedge$ logico, ergo $z = 1 \Leftrightarrow x_0 = x_1 = 1$.
+Si indica come:
+
+\begin{center}
+	\begin{circuitikz}
+			\draw
+			(0,0) node[and port] (mynot) {};
+	\end{circuitikz}
+\end{center}
+
+e ha tabella di verità:
+\begin{table}[H]
+	\center
+	\begin{tabular} { c  c | c }
+		$x_1$ & $x_0$ & $z$ \\ 
+		\hline 
+		0 & 0 & 0 \\ 
+		0 & 1 & 0 \\ 
+		1 & 0 & 0 \\ 
+		1 & 1 & 1 \\
+	\end{tabular}
+\end{table}
+
+\subsubsection{Porta XOR}
+La porta XOR, indicata in \color{red!50!black} $z^6$ \color{black}, corrisponde all'\textit{aut} logico, cioè esclusivo, ergo $z = 1 \Leftrightarrow x_0 \neq x_1$.
+Si indica come:
+
+\begin{center}
+	\begin{circuitikz}
+			\draw
+			(0,0) node[xor port] (mynot) {};
+	\end{circuitikz}
+\end{center}
+
+e ha tabella di verità:
+\begin{table}[H]
+	\center
+	\begin{tabular} { c  c | c }
+		$x_1$ & $x_0$ & $z$ \\ 
+		\hline 
+		0 & 0 & 0 \\ 
+		0 & 1 & 1 \\ 
+		1 & 0 & 1 \\ 
+		1 & 1 & 0 \\
+	\end{tabular}
+\end{table}
+
+\subsubsection{Porta OR}
+La porta OR, indicata in \color{blue!50!black} $z^7$ \color{black}, corrisponde al $\lor$ logico, ergo $z = 0 \Leftrightarrow x_0 = x_1 = 0$.
+Si indica come:
+
+\begin{center}
+	\begin{circuitikz}
+			\draw
+			(0,0) node[or port] (mynot) {};
+	\end{circuitikz}
+\end{center}
+
+e ha tabella di verità:
+\begin{table}[H]
+	\center
+	\begin{tabular} { c  c | c }
+		$x_1$ & $x_0$ & $z$ \\ 
+		\hline 
+		0 & 0 & 0 \\ 
+		0 & 1 & 1 \\ 
+		1 & 0 & 1 \\ 
+		1 & 1 & 1 \\
+	\end{tabular}
+\end{table}
+
+\subsubsection{Porta NOR}
+La porta NOR, indicata in \color{purple!50!black} $z^8$ \color{black}, corrisponde alla negazione dell'$\lor$ logico, ergo $z = 1 \Leftrightarrow x_0 = x_1 = 0$.
+Si indica come:
+
+\begin{center}
+	\begin{circuitikz}
+			\draw
+			(0,0) node[nor port] (mynot) {};
+	\end{circuitikz}
+\end{center}
+
+e ha tabella di verità:
+\begin{table}[H]
+	\center
+	\begin{tabular} { c  c | c }
+		$x_1$ & $x_0$ & $z$ \\ 
+		\hline 
+		0 & 0 & 1 \\ 
+		0 & 1 & 0 \\ 
+		1 & 0 & 0 \\ 
+		1 & 1 & 0 \\
+	\end{tabular}
+\end{table}
+
+\subsubsection{Porta XNOR}
+La porta XNOR, indicata in \color{orange!50!black} $z^9$ \color{black}, corrisponde alla negazione dell'\textit{aut} logico, ergo $z = 1 \Leftrightarrow x_0 = x_1$.
+Si indica come:
+
+\begin{center}
+	\begin{circuitikz}
+			\draw
+			(0,0) node[xnor port] (mynot) {};
+	\end{circuitikz}
+\end{center}
+
+e ha tabella di verità:
+\begin{table}[H]
+	\center
+	\begin{tabular} { c  c | c }
+		$x_1$ & $x_0$ & $z$ \\ 
+		\hline 
+		0 & 0 & 1 \\ 
+		0 & 1 & 0 \\ 
+		1 & 0 & 0 \\ 
+		1 & 1 & 1 \\
+	\end{tabular}
+\end{table}
+
+\subsubsection{Porta NAND}
+La porta NAND, indicata in \color{cyan!50!black} $z^14$ \color{black}, corrisponde alla negazione dell'$\wedge$ logico, ergo $z = 0 \Leftrightarrow x_0 = x_1 = 1$.
+Si indica come:
+
+\begin{center}
+	\begin{circuitikz}
+			\draw
+			(0,0) node[nand port] (mynot) {};
+	\end{circuitikz} 
+\end{center}
+
+e ha tabella di verità:
+\begin{table}[H]
+	\center
+	\begin{tabular} { c  c | c }
+		$x_1$ & $x_0$ & $z$ \\ 
+		\hline 
+		0 & 0 & 1 \\ 
+		0 & 1 & 1 \\ 
+		1 & 0 & 1 \\ 
+		1 & 1 & 0 \\
+	\end{tabular}
+\end{table}
+
+\par\smallskip
+Si dovrebbe essere notato che un pallino finale indica negazione.
+A volte si usa solo questa notazione, invece di tutta la porta NOT.
+
+\subsubsection{Casi degeneri}
+Alcuni casi speciali della tabella delle possibili reti a due porte sono degeneri: abbiamo due generatori di costante ($z^0$ e $z^{15}$), due elementi neutri, rispettivamente su $x_1$ e $x_0$ ($z^3$ e $z_5$), e due inversori sugli stessi ingressi ($z_{10}$ e $z_{12}$).
+
+\subsection{AND e OR a più ingressi}
+Posso pensare di estendere AND e OR ad $N$ ingressi:
+\begin{itemize}
+	\item \textbf{AND a $N$ ingressi:} l'uscita vale $1$ se tutti gli $N$ ingressi valgono $1$;
+	\item \textbf{OR a $N$ ingressi:} l'uscita vale $1$ se almeno un'ingresso vale $1$;
+\end{itemize}
+
+Questo può essere realizzato concatenando più porte logiche dello stesso tipo, come segue:
+
+\begin{center}
+	\begin{circuitikz} 
+		\node (short) at (-1.5, 1.28) {}; 
+		\draw (0,0) node[and port] (myand2) {}
+		(2,1) node[and port] (myand3) {}
+		(short) -- (myand3.in 1)
+		(myand2.out) -- (myand3.in 2);
+	\end{circuitikz} 
+\end{center}
+
+La dimostrazione è semplice dalla tabella di verità, o dalle proprietà degli operatori logici.
+
+Una nota va fatta sulle combinazioni di più di 3 ingressi, infatti una rete del genere è sconveniente:
+
+\begin{center}
+	\begin{circuitikz} 
+		\node (short1) at (-3.5, 1.28) {}; 
+		\node (short2) at (-3.5, 0.28) {}; 
+		\draw (0,0) node[and port] (myand1) {}
+		(-2,-1) node[and port] (myand2) {}
+		(2,1) node[and port] (myand3) {}
+		(short1) -- (myand3.in 1)
+		(short2) -- (myand1.in 1)
+		(myand2.out) -- (myand1.in 2)
+		(myand1.out) -- (myand3.in 2);
+	\end{circuitikz} 
+\end{center}
+
+
+in quanto il segnale deve attraversare al massimo 3 livelli di logica, mentre disponendo le porte come:
+
+\begin{center}
+	\begin{circuitikz} \draw
+			(0,2) node[and port] (myand1) {}
+			(0,0) node[and port] (myand2) {}
+			(2,1) node[and port] (myand3) {}
+			(myand1.out) -- (myand3.in 1)
+			(myand2.out) -- (myand3.in 2);
+	\end{circuitikz} 
+\end{center}
+
+il segnale dovrà attraversare al massimo 2 livelli di logica.
+
+Conviene quindi disporre gli $N$ ingressi e le relative porte come un'albero binario bilanciato, in modo da minimizzare gli attraversamenti di livelli di logica.
+Si noti che questo discorso vale per AND e OR: non per NAND, NOR, XOR o XNOR. 
+
+Possiamo osservare velocemente cosa accade se si collegano queste porte fra di loro:
+\begin{itemize}
+	\item \textbf{NAND:} un singolo NAND può formare un NOT quando i suoi ingressi sono uniti insieme.
+		Se si mettono 2 NAND in serie (a \textit{cascata}) in questo modo, si ottiene di nuovo un AND;
+	\item \textbf{NOR:} un singolo NOR può formare un NAND nello stesso modo del NAND.
+		Se si mettono 2 NOR a cascata, si ottiene di nuovo un NOR;
+	\item \textbf{XOR:} con $\geq 2$ XOR, si crea effettivamente un controllore di parità, ergo una rete che si attiva quando un numero dispari dei suoi ingressi sono accesi;
+	\item \textbf{XNOR:} con $\geq 2$ XNOR, si ha l'opposto che con gli XOR: si crea una rete che si attiva quando un numero pari dei suoi ingressi sono accesi.
+\end{itemize}
+
+Queste porte si indicano solitamente come con gli input su unica orizzontale, che risulta più compatto.
+
+\subsection{Algebra di Boole}
+L'algebra di Boole adopera gli operatori logici conosciuti, applicati ad elementi del campo binario $GF(2) = \{0 , 1\}$
+
+Vediamo questi operatori:
+\begin{itemize}
+	\item \textbf{Complemento logico:} si indica come $\bar{x}$, oppure $!x$ o $/x$. 
+		Si definisce come: $$ \bar{0} = 1, \quad \bar{1} = 0 $$
+	\item\ \textbf{Somma logica:} si indica con $x + y$, e ha tabella di verità:
+	\begin{table}[H]
+		\center
+		\begin{tabular} { c  c | c }
+			$x$ & $y$ & $ x + y $ \\ 
+			\hline 
+			0 & 0 & 0 \\ 
+			0 & 1 & 1 \\ 
+			1 & 0 & 1 \\ 
+			1 & 1 & 1 \\
+		\end{tabular}
+	\end{table}
+		cioè equivale all'OR.
+	\item \textbf{Prodotto logico:} si indica con $x \cdot y$, e ha tabella di verità:
+	\begin{table}[H]
+		\center
+		\begin{tabular} { c  c | c }
+			$x$ & $y$ & $ x \cdot y $ \\ 
+			\hline 
+			0 & 0 & 0 \\ 
+			0 & 1 & 0 \\ 
+			1 & 0 & 0 \\ 
+			1 & 1 & 1 \\
+		\end{tabular}
+	\end{table}
+		cioè equivale all'AND.
+
+\end{itemize}
+
+\par\smallskip
+
+Su questi operatori valgono le proprietà:
+\begin{enumerate}
+	\item \textbf{Involutiva del complemento:} $\bar{\bar{x}} = x$;
+	\item \textbf{Commutativa della somma e del prodotto:} $ x + y = y + x, \quad x \cdot y = y \cdot x$;
+	\item \textbf{Associativa della somma:} $ x + y + z = (x + y) + z = x + (y + z)$;
+	\item \textbf{Associativa del prodotto:} $ x \cdot y \cdot z = (x \cdot y) \cdot z = x \cdot (y \cdot z)$;
+	\item \textbf{Distributiva della somma rispetto al prodotto:} $ x \cdot (y + z) = (x \cdot y) + (x \cdot z) $;
+	\item \textbf{Distributiva del prodotto rispetto alla somma:} $ x + (y \cdot z) = (x + y) \cdot (x + z) $. Bisogna fare attenzione in quanto questa non vale in $\mathbb{R}$;
+	\item \textbf{Complementazione:} $ x \cdot \bar{x} = 0, \quad x + \bar{x} = 1 $;
+	\item \textbf{Unione e intersezione:} $ x + 0 = x, \quad x + 1 = 1 $, cioè $0$ è l'elemento neutro e $1$ l'elemento assorbente della somma (non lo è in $\mathbb{R}$); \\
+																				$ x \cdot 0 = 0, \quad x \cdot 1 = x $, cioè $1$ è l'elemento neutro e $0$ l'elemento assorbente del prodotto;
+	\item \textbf{Idempotenza:} $x + x = x$, \quad $x \cdot x = x$, altra che non vale in $\mathbb{R}$;
+	\item \textbf{Leggi di De Morgan:} $\overline{x \cdot x} = \bar{x} + \bar{x}$ e $\overline{x + x} = \bar{x} \cdot \bar{x}$.
+\end{enumerate}
+
+\subsubsection{Teoremi di De Morgan}
+Le leggi di De Morgan comuni della logica si estendono ad $N$ variabili come:
+\begin{enumerate}
+	\item $\overline{x_0 \cdot x_1 \cdot ... \cdot x_n} = \bar{x}_0 + \bar{x}_1 + ... + \bar{x}_n$
+	\item $\overline{x_0 + x_1 + ... + x_{n}} = \bar{x}_0 \cdot \bar{x}_1 \cdot ... \cdot \bar{x}_n$
+\end{enumerate}
+
+\noindent
+\textbf{\textsf{Dimostrazione per induzione}} \\
+Richiamiamo le basi dell'induzione:
+\begin{itemize}
+	\item Si dimostra che una proprietà vale per un certo numero $n_0$ (passo base);
+	\item Si dimostra che se vale per un certo $n \geq n_0$, allora vale anche per $n + 1$.
+\end{itemize}
+
+Partiamo con le dimostrazioni classiche ottenute con le tabelle di verità:
+
+\begin{table}[H]
+	\center
+	\begin{tabular} { c  c | c | c | c | c | c }
+		$x$ & $y$ & $ x \cdot y $ & $\overline{x \cdot y}$ & $\bar{x}$ & $\bar{y}$ & $\bar{x} + \bar{y}$ \\ 
+		\hline 
+		0 & 0 & 0 & 1 & 1 & 1 & 1 \\  
+		0 & 1 & 0 & 1 & 1 & 0 & 1 \\ 
+		1 & 0 & 0 & 1 & 0 & 1 & 1 \\ 
+		1 & 1 & 1 & 0 & 0 & 1 & 0
+	\end{tabular}
+\end{table}
+
+che ci portano a $n_0 = 2$.
+Posso quindi porre l'ipotesi:
+
+$$
+\overline{x_0 \cdot ... \cdot x_{n-1}} = \bar{x}_0 + ... + \bar{x}_{n-1}
+$$
+
+e la tesi:
+
+$$
+\overline{x_0 \cdot ... \cdot x_{n-1} \cdot x_n} = \bar{x}_0 + ... + \bar{x}_{n-1} + \cdot x_n
+$$
+
+A questo punto faccio il passo induttivo, sfruttando l'associatività del prodotto (o della somma), e quindi riscrivendo la tesi come:
+
+$$
+\overline{\alpha \cdot x_n}, \quad \alpha = x_0 + ... x_{n-1} 
+$$
+dove notiamo la variabile introdotta $\alpha$, se complementata, rispetta:
+$$
+\bar{\alpha} = \overline{x_0 \cdot ... \cdot x_{n-1}} = \bar{x}_0 + ... + \bar{x}_{n-1}
+$$
+dall'ipotesi.
+
+Possiamo quindi svolgere il passaggio:
+$$
+\overline{\alpha \cdot x_n} = \bar{\alpha} + \bar{x}_n =  \bar{x}_0 + ... + \bar{x}_{n-1} + \bar{x}_n
+$$
+che conferma la tesi.
+
+\subsubsection{Algebra di Boole e reti combinatorie}
+Esiste una corrispondenza fra l'algebra di Boole e le reti combinatorie.
+In particolare, si ha che:
+\begin{itemize}
+	\item \textbf{Data una rete combinatoria}, (comunque complessa), è sempre possibile trovare un'espressione booleana che mette in relazione ogni sua uscita con gli ingressi (in verità un'espressione per ogni uscita);
+	\item \textbf{Data un'espressione booleana}, p sempre possibile sintetizzare una rete combinatoria (ad un'uscita) in cui la relazione tra ingresso ed uscita data è dall'espressione.
+\end{itemize}
+
+Si noti che, effettivamente, espressioni logiche equivalenti $\Leftrightarrow$ reti logiche che svolgono lo stesso compito, ma non per questo l'equivalenza è totale: ci conviene creare reti che usano meno componenti possibili, in quanto queste le rende più affidabili, più economiche e meno dispendiose di energia.
+Le proprietà dell'algebra di Boole possono quindi essere usate per ridurre il numero di porte logiche, attraverso un processo che chiameremo \textbf{minimizzazione}.
+
+\end{document}
