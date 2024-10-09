@@ -1,0 +1,514 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 09-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Decoder}
+Un decoder è una rete con $N$ ingressi e $p$ uscite con $p = 2^N$.
+Si indica come:
+
+\begin{center}
+	\begin{circuitikz}
+		\node[trapezium, trapezium angle=60, minimum height=1cm, minimum width=2cm, draw] (decoder) at (0,0) {};
+		\node (xn) at (-0.5,1.5) {$x_{N-1}$};
+		\node (x) at (0.5,1.5) {$x_0$};
+		
+		\draw (xn) -- (-0.5, 0.5);
+		\draw (x) -- (0.5, 0.5);
+
+		\node (zn) at (-1,-1.5) {$z_{p-1}$};
+		\node (z) at (1,-1.5) {$z_0$};
+		\node (j) at(0, -1.5) {$z_j$};
+
+		\draw (zn) -- (-1, -0.5);
+		\draw (z) -- (1, -0.5);
+		\draw (j) -- (0, -0.5);
+
+		\node at (0.11, 1.45) {$...$};
+		\node at (-0.4, -1.55) {$...$};
+		\node at (0.5, -1.55) {$...$};
+
+	\end{circuitikz}
+\end{center}
+
+La sua legge di corrispondenza stabilisce che ogni uscita riconosce uno ed un solo stato di ingresso, in particolare l'uscita $j$-esima ($z_j$) riconosce lo stato di ingresso i cui bit sono la codifica di $j$ in base 2, cioè:
+$$
+(x_{n-1}, ..., x_0)_{2} = j
+$$
+
+Ad esempio, un decoder da 2 a 4 ha tabella di verità:
+
+\begin{table}[h!]
+	\center 
+	\begin{tabular} { c c | c c c c }
+		$x_1$ &$x_0$ &$z_0$ &$z_1$ &$z_2$ &$z_3$ \\
+	\hline 
+	0 & 0 & 1 & 0 & 0 & 0 \\
+	0 & 1 & 0 & 1 & 0 & 0 \\
+	1 & 0 & 0 & 0 & 1 & 0 \\
+	1 & 1 & 0 & 0 & 0 & 1 \\
+	\end{tabular}
+\end{table}
+che equivale alla codifica \textit{one-hot} del binario in ingresso (cioè ogni numero codificato da $n$ bit viene mandato al $j$-esimo di $p$ output che corrispondono uno ad uno ai numeri rappresentabili).
+
+Vediamo di passare da questa descrizione ad una sintesi della rete. Abbiamo che:
+\[
+	\begin{cases}
+			
+z_3 = x_1 \cdot x_0 \\ 
+z_2 = x_1 \cdot \overline{x}_0 \\ 
+z_1 = \overline{x_1} \cdot x_0 \\ 
+z_0 = \overline{x_1} \cdot \overline{x_0} \\ 
+	\end{cases}
+\]
+cioè ogni "indice" del decoder corrisponde al prodotto dei due ingressi opportunamente negati: l'ultima uscità avra tutti i bit attivi (sarebbe $2^N -1$ considerando numeri naturali), ergo prende il prodotto di tutti gli ingressi.
+Di contro, la prima uscita ($0$) avrà tutti i bit disattivi, quindi prenderà il prodotto di tutti gli ingressi negati.
+Gli altri numeri vengono indirizzati prendendo il prodotto e complementando i bit che quel particolare numero si aspetterebbe come $0$.
+Notiamo che, sebbene si abbiano 4 negazioni, nella rete fisica conviene negare gli input in entrata risparmiando 2 invertitori.
+
+Per le figure, rimandiamo a \url{https://github.com/Guray00/IngegneriaInformatica/blob/master/SECONDO%20ANNO/I%20SEMESTRE/Reti%20Logiche/Diapositive%20OCR/Reti%20combinatorie%20ocr.pdf}.
+
+Generalizziamo quindi questa struttura a decoder da $N$ a $2^N$, applicando quanto detto prima. Si avrà:
+\[
+	\begin{cases}
+		z_0 = \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot \overline{x_0}	\\
+		z_1 = \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot x_0	\\
+		... \\ 
+		z_{p-2} = x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot \overline{x_0} \\
+		z_{p-1} = x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot x_0	\\
+	\end{cases}
+\]
+
+\subsubsection{Decoder con enabler}
+Il problema dei decoder come appena descritti è che non sono espandibili: non si possono costruire, come avevamo visto per i gli AND o gli OR, reti di più decoder combinati.
+Introduciamo per questo motivo il decoder con \textbf{enabler}:
+
+\begin{center}
+	\begin{circuitikz}
+		\node[trapezium, trapezium angle=60, minimum height=1cm, minimum width=2cm, draw] (decoder) at (0,0) {};
+		\node (xn) at (-0.5,1.5) {$x_{N-1}$};
+		\node (x) at (0.5,1.5) {$x_0$};
+		
+		\draw (xn) -- (-0.5, 0.5);
+		\draw (x) -- (0.5, 0.5);
+
+		\node (zn) at (-1,-1.5) {$z_{p-1}$};
+		\node (z) at (1,-1.5) {$z_0$};
+		\node (j) at(0, -1.5) {$z_j$};
+
+		\draw (zn) -- (-1, -0.5);
+		\draw (z) -- (1, -0.5);
+		\draw (j) -- (0, -0.5);
+
+		\node (e) at(-2, 0) {$e$};
+		\draw (e) -- (-0.79,0);
+
+		\node at (0.11, 1.45) {$...$};
+		\node at (-0.4, -1.55) {$...$};
+		\node at (0.5, -1.55) {$...$};
+
+	\end{circuitikz}
+\end{center}
+
+Questi decoder hanno $N + 1$ ingressi, cioè quelli normali più l'enabler, che ha il compito di "accendere" il decoder stesso.
+Fisicamente, potremmo semplicemente inserire il decoder $e$ come ingresso aggiuntivo agli AND già predisposti, per avere che:
+\[
+	z_i =
+	\begin{cases}
+			y_i \quad e = 1 \\
+			0 \quad \ e = 0
+	\end{cases}
+\]
+e quindi:
+\[
+	\begin{cases}
+		z_0 = e \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot \overline{x_0}	\\
+		z_1 = e \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot x_0	\\
+		... \\ 
+		z_{p-2} = e \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot \overline{x_0}	\\
+		z_{p-1} = e \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot x_0	\\
+	\end{cases}
+\]
+
+Adesso basta accorgersi che reti di decoder con $N > 2$ possono crearsi concatenando decoder a decoder, cioè usando un decoder con i bit più significativi in entrata per generare l'enabler di $N$ nuovi decoder, i quali ricevono i bit meno significativi in entrata. 
+
+Ad esempio, se vogliamo creare un decoder \texttt{4to16} a partire da decoder \texttt{2to4}, useremo 4 decoder, con gli stessi input ($x_0$ e $x_1$), abilitati da un quinto decoder con input $x_2$ e $x_3$.
+
+\subsection{Demultiplexer}
+Il demultiplexer è una rete con $N+1$ ingressi e $p = 2^N$ uscite:
+
+\begin{center}
+	\begin{circuitikz}
+		\node[rectangle, minimum height=2cm, minimum width=2cm, draw] (multiplex) at (0,0) {};
+		\node (x) at (0,1.5) {$x$};	
+		\draw (x) -- (0, 1);
+
+		\node (zn) at (-1,-1.5) {$z_{p-1}$};
+		\node (z) at (1,-1.5) {$z_0$};
+		\node (j) at(0, -1.5) {$z_j$};
+
+		\draw (zn) -- (-1, -1);
+		\draw (z) -- (1, -1);
+		\draw (j) -- (0, -1);
+
+		\node (bn) at(-2, 0.5) {$b_{N-1}$};
+		\draw (bn) -- (-1,0.5);
+
+		\node (b) at(-2, -0.5) {$b_0$};
+		\draw (b) -- (-1,-0.5);
+		
+		\node at (-0.4, -1.55) {$...$};
+		\node at (0.5, -1.55) {$...$};
+		\node at (-2, 0) {$...$};
+
+		\draw[dashed] (0, 1) -- (-1, -1);
+		\draw[dashed] (0, 1) -- (1, -1);
+	\end{circuitikz}
+\end{center}
+
+Chiamiamo $x$ la \textbf{variabile da commutare}, e le altre \textbf{variabili di comando} ($b$).
+La $j$-esima uscita insegue la variabile da commutare se e solo se:
+$$
+(b_{n-1}, ..., b_0)_{2} = j
+$$
+altrimenti vale 0.
+Questo significa che il demultiplexer invia il suo input, $x$, all'output $z_j$ tale che i controlli $b_{N-1} ... b_0$ sono la codifica binaria di $j$.
+
+Il multiplexer, fisicamente, è identico ad un decoder con enabler: si fa la parte di decoding con il:
+\[
+	\begin{cases}
+		z_0 = \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot \overline{x_0}	\\
+		z_1 = \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot x_0	\\
+		... \\ 
+		z_{p-2} = x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot \overline{x_0}	\\
+		z_{p-1} = x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot x_0	\\
+	\end{cases}
+\]
+di prima, e si moltiplica per $x$ per ottenere il comportamento desiderato:
+\[
+	\begin{cases}
+		z_0 = x \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x}_1 \cdot \overline{x_0}	\\
+		z_1 = x \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot x_0	\\
+		... \\ 
+		z_{p-2} = x \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot \overline{x_0}	\\
+		z_{p-1} = x \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot x_0	\\
+	\end{cases}
+\]
+
+Con $x = e$ questo è un decoder con enabler $x$.
+
+\subsection{Multiplexer}
+Il multiplexer è il duale del demultiplexer: una rete con $N + 2^N$ ingressi e $1$ uscita:
+
+\begin{center}
+	\begin{circuitikz}
+		\node[rectangle, minimum height=2cm, minimum width=2cm, draw] (multiplex) at (0,0) {};
+		\node (x) at (0,-1.5) {$x$};	
+		\draw (x) -- (0, -1);
+
+		\node (zn) at (-1,1.5) {$z_{p-1}$};
+		\node (z) at (1,1.5) {$z_0$};
+		\node (j) at(0, 1.5) {$z_j$};
+
+		\draw (zn) -- (-1, 1);
+		\draw (z) -- (1, 1);
+		\draw (j) -- (0, 1);
+
+		\node (bn) at(-2, 0.5) {$b_{N-1}$};
+		\draw (bn) -- (-1,0.5);
+
+		\node (b) at(-2, -0.5) {$b_0$};
+		\draw (b) -- (-1,-0.5);
+		
+		\node at (-0.4, 1.45) {$...$};
+		\node at (0.5, 1.45) {$...$};
+		\node at (-2, 0) {$...$};
+
+		\draw[dashed] (-1, 1) -- (0, -1);
+		\draw[dashed] (1, 1) -- (0, -1);
+	\end{circuitikz}
+\end{center}
+
+Gli ingressi $b_i$ si chiamano variabili di comando, e selezionano l'ingresso connesso all'uscita come:
+$$
+z = x_i \Leftrightarrow (b_{N-1}, ..., b_1, b_0) = i
+$$
+
+Abbiamo detto che il multiplexer è il duale del demultiplexer: se quest'ultimo prendeva un segnale $x$ e lo inviava al $j$-esimo output sulla base della codifica di $j$ ottenuta alle variabili di controllo, il multiplexer prende il $j$-esimo ingresso, secondo gli stessi canoni, e lo invia alla linea $x$ di uscita.
+
+Alla base della sintesi di un multiplexer sta un decoder: infatti, abbiamo che quest'ultimo seleziona uno solo (\textit{one-hot}) degli output, che possiamo moltiplicare (mettiamo una AND) per l'ingresso corrispondente.
+Visto che solo uno degli output in uscita dagli AND è attivo in un dato momento, possiamo ricombinare il segnale finare con un unico grande OR.
+
+Come prima, possiamo eliminare gli AND in cascata dal decoder connettendoli agli AND già contenuti in esso.
+
+Otteniamo quindi la descrizione algebrica (si noti che adesso abbiamo fatto sintesi $\rightarrow$ descrizione, mentre fino a questo punto avevamo fatto l'operazione inversa, descrizione $\rightarrow$ sintesi):
+
+\[
+	\begin{aligned}
+		z = x_0 \cdot \overline{b_{N-1}} \cdot \overline{b_{N-2}} \cdot ... \cdot \overline{b_1} \cdot \overline{b_0}	+ \\
+		x_1 \cdot \overline{b_{N-1}} \cdot \overline{b_{N-2}} \cdot ... \cdot \overline{b_1} \cdot b_0	+\\
+		... + \\
+		x_{p-2} \cdot b_{N-1} \cdot b_{N-2} \cdot ... \cdot b_1 \cdot \overline{b_0}	+\\
+		x_{p-1} \cdot b_{N-1} \cdot b_{N-2} \cdot ... \cdot b_1 \cdot b_0	\\
+	\end{aligned}
+\]
+
+Notiamo che il multiplexer è una rete a 2 livelli di logica: il segnale passerà al massimo da un AND e un OR.
+Le NOT sugli ingressi non si contano, in quanto in una rete fisica le variabili di comando proverranno da registri, che forniscono già una versione negata del loro output senza bisogno di ulteriori inversori.
+
+\subsubsection{Multiplexer come rete combinatoria universale}
+Dimostriamo il seguente teorema:
+\begin{theorem}{Multiplexer come rete combinatoria universale}	
+Un multiplexer con $N$ variabili di comando è in grado di realizzare qualunque legge combinatoria ad $N$ ingressi ed un uscita, connettendo i $2^N$ ingressi a generatori di costante.
+\end{theorem}
+
+Abbiamo che:
+\begin{itemize}
+	\item Un multiplexer si ricava con porte AND, OR e NOT a due livelli di logica; 
+	\item Un multiplexer realizza qualsiasi rete combinatoria ad un'uscita;
+	\item una rete a più uscite può essere scomposta in più reti con le uscite messe "in parellelo".
+\end{itemize}
+Allora qualsiasi rete combinatoria può essere creata combinando AND, OR e NOT su due livelli di logica.
+
+Inoltre, si può dimostrare che per qualsiasi tabella di verità ad $N$ ingressi, si può trovare una rete che la implementa tramite un multiplexer a $N-1$ variabili di comando, e al più porte NOT.
+
+\subsection{Modello strutturale universale per reti combinatorie}
+Vediamo adesso un modo per sintetizzare una rete logica ad $N$ ingressi ed $M$ uscite a partire da una tabella di verità.
+Si prende prima di tutto un decoder con $N$ ingressi, e si creano $M$ linee parallele alle $2^N$ (che è anche il numero delle righe della tabella di verità) linee di uscita del decoder.
+Si combinano quindi queste linee di uscita attraverso OR su ogni intersezione che corrisponde ad una certa cella della tabella di verità.
+
+\subsubsection{Riduzione dei costi}
+Definiamo informalmente il costo come ridotto quando si usano meno porte logiche.
+Troviamo quindi un modo per ridurre il costo della rete creata.
+Avremo che, inizialmente, tutte le uscite si presentano in una forma canonica \textbf{SP}, che sta per Somma di Prodotti, del tipo:
+$$ 
+z_j = x_{n-1} \cdot ... \cdot x_0 + ... + x_{n-1} \cdot ... \cdot x_0
+$$
+con la possibilità di complementare qualsiasi $x$. 
+Questa forma equivale effettivamente a una forma normale disgiuntiva.
+
+Possiamo quindi usare le proprietà dell'algebra di Boole per raggruppare e semplificare i termini.
+Vogliamo un algoritmo che ci permetta di eseguire questi passaggi in modo ordinato, e ci porti sempre alla soluzione ottimale.
+
+\end{document}

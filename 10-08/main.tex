@@ -634,8 +634,8 @@ L'algebra di Boole adopera gli operatori logici conosciuti, applicati ad element
 
 Vediamo questi operatori:
 \begin{itemize}
-	\item \textbf{Complemento logico:} si indica come $\bar{x}$, oppure $!x$ o $/x$. 
-		Si definisce come: $$ \bar{0} = 1, \quad \bar{1} = 0 $$
+	\item \textbf{Complemento logico:} si indica come $\overline{x}$, oppure $!x$ o $/x$. 
+		Si definisce come: $$ \overline{0} = 1, \quad \bar{1} = 0 $$
 	\item\ \textbf{Somma logica:} si indica con $x + y$, e ha tabella di verità:
 	\begin{table}[H]
 		\center
@@ -669,24 +669,24 @@ Vediamo questi operatori:
 
 Su questi operatori valgono le proprietà:
 \begin{enumerate}
-	\item \textbf{Involutiva del complemento:} $\bar{\bar{x}} = x$;
+	\item \textbf{Involutiva del complemento:} $\overline{\bar{x}} = x$;
 	\item \textbf{Commutativa della somma e del prodotto:} $ x + y = y + x, \quad x \cdot y = y \cdot x$;
 	\item \textbf{Associativa della somma:} $ x + y + z = (x + y) + z = x + (y + z)$;
 	\item \textbf{Associativa del prodotto:} $ x \cdot y \cdot z = (x \cdot y) \cdot z = x \cdot (y \cdot z)$;
 	\item \textbf{Distributiva della somma rispetto al prodotto:} $ x \cdot (y + z) = (x \cdot y) + (x \cdot z) $;
 	\item \textbf{Distributiva del prodotto rispetto alla somma:} $ x + (y \cdot z) = (x + y) \cdot (x + z) $. Bisogna fare attenzione in quanto questa non vale in $\mathbb{R}$;
-	\item \textbf{Complementazione:} $ x \cdot \bar{x} = 0, \quad x + \bar{x} = 1 $;
+	\item \textbf{Complementazione:} $ x \cdot \overline{x} = 0, \quad x + \bar{x} = 1 $;
 	\item \textbf{Unione e intersezione:} $ x + 0 = x, \quad x + 1 = 1 $, cioè $0$ è l'elemento neutro e $1$ l'elemento assorbente della somma (non lo è in $\mathbb{R}$); \\
 																				$ x \cdot 0 = 0, \quad x \cdot 1 = x $, cioè $1$ è l'elemento neutro e $0$ l'elemento assorbente del prodotto;
 	\item \textbf{Idempotenza:} $x + x = x$, \quad $x \cdot x = x$, altra che non vale in $\mathbb{R}$;
-	\item \textbf{Leggi di De Morgan:} $\overline{x \cdot x} = \bar{x} + \bar{x}$ e $\overline{x + x} = \bar{x} \cdot \bar{x}$.
+	\item \textbf{Leggi di De Morgan:} $\overline{x \cdot x} = \overline{x} + \bar{x}$ e $\overline{x + x} = \bar{x} \cdot \bar{x}$.
 \end{enumerate}
 
 \subsubsection{Teoremi di De Morgan}
 Le leggi di De Morgan comuni della logica si estendono ad $N$ variabili come:
 \begin{enumerate}
-	\item $\overline{x_0 \cdot x_1 \cdot ... \cdot x_n} = \bar{x}_0 + \bar{x}_1 + ... + \bar{x}_n$
-	\item $\overline{x_0 + x_1 + ... + x_{n}} = \bar{x}_0 \cdot \bar{x}_1 \cdot ... \cdot \bar{x}_n$
+	\item $\overline{x_0 \cdot x_1 \cdot ... \cdot x_n} = \overline{x}_0 + \bar{x}_1 + ... + \bar{x}_n$
+	\item $\overline{x_0 + x_1 + ... + x_{n}} = \overline{x}_0 \cdot \bar{x}_1 \cdot ... \cdot \bar{x}_n$
 \end{enumerate}
 
 \noindent
@@ -702,7 +702,7 @@ Partiamo con le dimostrazioni classiche ottenute con le tabelle di verità:
 \begin{table}[H]
 	\center
 	\begin{tabular} { c  c | c | c | c | c | c }
-		$x$ & $y$ & $ x \cdot y $ & $\overline{x \cdot y}$ & $\bar{x}$ & $\bar{y}$ & $\bar{x} + \bar{y}$ \\ 
+		$x$ & $y$ & $ x \cdot y $ & $\overline{x \cdot y}$ & $\overline{x}$ & $\bar{y}$ & $\bar{x} + \bar{y}$ \\ 
 		\hline 
 		0 & 0 & 0 & 1 & 1 & 1 & 1 \\  
 		0 & 1 & 0 & 1 & 1 & 0 & 1 \\ 
@@ -715,13 +715,13 @@ che ci portano a $n_0 = 2$.
 Posso quindi porre l'ipotesi:
 
 $$
-\overline{x_0 \cdot ... \cdot x_{n-1}} = \bar{x}_0 + ... + \bar{x}_{n-1}
+\overline{x_0 \cdot ... \cdot x_{n-1}} = \overline{x}_0 + ... + \bar{x}_{n-1}
 $$
 
 e la tesi:
 
 $$
-\overline{x_0 \cdot ... \cdot x_{n-1} \cdot x_n} = \bar{x}_0 + ... + \bar{x}_{n-1} + \cdot x_n
+\overline{x_0 \cdot ... \cdot x_{n-1} \cdot x_n} = \overline{x}_0 + ... + \bar{x}_{n-1} + \cdot x_n
 $$
 
 A questo punto faccio il passo induttivo, sfruttando l'associatività del prodotto (o della somma), e quindi riscrivendo la tesi come:
@@ -731,13 +731,13 @@ $$
 $$
 dove notiamo la variabile introdotta $\alpha$, se complementata, rispetta:
 $$
-\bar{\alpha} = \overline{x_0 \cdot ... \cdot x_{n-1}} = \bar{x}_0 + ... + \bar{x}_{n-1}
+\overline{\alpha} = \overline{x_0 \cdot ... \cdot x_{n-1}} = \bar{x}_0 + ... + \bar{x}_{n-1}
 $$
 dall'ipotesi.
 
 Possiamo quindi svolgere il passaggio:
 $$
-\overline{\alpha \cdot x_n} = \bar{\alpha} + \bar{x}_n =  \bar{x}_0 + ... + \bar{x}_{n-1} + \bar{x}_n
+\overline{\alpha \cdot x_n} = \overline{\alpha} + \bar{x}_n =  \bar{x}_0 + ... + \bar{x}_{n-1} + \bar{x}_n
 $$
 che conferma la tesi.
 
