@@ -1,0 +1,462 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 10-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Sintesi di reti in forma SP a costo minimo}
+Esistono due criteri di costo per le reti:
+\begin{itemize}
+	\item \textbf{A porte:} ogni \textbf{porta} conta per un'unità di costo;
+	\item \textbf{A diodi:} ogni \textbf{ingresso} conta per un'unità di costo.
+\end{itemize}
+
+Presentiamo un metoodo, applicabile a reti con'un uscita, che produce reti in forma SP a 2 livelli di logica in quanto, per una legge combinatoria F, si ha::
+$$
+\text{Sintesi di F a 2 L.L. in forma SP} \subset \text{Sintesi di F a 2 L.L.} \subset \text{Sintesi di F}
+$$
+
+\subsubsection{Espansione di Shannon}
+Si può dimostrare il seguente risultato:
+\begin{theorem}{Espansione di Shannon}
+	Si può sempre scrivere qualunque legge combinatoria $f$ come somma di prodotti degli ingressi (diretti o negati).
+\end{theorem}
+
+Questo significa che, se ho una legge combinatoria $z = f(x_{N-1}, ..., x_0)$, posso dire:
+\[
+	\begin{aligned}
+		z = f(0, ..., 0,  0) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot \overline{x_0}	+ \\
+		f(0, ..., 0, 1) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot x_0	+\\
+		... + \\
+		f(1, ..., 1, 0) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot \overline{x_0}	+\\
+		f(1, ..., 1, 1) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot x_0	\\
+	\end{aligned}
+\]
+che equivale a quanto avevamo visto con la sintesi di reti combinatorie a $N$ ingressi con multiplexer a $N$ variabili di comando.
+
+A questo punto possiamo ottenere la cosiddetta \textbf{forma canonica SP}, applicando le proprietà:
+\[
+	\begin{cases}
+		1 \cdot \alpha = \alpha \\ 
+		0 \cdot \alpha = 0 \\ 
+		0 + \beta = \beta
+	\end{cases}
+\]
+all'espansione di Shannon (sostanzialmente rimuoviamo tutti i termini a cui corrispondono uscite negate).
+Della forma canonica SP possiamo dire che è:
+\begin{itemize}
+	\item \textbf{SP:} è fatta da somme e prodotti;
+	\item \textbf{Canonica:} ogni prodotto ha come fattori tutti gli ingressi, diretti o negati;
+	\item Ciascuno dei termini della somma si chiama \textbf{mintermine};
+	\item Ogni mintermine corrisponde ad uno stato riconosciuto dalla rete.
+\end{itemize}
+
+L'insieme dei termini (mintermini) sommati fra di loro che otteniamo dall'espansione di Shannon prende il nome di \textbf{lista di mintermini}.
+
+\subsection{Semplificazione della forma canonica SP}
+Definiamo quindi un metodo per la semplificazione della lista dei mintermini.
+Divideremo quest'operazione in due passaggi principali:
+
+\begin{itemize}
+	\item \textbf{Identificazione degli implicanti principali}: si ricava una lista di termini ricavati da quelli di partenza, e di dimensioni più piccole, che rappresentano la stessa legge combinatoria;
+	\item \textbf{Eliminazione delle ridondanze}: si rimuovono gli implicanti che non portano informazioni utili alla legge combinatoria.
+\end{itemize}
+
+\subsubsection{Metodo di Quine-McCluskey}
+Si presenta il metodo di Quine-McCluskey per l'identificazione degli implicanti principali.
+Questo metodo prevede di:
+\begin{itemize}
+	\item \textbf{Fondere i mintermini} applicando \textbf{esaustivamente} la regola:
+$$
+\alpha x + \alpha \bar{x} = \alpha
+$$
+che possiamo dimostrare come:
+$$
+\alpha x + \alpha \bar{x} = \alpha (x + \bar{x}) = \alpha, \quad x + \bar{x} = 1
+$$
+alla lista dei mintermini.
+
+Ripetiamo questo passaggio $N - 1$ volte per la dimensione $N$ dei termini, riducendo ogni volta la dimensione degli implicanti di 1.
+Si ricava una forma SP, detta \textbf{lista di implicanti}.
+	\item \textbf{Rimuovere i duplicati} dalla lista dei duplicanti, applicando l'altra regola:
+$$
+\alpha x + \alpha = \alpha 
+$$
+sugli implicanti che hanno elementi in comune.
+\end{itemize}
+
+Troviamo quindi quella che è detta \textbf{lista degli implicanti principali}.
+Questa lista contiene meno elementi della forma canonica SP, non è ancora di costo minimo: potrebbe contenere ridondanze, cioè implicanti non necessari alla corretta modelizzazione della legge combinatoria.
+
+Vediamo un modo per eliminare queste ridondanze.
+
+\subsubsection{Liste di copertura ridondanti}
+Una \textbf{lista di copertura} è una lista di implicanti, la cui somma è una forma SP per la funzione $f$.
+La \textbf{lista di copertura non ridondante} è la lista che smette di essere una lista di copertura appena si toglie un elemento.
+
+La lista dei mintermini è una lista non ridondante, mentre la lista degli implicanti principali può esserlo.
+
+Si introduce quindi uno strumento per la visualizzazione di ridondanze.
+
+\subsubsection{Mappe di Karnaugh}
+Per una rete a $N$ ingressi la mappa di Karnaugh è una matrice di $2^N$ celle, dove le coordinate rappresentano gli ingressi, e gli elementi della matrice le uscite.
+Sono diagrammi che tornano utili per rappresentare graficamente gli implicanti, ed eliminarne le ridonanze.
+Vediamo, ad esempio, mappe con $N = 2$, $3$ e $4$:
+
+\begin{center}
+\begin{karnaugh-map}[2][2][1]
+		\minterms{1,2}
+		\maxterms{0,3}
+\end{karnaugh-map}
+\end{center}
+
+\noindent
+\begin{minipage}{0.45\textwidth}
+	\begin{karnaugh-map}[4][2][1][$X_1X_0$][$X_2$]
+			\minterms{3,4}
+			\maxterms{0,1,6,7}
+			\indeterminants{2,5}
+	\end{karnaugh-map}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.45\textwidth}
+\begin{karnaugh-map}
+		\manualterms{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+\end{karnaugh-map}
+\end{minipage}
+
+
+In una mappa di Karnaugh, celle \textbf{contigue} hanno coordinate \textbf{adiacenti}, e viceversa.
+Oltre le 4 coordinate, per le mappe non possiamo più rappresentare queste mappe senza la terza dimensione.
+
+Definiamo:
+\begin{itemize}
+	\item \textbf{Sottocubo di ordine 1:} una casella che contiene un 1, corrispondente quindi ad uno stato di ingresso riconosciuto dalla rete, si indica come SO1;
+	\item \textbf{Coordinate} di un SO1: stato di ingresso corrispondente al sottocubo;
+	\item \textbf{Adiacenza} fra SO1: due SO1 sono adiacenti se differiscono fra loro di una sola coordinata.
+\end{itemize}
+
+Vediamo, ad esempio, una mappa di Karnaugh con $N=2$, una serie di sottocubi di ordine 1 con la tabella associata:
+
+\begin{center}
+\noindent
+\begin{minipage}{0.15\textwidth}
+\begin{karnaugh-map}[2][2][1]
+		\minterms{1,2}
+		\maxterms{0,3}
+		\implicant{1}{1}
+		\implicant{2}{2}
+\end{karnaugh-map}
+\end{minipage}%
+\hspace{3cm}
+\begin{minipage}{0.15\textwidth}
+	\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+		\begin{tabular} { c || c | c }
+			& $x_1$ & $x_0$ \\ 
+			\hline 
+			\rowcolor{red!20!white} A & 0 & 1 \\
+			\rowcolor{green!20!white} B & 1 & 0 \\
+		\end{tabular}
+	\end{table}
+\end{minipage}
+\end{center}
+
+Notiamo come A corrisponde all'implicante $\overline{x_1}x_0$, e B all'implicante $x_1\overline{x_0}$.
+
+Possiamo continuare:
+\begin{itemize}
+	\item \textbf{Sottocubo di ordine 2:} costituito da SO1 adiacenti, e si dice che \textbf{copre} i SO1 che lo formano. Si indica come SO2;
+	\item \textbf{Sottocubo di ordine 4:} costituito da SO2 adiacenti, e si dice che \textbf{copre} i SO2 che lo formano. Si indica come SO4;
+	\item \textbf{Sottocubo di ordine 8:} costituito da SO4 adiacenti, e si dice che \textbf{copre} i SO4 che lo formano. Si indica come SO8;
+\end{itemize}
+
+Vediamo un'ultimo esempio, con $N=4$: 
+
+\begin{center}
+\noindent
+\begin{minipage}{0.3\textwidth}
+\begin{karnaugh-map}
+		\manualterms{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+		\implicant{0}{1}
+		\implicant{7}{14}
+		\implicant{2}{10}
+		\implicantcorner
+\end{karnaugh-map}
+\end{minipage}%
+\hspace{3cm}
+\begin{minipage}{0.3\textwidth}
+	\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+		\begin{tabular} { c || c | c | c | c}
+			& $x_3$ & $x_2$ & $x_1$ & $x_0$ \\ 
+			\hline 
+			\rowcolor{red!20!white} A & 0 & - & - & 1 \\
+			\rowcolor{green!20!white} B & 1 & - & - & 1 \\
+			\rowcolor{yellow!20!white} C & 1 & 0 & - & - \\
+			\rowcolor{cyan!20!white} D & - & 0 & - & 0 \\
+		\end{tabular}
+	\end{table}
+\end{minipage}
+\end{center}
+
+Notiamo dall'esempio che le mappe di Karnaugh rispettano il cosiddetti \textit{effetto pacman}: lo stesso implicante può esistere su lati opposti della mappa.
+Il bisogno di rappresentare le adiacenze dà origine a questa particolarità, come determina l'ordine particolare delle attivazioni degli ingressi.
+Inoltre, notiamo come i trattini nelle tabelle delle coordinate denotano che la variabile non influenza l'implicante, cioè rappresentano, in inglese, un \textit{don't care}.
+
+\subsubsection{Ricerca delle liste di copertura non ridondanti}
+
+Si dice che un sottocubo è \textbf{principale} quando non esiste nessun sottocubo più grande che lo copre completamente.
+Si ha quindi che sottocubi e implicanti sono correlati: un sottocubo principale di ordine $p$ rappresenta un implicante principale di $N - \log_2(p)$ variabili.
+
+Una \textbf{lista di copertura} è l'insieme (qualunque) di sottocubi che coprono tutti i SO1.
+Una \textbf{lista di copertura non ridondante} è una lista di copertura che smette di essere tale quando si toglie un sottocubo.
+
+Si presenta finalmente l'algoritmo:
+\begin{algorithm}
+\caption{per la ricerca dei sottocubi principali}
+\begin{algorithmic}
+	\STATE \textbf{Input:} i sottocubi di ordine più grande trovati sulla mappa 
+	\STATE \textbf{Output:} i sottocubi principali della mappa
+	\STATE \textsf{ciclo:}
+	\STATE Considera tutti i sottocubi di ordine $p$ non interamente contenuti in sottocubi di ordine più grande, e
+	segnali tutti: questi sono sicuramente principali
+	\IF{l'insieme trovato finora basta a coprire tutta a mappa}
+		\STATE L'algoritmo è terminato 
+	\ELSE 
+		\STATE Poni $p \leftarrow \frac{p}{2}$ e vai a \textsf{ciclo}
+	\ENDIF 
+\end{algorithmic}
+\end{algorithm}
+
+Ad esempio, nello scorso esempio, l'algoritmo rimuoverebbe l'implicante C.
+
+\par\smallskip
+
+Notiamo che alcuni sottocubi sono gli unici a coprire un dato sottocubo di ordine 1. In questo caso, si chiamano sottocubi \textbf{essenziali}, e costituiscono il \textbf{cuore} (\textit{core}) della mappa.
+
+\end{document}
+
