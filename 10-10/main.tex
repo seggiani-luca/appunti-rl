@@ -234,7 +234,7 @@ Esistono due criteri di costo per le reti:
 	\item \textbf{A diodi:} ogni \textbf{ingresso} conta per un'unità di costo.
 \end{itemize}
 
-Presentiamo un metoodo, applicabile a reti con'un uscita, che produce reti in forma SP a 2 livelli di logica in quanto, per una legge combinatoria F, si ha::
+Presentiamo un metodo, applicabile a reti con'un uscita, che produce reti in forma SP a 2 livelli di logica in quanto, per una legge combinatoria F, si ha::
 $$
 \text{Sintesi di F a 2 L.L. in forma SP} \subset \text{Sintesi di F a 2 L.L.} \subset \text{Sintesi di F}
 $$
@@ -245,14 +245,14 @@ Si può dimostrare il seguente risultato:
 	Si può sempre scrivere qualunque legge combinatoria $f$ come somma di prodotti degli ingressi (diretti o negati).
 \end{theorem}
 
-Questo significa che, se ho una legge combinatoria $z = f(x_{N-1}, ..., x_0)$, posso dire:
+Questo significa che, se ho una legge combinatoria $z = f(x_{N-1}, ..., X_0)$, posso dire:
 \[
 	\begin{aligned}
-		z = f(0, ..., 0,  0) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot \overline{x_0}	+ \\
-		f(0, ..., 0, 1) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot x_0	+\\
+		z = f(0, ..., 0,  0) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{X_1} \cdot \overline{X_0}	+ \\
+		f(0, ..., 0, 1) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{X_1} \cdot X_0	+\\
 		... + \\
-		f(1, ..., 1, 0) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot \overline{x_0}	+\\
-		f(1, ..., 1, 1) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot x_0	\\
+		f(1, ..., 1, 0) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot X_1 \cdot \overline{X_0}	+\\
+		f(1, ..., 1, 1) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot X_1 \cdot X_0	\\
 	\end{aligned}
 \]
 che equivale a quanto avevamo visto con la sintesi di reti combinatorie a $N$ ingressi con multiplexer a $N$ variabili di comando.
@@ -309,20 +309,17 @@ sugli implicanti che hanno elementi in comune.
 \end{itemize}
 
 Troviamo quindi quella che è detta \textbf{lista degli implicanti principali}.
-Questa lista contiene meno elementi della forma canonica SP, non è ancora di costo minimo: potrebbe contenere ridondanze, cioè implicanti non necessari alla corretta modelizzazione della legge combinatoria.
+Questa lista contiene meno elementi della forma canonica SP, ma non è ancora di costo minimo: potrebbe contenere ridondanze, cioè implicanti non necessari alla corretta modelizzazione della legge combinatoria.
 
-Vediamo un modo per eliminare queste ridondanze.
-
-\subsubsection{Liste di copertura ridondanti}
+\subsubsection{Liste di copertura non ridondanti}
 Una \textbf{lista di copertura} è una lista di implicanti, la cui somma è una forma SP per la funzione $f$.
 La \textbf{lista di copertura non ridondante} è la lista che smette di essere una lista di copertura appena si toglie un elemento.
 
-La lista dei mintermini è una lista non ridondante, mentre la lista degli implicanti principali può esserlo.
+Un punto importante è che la lista dei mintermini è una lista non ridondante, mentre la lista degli implicanti principali può esserlo.
+Si introduce quindi uno strumento per la visualizzazione degli implicanti e le loro ridondanze.
 
-Si introduce quindi uno strumento per la visualizzazione di ridondanze.
-
-\subsubsection{Mappe di Karnaugh}
-Per una rete a $N$ ingressi la mappa di Karnaugh è una matrice di $2^N$ celle, dove le coordinate rappresentano gli ingressi, e gli elementi della matrice le uscite.
+\subsection{Mappe di Karnaugh}
+Per una rete a $N$ ingressi la corrispondente \textbf{mappa di Karnaugh} è una matrice di $2^N$ celle, dove le coordinate rappresentano gli ingressi, e gli elementi della matrice le uscite.
 Sono diagrammi che tornano utili per rappresentare graficamente gli implicanti, ed eliminarne le ridonanze.
 Vediamo, ad esempio, mappe con $N = 2$, $3$ e $4$:
 
@@ -348,11 +345,11 @@ Vediamo, ad esempio, mappe con $N = 2$, $3$ e $4$:
 \end{karnaugh-map}
 \end{minipage}
 
-
 In una mappa di Karnaugh, celle \textbf{contigue} hanno coordinate \textbf{adiacenti}, e viceversa.
 Oltre le 4 coordinate, per le mappe non possiamo più rappresentare queste mappe senza la terza dimensione.
 
-Definiamo:
+\subsubsection{Ricerca dei sottocubi principali}
+Definiamo innanzitutto:
 \begin{itemize}
 	\item \textbf{Sottocubo di ordine 1:} una casella che contiene un 1, corrispondente quindi ad uno stato di ingresso riconosciuto dalla rete, si indica come SO1;
 	\item \textbf{Coordinate} di un SO1: stato di ingresso corrispondente al sottocubo;
@@ -376,7 +373,7 @@ Vediamo, ad esempio, una mappa di Karnaugh con $N=2$, una serie di sottocubi di 
 	\begin{table}[H]
 		\center \rowcolors{2}{white}{black!10}
 		\begin{tabular} { c || c | c }
-			& $x_1$ & $x_0$ \\ 
+			& $X_1$ & $X_0$ \\ 
 			\hline 
 			\rowcolor{red!20!white} A & 0 & 1 \\
 			\rowcolor{green!20!white} B & 1 & 0 \\
@@ -385,7 +382,7 @@ Vediamo, ad esempio, una mappa di Karnaugh con $N=2$, una serie di sottocubi di 
 \end{minipage}
 \end{center}
 
-Notiamo come A corrisponde all'implicante $\overline{x_1}x_0$, e B all'implicante $x_1\overline{x_0}$.
+Notiamo come A corrisponde all'implicante $\overline{X_1}X_0$, e B all'implicante $X_1\overline{X_0}$.
 
 Possiamo continuare:
 \begin{itemize}
@@ -400,7 +397,7 @@ Vediamo un'ultimo esempio, con $N=4$:
 \noindent
 \begin{minipage}{0.3\textwidth}
 \begin{karnaugh-map}
-		\manualterms{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+		\manualterms{1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1}
 		\implicant{0}{1}
 		\implicant{7}{14}
 		\implicant{2}{10}
@@ -412,34 +409,29 @@ Vediamo un'ultimo esempio, con $N=4$:
 	\begin{table}[H]
 		\center \rowcolors{2}{white}{black!10}
 		\begin{tabular} { c || c | c | c | c}
-			& $x_3$ & $x_2$ & $x_1$ & $x_0$ \\ 
+			& $X_3$ & $X_2$ & $X_1$ & $X_0$ \\ 
 			\hline 
-			\rowcolor{red!20!white} A & 0 & - & - & 1 \\
-			\rowcolor{green!20!white} B & 1 & - & - & 1 \\
-			\rowcolor{yellow!20!white} C & 1 & 0 & - & - \\
+			\rowcolor{red!20!white} A & 0 & 0 & 0 & - \\
+			\rowcolor{green!20!white} B & - & 1 & 1 & - \\
+			\rowcolor{yellow!20!white} C & - & - & 1 & 0 \\
 			\rowcolor{cyan!20!white} D & - & 0 & - & 0 \\
 		\end{tabular}
 	\end{table}
 \end{minipage}
 \end{center}
 
-Notiamo dall'esempio che le mappe di Karnaugh rispettano il cosiddetti \textit{effetto pacman}: lo stesso implicante può esistere su lati opposti della mappa.
+Notiamo dall'esempio che le mappe di Karnaugh rispettano quello che potremmo chiamare \textit{effetto pacman}: lo stesso implicante può esistere su lati opposti della mappa.
 Il bisogno di rappresentare le adiacenze dà origine a questa particolarità, come determina l'ordine particolare delle attivazioni degli ingressi.
 Inoltre, notiamo come i trattini nelle tabelle delle coordinate denotano che la variabile non influenza l'implicante, cioè rappresentano, in inglese, un \textit{don't care}.
-
-\subsubsection{Ricerca delle liste di copertura non ridondanti}
 
 Si dice che un sottocubo è \textbf{principale} quando non esiste nessun sottocubo più grande che lo copre completamente.
 Si ha quindi che sottocubi e implicanti sono correlati: un sottocubo principale di ordine $p$ rappresenta un implicante principale di $N - \log_2(p)$ variabili.
 
-Una \textbf{lista di copertura} è l'insieme (qualunque) di sottocubi che coprono tutti i SO1.
-Una \textbf{lista di copertura non ridondante} è una lista di copertura che smette di essere tale quando si toglie un sottocubo.
-
-Si presenta finalmente l'algoritmo:
+Si presenta quindi l'algoritmo per la ricerca dei sottocubi principali:
 \begin{algorithm}
 \caption{per la ricerca dei sottocubi principali}
 \begin{algorithmic}
-	\STATE \textbf{Input:} i sottocubi di ordine più grande trovati sulla mappa 
+	\STATE \textbf{Input:} una mappa 
 	\STATE \textbf{Output:} i sottocubi principali della mappa
 	\STATE \textsf{ciclo:}
 	\STATE Considera tutti i sottocubi di ordine $p$ non interamente contenuti in sottocubi di ordine più grande, e
@@ -452,11 +444,98 @@ Si presenta finalmente l'algoritmo:
 \end{algorithmic}
 \end{algorithm}
 
-Ad esempio, nello scorso esempio, l'algoritmo rimuoverebbe l'implicante C.
+\subsubsection{Ricerca delle liste di copertura non ridondanti}
+Una \textbf{lista di copertura} è l'insieme (qualunque) di sottocubi che coprono tutti gli SO1 della mappa.
+La lista dei sottocubi principali è una lista di copertura.
+Una \textbf{lista di copertura non ridondante} è una lista di copertura che smette di essere tale quando si toglie un sottocubo.
 
-\par\smallskip
+Come avevamo visto algebricamente, la lista degli SO1 (che corrisponderebbe ai mintermini) non è ridondante, ma la lista dei sottocubi principali (che corrisponderebbe agli implicanti) può esserlo.
 
-Notiamo che alcuni sottocubi sono gli unici a coprire un dato sottocubo di ordine 1. In questo caso, si chiamano sottocubi \textbf{essenziali}, e costituiscono il \textbf{cuore} (\textit{core}) della mappa.
+Possiamo classificare i sottocubi principali come segue:
+\begin{itemize}
+	\item Alcuni sottocubi sono gli unici a coprire un dato sottocubo di ordine 1. In questo caso, si chiamano sottocubi \textbf{essenziali}, e costituiscono il \textbf{cuore} (\textit{core}) della mappa.
+	\item Alcuni insiemi di sottocubi possono essere disposti, per cui rimuovere uno a caso fra i sottocubi compresi non risulta in variazioni della copertura. Questi si dicono \textbf{semplicemente eliminabili}.
+	\item I sottocubi interamente contenuti all'interno di sottocubi essenziali sono sempre ridondanti, e si dicono \textbf{assolutamente eliminabili}.
+\end{itemize}
+
+Rimuovendo i sottocubi assolutamente eliminabili, e mantenendo solo un sottoinsieme dei sottocubi semplicemente eliminabili, possiamo generare una qualsiasi lista non ridondante a partire dalla lista di copertura data.
+Vogliamo però selezionare la lista non ridondante che dà costo minimo.
+
+\subsubsection{Ricerca delle liste di copertura di costo minimo}
+Per trovare una \textbf{lista di copertura di costo minimo}, applichiamo un determinato criterio quando eliminiamo i sottocubi semplicemente eliminabili.
+In generale avremo che, per qualsiasi sottocubo semplicemente eliminabile, potremo considerarlo come:
+\begin{itemize}
+	\item \textbf{Essenziale}, in questo caso resta nella lista di copertura. e qualche altro sottocubo diventa assolutamente eliminabile;
+	\item \textbf{Assolutamente eliminabile}, in questo caso si toglie dalla lista di copertura, e qualche altro sottocubo diventa essenziale.
+\end{itemize}
+
+Il criterio adottato è quello di conservare il minor numero di sottocubi possibile.
+Prendiamo in esempio la mappa:
+
+\begin{center}
+\noindent
+\begin{minipage}{0.3\textwidth}
+\begin{karnaugh-map}
+		\manualterms{0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0}
+		\implicant{12}{9}
+		\implicant{2}{6}
+		\implicant{4}{12}
+		\implicantedge{2}{2}{10}{10}
+		\implicantedge{4}{4}{6}{6}
+		\implicantedge{8}{8}{10}{10}
+\end{karnaugh-map}
+\end{minipage}%
+\hspace{3cm}
+\begin{minipage}{0.3\textwidth}
+	\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+		\begin{tabular} { c || c | c | c | c}
+			& $X_3$ & $X_2$ & $X_1$ & $X_0$ \\ 
+			\hline 
+			\rowcolor{red!20!white} A & 1 & - & 0 & - \\
+			\rowcolor{green!20!white} B & 0 & - & 1 & 0 \\
+			\rowcolor{yellow!20!white} C & - & 1 & 0 & 0 \\
+			\rowcolor{cyan!20!white} D & - & 0 & 1 & 0 \\
+			\rowcolor{blue!20!white} E & 0 & 1 & - & 0 \\
+			\rowcolor{violet!20!white} F & 1 & 0 & - & 0 \\
+		\end{tabular}
+	\end{table}
+\end{minipage}
+\end{center}
+
+Si ha che il sottocubo A è essenziale: altrimenti non potremmo mai coprire $1101$ e $1001$.
+Tutti gli altri cubi sono semplicemente eliminabili.
+Partiamo quindi dalla configurazione \{A\}, e decidiamo quali elementi includere successivamente.
+La prima zona che osserviamo è quella di E: i sottocubi semplicemente eliminabili sono \{A, B, C, E\}.
+Eliminando C e B, resta E, e viceversa: chiaramente è meglio lasciare solo E.
+Possiamo rendere questo graficamente come:
+\begin{center}
+	\begin{forest}
+		[ \{A\}
+			[ { \{A, E\} } ]
+			[ { \{A, B, C\} } ]
+		]	
+	\end{forest}
+\end{center}
+
+La prossima zona di interesse è rappresentata da B, D, E e F.
+Si può continuare con la struttura ad albero:
+\begin{center}
+	\begin{forest}
+		[ \{A\}
+			[ { \{A, E\} } 
+				[ { \{A, E, D\} } ]
+				[ { \{A, E, B, F\} } ]
+			]
+			[ { \{A, B, C\} } 
+				[ { \{A, C, B, D\} } ]
+				[ { \{A, C, B, F\} } ]
+			]
+		]	
+	\end{forest}
+\end{center}
+
+Scegliamo quindi \{A, E, D\}.
 
 \end{document}
 

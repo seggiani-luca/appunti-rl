@@ -1,0 +1,612 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 11-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Sintesi di leggi non completamente specificate}
+Applichiamo quanto abbiamo detto sulla sintesi di reti in forma SP a costo minimo, nel caso particolare in cui la legge non è completamente specificata (\textit{don't care}).
+
+Prendiamo in esempio un decodificatore BCD a 7 segmenti, simile a quello che si potrebbe trovare ad accendere le tracce di un display a cristalli liquidi.
+
+\begin{center}
+	\begin{circuitikz}
+
+		\node at (-3.3, 1.5) {$x_3$};
+		\draw (-3, 1.5) -> (-1.3, 1.5);
+		\node at (-3.3, 0.5) {$x_2$};
+		\draw (-3, 0.5) -> (-1.3, 0.5);
+		\node at (-3.3, -0.5) {$x_1$};
+		\draw (-3, -0.5) -> (-1.3, -0.5);
+		\node at (-3.3, -1.5) {$x_0$};
+		\draw (-3, -1.5) -> (-1.3, -1.5);
+
+		\node at (3.3, 1.5) {$z_G$};
+		\draw (1.3, 1.5) -> (3, 1.5);
+		\node at (3.3, 1) {$z_F$};
+		\draw (1.3, 1) -> (3, 1);
+		\node at (3.3, 0.5) {$z_E$};
+		\draw (1.3, 0.5) -> (3, 0.5);
+		\node at (3.3, 0) {$z_D$};
+		\draw (1.3, 0) -> (3, 0);
+		\node at (3.3, -0.5) {$z_C$};
+		\draw (1.3, -0.5) -> (3, -0.5);
+		\node at (3.3, -1) {$z_B$};
+		\draw (1.3, -1) -> (3, -1);
+		\node at (3.3, -1.5) {$z_A$};
+		\draw (1.3, -1.5) -> (3, -1.5);
+
+		\node[draw, rectangle, minimum width=2cm, minimum height=4cm] (decoder) at (0, 0) {BCD Decoder};
+	\end{circuitikz}
+\end{center}
+
+Questo componente ha 4 variabili di ingresso, interpretate come una cifra in base 2 $j$, e 7 uscite, che specificano quali tracce accendere per visualizzare la cifra ottenuta in base 10.
+Si ha che con 4 variabili di ingresso si indirizzano 16 possibili configurazioni dei segmenti, quando ne abbiamo bisogno solo 10 (una per ogni cifra decimale).
+Le configurazioni di ingresso scartate si dicono quindi non specificate.
+
+La tabella di verità della rete sarà quindi:
+
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c | c c c c | c c c c c c c c }
+		$j$ & $x_3$ & $x_2$ & $x_1$ & $x_0$ & $z_G$ & $z_F$ & $z_E$ & $z_D$ & $z_C$ & $z_B$ & $z_A$ & \bfseries Display \\
+		\hline											%	
+		$0$ & $0$ & $0$ & $0$ & $0$ & $0$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ &		
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=1111110 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+		$1$ & $0$ & $0$ & $0$ & $1$ & $0$ & $0$ & $0$ & $0$ & $1$ & $1$ & $0$ &
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=0110000 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+		$2$ & $0$ & $0$ & $1$ & $0$ & $1$ & $0$ & $1$ & $1$ & $0$ & $1$ & $1$ &
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=1101101 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+		$3$ & $0$ & $0$ & $1$ & $1$ & $1$ & $0$ & $0$ & $1$ & $1$ & $1$ & $1$ &
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=1111001 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+
+		$4$ & $0$ & $1$ & $0$ & $0$ & $1$ & $1$ & $0$ & $0$ & $1$ & $1$ & $0$ &
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=0110011 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+		$5$ & $0$ & $1$ & $0$ & $1$ & $1$ & $1$ & $0$ & $1$ & $1$ & $0$ & $1$ &
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=1011011 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+		$6$ & $0$ & $1$ & $1$ & $0$ & $1$ & $1$ & $1$ & $1$ & $1$ & $0$ & $1$ &
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=1011111 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+		$7$ & $0$ & $1$ & $1$ & $1$ & $0$ & $0$ & $0$ & $0$ & $1$ & $1$ & $1$ &
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=1110000 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+	
+		$8$ & $1$ & $0$ & $0$ & $0$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ & $1$ &
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=1111111 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+		$9$ & $1$ & $0$ & $0$ & $1$ & $1$ & $1$ & $0$ & $1$ & $1$ & $1$ & $1$ &
+\begin{tabular}{l}
+\begin{circuitikz}
+\draw (0,0) node[seven segment bits=1111011 dot off box off](segment){}; %give your node a name
+\node [font=\tiny] at (segment.a) {A}; %you can then refer to them as this
+\node [font=\tiny] at (segment.b) {B};
+\node [font=\tiny] at (segment.c) {C};
+\node [font=\tiny] at (segment.d) {D};
+\node [font=\tiny] at (segment.e) {E};
+\node [font=\tiny] at (segment.f) {F};
+\node [font=\tiny] at (segment.g) {G};
+\end{circuitikz}
+\end{tabular}
+		\\
+		$10$ & $1$ & $0$ & $1$ & $0$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ \\
+		$11$ & $1$ & $0$ & $1$ & $1$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ \\
+
+		$12$ & $1$ & $1$ & $0$ & $0$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ \\
+		$13$ & $1$ & $1$ & $0$ & $1$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ \\
+		$14$ & $1$ & $1$ & $1$ & $0$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ \\
+		$15$ & $1$ & $1$ & $1$ & $1$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ & $-$ \\
+	\end{tabular}
+\end{table}
+
+Visto che vogliamo sintetizzare reti su uscite singole, prendiamo la tabella di verità della rete sull'uscita $z_E$ (le altre uscite richiederanno procedimenti simili):
+
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c | c c c c | c }
+		$j$ & $x_3$ & $x_2$ & $x_1$ & $x_0$ & $z_E$ \\
+		\hline
+		$0$ & $0$ & $0$ & $0$ & $0$ & $1$ \\
+		$1$ & $0$ & $0$ & $0$ & $1$ & $0$ \\
+		$2$ & $0$ & $0$ & $1$ & $0$ & $1$ \\
+		$3$ & $0$ & $0$ & $1$ & $1$ & $0$ \\
+
+		$4$ & $0$ & $1$ & $0$ & $0$ & $0$ \\
+		$5$ & $0$ & $1$ & $0$ & $1$ & $0$ \\
+		$6$ & $0$ & $1$ & $1$ & $0$ & $1$ \\
+		$7$ & $0$ & $1$ & $1$ & $1$ & $0$ \\
+	
+		$8$ & $1$ & $0$ & $0$ & $0$ & $1$ \\
+		$9$ & $1$ & $0$ & $0$ & $1$ & $0$ \\
+		$10$ & $1$ & $0$ & $1$ & $0$ & $-$ \\
+		$11$ & $1$ & $0$ & $1$ & $1$ & $-$ \\
+
+		$12$ & $1$ & $1$ & $0$ & $0$ & $-$ \\
+		$13$ & $1$ & $1$ & $0$ & $1$ & $-$ \\
+		$14$ & $1$ & $1$ & $1$ & $0$ & $-$ \\
+		$15$ & $1$ & $1$ & $1$ & $1$ & $-$ \\
+	\end{tabular}
+\end{table}
+
+Disegnamo quindi la mappa di Karnaugh.
+Quando si disegnano mappe di Karnaugh con elementi indeterminati, questi si interpretano diversamente a seconda che si stiano cercando i sottocubi principali, o che si stiano classificando:
+\begin{itemize}
+	\item \textbf{Ricerca dei sottocubi principali:} si prendono come 1. Questo ci permette di prendere i sottocubi più grandi possibili nella ricerca dei primali (è irrilevante se si vanno a impostare uscite non specificate a 1). \par\smallskip
+		Si trova quindi:
+\begin{center}
+\noindent
+\begin{minipage}{0.3\textwidth}
+\begin{karnaugh-map}
+		\manualterms{1, 0, 1, 0, 0, 0, 1, 0, 1, 0, -, -, -, -, -, -}
+		\implicant{15}{10}
+		\implicant{2}{10}
+		\implicant{12}{14}
+		\implicantcorner
+		\implicantedge{12}{8}{14}{10}
+\end{karnaugh-map}
+\end{minipage}%
+\hspace{3cm}
+\begin{minipage}{0.3\textwidth}
+	\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+		\begin{tabular} { c || c | c | c | c}
+			& $x_3$ & $x_2$ & $x_1$ & $x_0$ \\ 
+			\hline 
+			\rowcolor{red!20!white} A & 1 & - & 1 & - \\
+			\rowcolor{green!20!white} B & - & - & 1 & 0 \\
+			\rowcolor{yellow!20!white} C & 1 & 1 & - & - \\
+			\rowcolor{cyan!20!white} D & - & 0 & - & 0 \\
+			\rowcolor{blue!20!white} E & 1 & - & - & 0 \\
+		\end{tabular}
+	\end{table}
+\end{minipage}
+\end{center}
+
+	\item \textbf{Classificazione dei sottocubi principali:} si prendono come 0. Così si evita di conservare implicanti che siano rilevanti su uscite non specificate (sarebbe inutile). \par\smallskip
+		Si ha quindi che i sottocubi A e C prendono solo SO1 indeterminati, ergo si scartano.
+		Restano B e D essenziali, ed E a questo punto eliminabile, in quanto è già compreso in questi.
+\end{itemize}
+
+La sintesi completa dela rete è allora:
+$$ z_E = x_1 \overline{x_0} + \overline{x_2}\overline{x_0} $$
+
+\subsection{Sintesi in forma PS}
+Abbiamo usato finora la forma SP (somma di prodotti).
+Esiste la duale, ovvero la forma PS (prodotto di somme).
+Per trovare questa forma, esiste un metodo parallelo a quello studiato per la SP, dove si parte dal considerare i maxtermini invece che dei mintermini, cioè scegliendo sottocubi negli elementi che valgono 0 della mappa di Karnaugh.
+
+Non considereremo questo metodo, ma un'alternativa più veloce:
+
+\begin{algorithm}
+\caption{per la sintesi in forma PS}
+\begin{algorithmic}
+	\STATE \textbf{Input:} una legge combinatoria $F$
+	\STATE \textbf{Output:} la sintesi in forma PS di $F$
+	\STATE Si ricava $\overline{F}$ complementando $F$
+	\STATE Si reallizza una sintesi SP della legge $\overline{F}$
+	\STATE Si ottiene una sintesi di $F$ aggiungendo un invertitore in uscita alla rete SP che sintetizza $\overline{F}$
+	\STATE Si applicano i teoremi di de Morgan, da destra verso sinistra
+\end{algorithmic}
+\end{algorithm}
+
+Algebricamente, l'ultimo passaggio significa scrivere $\overline{F}$ in forma SP:
+$$
+\overline{z} = P_1 + ... + P_k
+$$
+dove $P_i$ sono prodotti di variabili di ingresso, e applicare de Morgan come:
+$$
+z = \overline{\overline{z}} = \overline{P_1 + ... + P_k} = \overline{P_1} \cdot ... \cdot \overline{P_k}
+$$
+
+A questo punto si applica di nuovo de Morgan, come:
+$$
+\overline{P_i} = \overline{\prod x_j} = \sum \overline{x_j}
+$$
+
+\subsubsection{Dualità fra forme SP e PS}
+Con il procedimento presentato abbiamo che se $\overline{F}$ è in forma canonica SP, allora $F$ è in forma canonica PS.
+Se la sintesi SP di $\overline{F}$ costa $C$, allora la sintesi PS di $F$ costa C.
+Quindi se la sintesi SP di $\overline{F}$ è a costo minimo fra tutte le possibili sintesi SP, lo è anche la sintesi PS di $F$ fra tutte le possibili sintesi PS.
+Se fosse il contrario, applicando de Morgan più volte avrei sintesi di costo sempre minore, violando la dualità.
+
+A questo punto sappiamo effettuare la sintesi a costo minimo in forma SP di una qualsiasi legge $F$, e ponendo di sintetizzare prima $\overline{F}$ in forma SP, sappiamo anche trovare la sintesi a costo minimo in forma PS della stessa legge.
+Non possiamo determinare con sicurezza quale fra queste due sintesi ha costo minimo in generale, quindi bisogna controllare per forza la tabella della verità.
+
+Troviamo ad esempio la sintesi in forma PS del BCD a 7 segmenti visto prima.
+Si ha che la negazine di $F$, su $z_E$, è:
+
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c | c c c c | c | c }
+		$j$ & $x_3$ & $x_2$ & $x_1$ & $x_0$ & $z_E$ & $\overline{z_E}$ \\
+		\hline
+		$0$ & $0$ & $0$ & $0$ & $0$ & $1$ & $0$ \\
+		$1$ & $0$ & $0$ & $0$ & $1$ & $0$ & $1$ \\
+		$2$ & $0$ & $0$ & $1$ & $0$ & $1$ & $0$ \\
+		$3$ & $0$ & $0$ & $1$ & $1$ & $0$ & $1$ \\
+
+		$4$ & $0$ & $1$ & $0$ & $0$ & $0$ & $1$ \\
+		$5$ & $0$ & $1$ & $0$ & $1$ & $0$ & $1$ \\
+		$6$ & $0$ & $1$ & $1$ & $0$ & $1$ & $0$ \\
+		$7$ & $0$ & $1$ & $1$ & $1$ & $0$ & $1$ \\
+	
+		$8$ & $1$ & $0$ & $0$ & $0$ & $1$ & $0$ \\
+		$9$ & $1$ & $0$ & $0$ & $1$ & $0$ & $1$ \\
+		$10$ & $1$ & $0$ & $1$ & $0$ & $-$ & $-$ \\
+		$11$ & $1$ & $0$ & $1$ & $1$ & $-$ & $-$ \\
+
+		$12$ & $1$ & $1$ & $0$ & $0$ & $-$ & $-$ \\
+		$13$ & $1$ & $1$ & $0$ & $1$ & $-$ & $-$ \\
+		$14$ & $1$ & $1$ & $1$ & $0$ & $-$ & $-$ \\
+		$15$ & $1$ & $1$ & $1$ & $1$ & $-$ & $-$ \\
+	\end{tabular}
+\end{table}
+
+Ricaviamo quindi la mappa di Karnaugh:
+
+\begin{center}
+\noindent
+\begin{minipage}{0.3\textwidth}
+\begin{karnaugh-map}
+		\manualterms{0, 1, 0, 1, 1, 1, 0, 1, 0, 1, -, -, -, -, -, -}
+		\implicant{1}{11}
+		\implicant{12}{14}
+		\implicant{15}{10}
+		\implicant{4}{13}
+\end{karnaugh-map}
+\end{minipage}%
+\hspace{3cm}
+\begin{minipage}{0.3\textwidth}
+	\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+		\begin{tabular} { c || c | c | c | c}
+			& $x_3$ & $x_2$ & $x_1$ & $x_0$ \\ 
+			\hline 
+			\rowcolor{red!20!white} A & - & - & - & 1 \\
+			\rowcolor{green!20!white} B & 1 & 1 & - & - \\
+			\rowcolor{yellow!20!white} C & 1 & - & 1 & - \\
+			\rowcolor{cyan!20!white} D & - & 1 & 0 & - \\
+		\end{tabular}
+	\end{table}
+\end{minipage}
+\end{center}
+
+Si ha che B e C sono inutili, in quanto comprendono solo indeterminati.
+Restano allora A e D, entrambi essenziali, ergo la sintesi SP di $\overline{F}$ è:
+$$ \overline{F} = \overline{z_E} = x_0 + x_2 \overline{x_1} $$
+che neghiamo per ottenere nuovamente $F$:
+$$ F = z_E = \overline{ x_0 + x_2 \overline{x_1} } $$
+
+A questo punto si può applicare de Morgan, prima sulla somma e poi sul prodotto a destra, per ottenere:
+$$ = \overline{x_0} \cdot \overline{x_2 \overline{x1}} = \overline{x_0} \cdot \left( \overline{x_2} + x_1 \right)$$
+
+Cioè è la sintesi di $z_E$ in forma PS, che notiamo essere meno costosa della sintesi in forma SP, di due porte logiche in meno. 
+
+\end{document}
