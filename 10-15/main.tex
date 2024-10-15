@@ -1,0 +1,843 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 15-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Porte logiche universali}
+Si dice che NAND e NOR sono \textbf{porte logiche universali}.
+Si possono realizzare AND, OR e NOT usando solo porte NAND o solo porte NOR.
+
+Algebricamente, questo significa fare:
+\begin{table}[h!]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c || c | c }
+		\bfseries Porta & \bfseries Realizzazione NAND & \bfseries Realizzazione NOR \\
+		\hline 
+		NOT & $ x = x \cdot x \Rightarrow \overline{x} = \overline{x \cdot x} $ & $ x = x + x \Rightarrow \overline{x} = \overline{x + x} $ \\
+		AND & $ x \cdot y = \overline{\left( \overline{x \cdot y} \right)} $ & $ x \cdot y = \overline{\overline{x} + \overline{y}} \ $ (de Morgan) \\
+		OR & $ x + y = \overline{\overline{x} \cdot \overline{y}} \ $ (de Morgan) & $ x + y = \overline{\left( \overline{x + y} \right)} $ \\
+	\end{tabular}
+\end{table}
+
+cioè collegare porte logiche fisiche nelle seguenti configurazioni:
+\begin{table}[h!]
+	\center 
+	\begin{tabular} { c || c | c }
+		\bfseries Porta & \bfseries Realizzazione NAND & \bfseries Realizzazione NOR \\
+		\hline 
+		NOT &
+\begin{tabular}{l}
+\begin{circuitikz}
+	\draw (0,0) node[nand port, number inputs=2] (myNAND) {};
+	
+	\draw (myNAND.in 1) node[left] {} -- ++(-0.5,0) |- (myNAND.in 2);
+
+	\node at (-2.2, 0) {$x$}; 
+	\draw (myNAND.out) -- ++(0.5,0) node[right] {$z$};
+\end{circuitikz}
+\end{tabular}
+		& 
+\begin{tabular}{l}
+\begin{circuitikz}
+	\draw (0,0) node[nor port, number inputs=2] (myNAND) {};
+	
+	\draw (myNAND.in 1) node[left] {} -- ++(-0.5,0) |- (myNAND.in 2);
+
+	\node at (-2.2, 0) {$x$}; 
+	\draw (myNAND.out) -- ++(0.5,0) node[right] {$z$};
+\end{circuitikz}
+\end{tabular}
+		\\
+		\hline
+		AND & 
+\begin{tabular}{l}
+\begin{circuitikz}
+	\draw (-2.04,0) node[nand port, number inputs=2] (myNAND1) {};
+	\draw (0,0) node[nand port, number inputs=2] (myNAND) {};
+	
+	\draw (myNAND.in 1) node[left] {} -- ++(-0.5,0) |- (myNAND.in 2);
+
+	\node at (-3.7, 0.3) {$x$}; 
+	\node at (-3.7, -0.3) {$y$}; 
+	\draw (myNAND.out) -- ++(0.5,0) node[right] {$z$};
+\end{circuitikz}
+\end{tabular}
+		& 
+\begin{tabular}{l}
+\begin{circuitikz}
+	\draw (-2.04,0.75) node[nor port, number inputs=2] (myNAND1) {};
+	\draw (-2.04,-0.75) node[nor port, number inputs=2] (myNAND2) {};
+	\draw (0,0) node[nor port, number inputs=2] (myNAND) {};
+	
+	\draw (myNAND1.in 1) node[left] {} -- ++(-0.5,0) |- (myNAND1.in 2);
+	\draw (myNAND2.in 1) node[left] {} -- ++(-0.5,0) |- (myNAND2.in 2);
+
+	\draw (myNAND.in 1) node[left] {} -- (myNAND1.out);
+	\draw (myNAND.in 2) node[left] {} -- (myNAND2.out);
+
+	\node at (-4.2, 0.75) {$x$}; 
+	\node at (-4.2, -0.75) {$y$}; 
+	\draw (myNAND.out) -- ++(0.5,0) node[right] {$z$};
+\end{circuitikz}
+\end{tabular}
+		\\
+		\hline
+		OR  
+		&
+\begin{tabular}{l}
+\begin{circuitikz}
+	\draw (-2.04,0.75) node[nand port, number inputs=2] (myNAND1) {};
+	\draw (-2.04,-0.75) node[nand port, number inputs=2] (myNAND2) {};
+	\draw (0,0) node[nand port, number inputs=2] (myNAND) {};
+	
+	\draw (myNAND1.in 1) node[left] {} -- ++(-0.5,0) |- (myNAND1.in 2);
+	\draw (myNAND2.in 1) node[left] {} -- ++(-0.5,0) |- (myNAND2.in 2);
+
+	\draw (myNAND.in 1) node[left] {} -- (myNAND1.out);
+	\draw (myNAND.in 2) node[left] {} -- (myNAND2.out);
+
+	\node at (-4.2, 0.75) {$x$}; 
+	\node at (-4.2, -0.75) {$y$}; 
+	\draw (myNAND.out) -- ++(0.5,0) node[right] {$z$};
+\end{circuitikz}
+\end{tabular}
+		&
+\begin{tabular}{l}
+\begin{circuitikz}
+	\draw (-2.04,0) node[nor port, number inputs=2] (myNAND1) {};
+	\draw (0,0) node[nor port, number inputs=2] (myNAND) {};
+	
+	\draw (myNAND.in 1) node[left] {} -- ++(-0.5,0) |- (myNAND.in 2);
+
+	\node at (-3.7, 0.3) {$x$}; 
+	\node at (-3.7, -0.3) {$y$}; 
+	\draw (myNAND.out) -- ++(0.5,0) node[right] {$z$};
+\end{circuitikz}
+\end{tabular}
+	\end{tabular}
+\end{table}
+
+Potremmo sembrare che, se si poteva realizzare qualsiasi rete combinatoria con AND, OR e NOT su 2 livelli di logica, usando solo NAND o NOR dovremmo accontentarci di 4 livelli di logica (AND e OR richiedono di per sé una rete a 2 livelli di logica).
+
+In verità, le porte NAND e NOR permettono di creare circuiti logici con gli stessi livelli di logica delle porte AND, OR e NOT.
+
+\subsubsection{Sintesi a porte NAND}
+Vediamo quindi il seguente algoritmo per la sintesi di un circuito con sole porte NAND:
+\begin{algorithm}
+\caption{sintesi a porte NAND}
+\begin{algorithmic}
+	\STATE \textbf{Input:} un circuito in forma SP 
+	\STATE \textbf{Output:} una sintesi a porte NAND
+	\STATE Si sostituisce la porta OR con il suo equivalente a NAND
+	\STATE Si sostituisce ciascun AND con il suo equivalente a NAND
+	\STATE Si eliminano le coppie di NOT interne a cascata
+\end{algorithmic}
+\end{algorithm}
+
+Ignoriamo i NOT sull'ingresso, in quanto abbiamo visto sono effettivamente gratuiti.
+Abbiamo quindi che, rimuovendo le coppie NOT interni (creati da coppie di NAND con gli stessi input) ritorniamo in una forma a 2 livelli di logica.
+
+Dal punto di vista algebrico si ha:
+$$
+z = P_1 + P_2 + ... + P_k = \overline{\overline{ P_1 + P_2 + ... + P_k }} = \overline{ \overline{P_1} \cdot \overline{P_2} \cdot ... \cdot \overline{P_k}}
+$$
+dove il complemento superiore è l'ultima porta NAND (quella che sostituisce l'OR), e i singoli $P_i$ complementati sono singole porte NAND ($P_i$ è un prodotto, quindi $\overline{P_i}$ è una porta NAND).
+
+\subsubsection{Sintesi a porte NOR}
+Vediamo poi l'algoritmo per la sintesi di un circuito con sole porte NOR:
+\begin{algorithm}
+\caption{sintesi a porte NOR}
+\begin{algorithmic}
+	\STATE \textbf{Input:} un circuito in forma PS 
+	\STATE \textbf{Output:} una sintesi a porte NOR
+	\STATE Si sostituisce la porta AND con il suo equivalente a NOR
+	\STATE Si sostituisce ciascun OR con il suo equivalente a NOR
+	\STATE Si eliminano le coppie di NOT interne a cascata
+\end{algorithmic}
+\end{algorithm}
+
+Anche qui ignoriamo i NOT sull'ingresso, per gli stessi motivi di prima, e rimuovendo le coppie NOT interni (creati da coppie di NAND con gli stessi input) ritorniamo nuovamente in una forma a 2 livelli di logica.
+
+Dal punto di vista algebrico si ha:
+$$
+z = S_1 \cdot S_2 \cdot ... \cdot S_k = \overline{\overline{ S_1 \cdot S_2 \cdot ... \cdot S_k }} = \overline{ \overline{S_1} + \overline{S_2} + ... + \overline{S_k}}
+$$
+dove il complemento superiore è l'ultima porta NOR (quella che sostituisce l'AND), e i singoli $S_i$ complementati sono singole porte NOR ($S_i$ è una somma, quindi $\overline{S_i}$ è una porta NOR).
+
+\subsection{Porte tri-state}
+Fa comodo poter connettere insieme le uscite delle reti usando bus condivisi, cioè linee di ingresso-uscita.
+Abbiamo che l'uscita di una rete, dal punto di vista di una rete, corrisponde a un interrutture fra il Vcc (1 logico) o la massa (0 logico), cioé:
+
+\begin{center}
+\begin{circuitikz}
+	\draw[->] (0,0.2) to[R, l=$R_1$] (0,2) node[above]{Vcc};
+	\draw (0,-0.2) to[R, l_=$R_2$] (0,-2) node[ground]{};
+	\draw[->] (0.2,0) -- (2, 0);
+
+	\draw[thick] (0, 0.2) -- (0.2, 0);
+
+	\node at(2,0.2) {$z$}; 
+
+\end{circuitikz}
+\end{center}
+
+dove $R_1$ e $R_0$ sono incognite.
+
+Quando vado a collegare più uscite sulla stessa linea possono crearsi più situazioni:
+
+\begin{itemize} 
+	\item \textbf{1 logici:}
+		se ho due 1 logici, cioe due generatori di potenziale a Vcc, connessi sulla stessa linea, ho che la tensione sulla linea è sempre Vcc, quindi tutto ok:
+
+\begin{center}
+	\begin{circuitikz}
+		\begin{scope}[shift={(0,3)}]
+		\draw[->] (1,0) to (1.5,0);
+    \draw (0,0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm] {};
+
+		\draw (0,-1) node[below] {1};
+		
+		\draw (0, 1) to[ american voltage source, l=VCC, transform shape, scale=0.5] (0,0);
+		\draw (0,0) to [ R, transform shape, scale=0.5] (2,0);
+		\end{scope}	
+
+		\begin{scope}[shift={(0,0)}]
+		\draw[->] (1,0) to (1.5,0);
+    \draw (0,0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm] {};
+
+		\draw (0,-1) node[below] {1};
+		
+		\draw (0, 1) to[ american voltage source, l=VCC, transform shape, scale=0.5] (0,0);
+		\draw (0,0) to [ R, transform shape, scale=0.5] (2,0);
+		\end{scope}	
+
+		\draw (1.5, 4) -- (1.5, -1);
+
+	\end{circuitikz}
+\end{center}
+	\item \textbf{0 logici:}
+		allo stesso tempo, se ho due 0 logici, quindi due collegamenti a massa, sulla linea si avrà tensione nulla:
+\begin{center}
+	\begin{circuitikz}
+		\begin{scope}[shift={(0,3)}]
+		\draw[->] (1,0) to (1.5,0);
+    \draw (0,0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm] {};
+
+		\draw (0,-1) node[below] {0};
+
+		\draw (0,0) to [ R, transform shape, scale=0.5] (2,0);
+		\draw (0, 0) node[ground] {};
+		\end{scope}	
+
+		\begin{scope}[shift={(0,0)}]
+		\draw[->] (1,0) to (1.5,0);
+    \draw (0,0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm] {};
+
+		\draw (0,-1) node[below] {0};
+
+		\draw (0,0) to [ R, transform shape, scale=0.5] (2,0);
+		\draw (0, 0) node[ground] {};
+		\end{scope}	
+
+		\draw (1.5, 4) -- (1.5, -1);
+
+	\end{circuitikz}
+\end{center}
+
+	\item \textbf{0 e 1 logici:}
+		se collego un 1 logico e uno 0 logico alla stessa linea, ottengo effettivamente un partitore di tensione:
+\begin{center}
+	\begin{circuitikz}
+		\begin{scope}[shift={(0,3)}]
+		\draw[->] (1,0) to (1.5,0);
+    \draw (0,0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm] {};
+
+		\draw (0,-1) node[below] {1};
+		
+		\draw (0, 1) to[ american voltage source, l=VCC, transform shape, scale=0.5] (0,0);
+		\draw (0,0) to [ R, transform shape, scale=0.5] (2,0);
+		\end{scope}	
+
+		\begin{scope}[shift={(0,0)}]
+		\draw[->] (1,0) to (1.5,0);
+    \draw (0,0) node[draw, rectangle, minimum width = 2cm, minimum height = 2cm] {};
+
+		\draw (0,-1) node[below] {0};
+
+		\draw (0,0) to [ R, transform shape, scale=0.5] (2,0);
+		\draw (0, 0) node[ground] {};
+		\end{scope}	
+
+		\draw (1.5, 4) -- (1.5, -1);
+		\node[circ] at(1.5, 1.5) {};
+		\node[right] at(1.5, 1.5) {$V_l$};
+
+	\end{circuitikz}
+\end{center}
+		da cui ricavo:
+		$$
+		V_l = \frac{R_0}{R_1 + R_0}
+		$$
+
+		Notiamo sopratutto che se $R_0$ e $R_1$ sono molto piccoli, otteniamo correnti $I$ molto grandi, che significa componenti bruciati.
+
+\end{itemize}
+
+Per risolvere il problema dato da 0 e 1 logici connessi sulla stessa linea, usiamo specifici apparecchi detti \textbf{porte tri-state}, che sono capaci di disconnettere fisicamente un'uscita da una linea condivisa.
+Si rappresentano come:
+
+\begin{center}
+\begin{circuitikz}
+    % Draw a tristate buffer
+    \draw (0,0) node[buffer, anchor=in] (myBuffer) {};
+    
+    % Draw inputs and outputs
+    \draw (myBuffer.in) -- ++(-1,0) node[left] {$x$}; % Input A
+    \draw (myBuffer.out) -- ++(1,0) node[right] {$z$}; % Output Y
+    \draw (0.5,-0.49) -- (0.5, -1) -- (-1,-1) node[left] {$b$}; % Enable input
+\end{circuitikz}
+\end{center}
+
+dove $x$ è l'ingresso, $z$ l'uscita, e $b$ l'enabler.
+A $b=1$ la porta si comporta come un'elemento neutro, mentre a $b=0$ offre un'alta impedenza, effettivamente scollegando l'uscita.
+La tabella di verità corrispondente sarà:
+
+\begin{table}[h!]
+	\center 
+	\begin{tabular} { c c | c }
+		$b$ & $x$ & $z$ \\
+		\hline 
+		1 & 0 & 0 \\ 
+		1 & 1 & 1 \\ 
+		0 & - & Hi-Z
+	\end{tabular}
+\end{table}
+
+Notiamo che il valore Hi-Z (alta impedenza) non è un valore logico: ciò che esce da una porta in stato Hi-Z viene interpretato come un filo staccato dal resto della rete.
+Ogni porta logica gestisce poi questa situazione secondo le sue specifiche di realizzazione, restando comunque attaccata sia a Vcc che a massa, e quindi non in uno stato HiZ.
+
+\subsubsection{Multiplexer decodificati}
+Un componente realizzato attraverso le porte tri-state è il multiplexer decodificato:
+
+\begin{center}
+\begin{circuitikz}
+    % Draw a tristate buffer
+    \draw (0,0) node[buffer, anchor=in] (myBuffer) {};
+    
+    % Draw inputs and outputs
+		\draw (myBuffer.in) -- ++(-1,0) node[left] {$x_{N-1}$}; % Input A
+    \draw (myBuffer.out) -- ++(1,0) node[right] {}; % Output Y
+		\draw (0.5,-0.49) -- (0.5, -1) -- (-1,-1) node[left] {$b_{N-1}$}; % Enable input
+
+		\node at(0.5,-1.75) {$...$};
+
+    % Draw a tristate buffer
+    \draw (0,-3) node[buffer, anchor=in] (myBuffer1) {};
+    
+    % Draw inputs and outputs
+    \draw (myBuffer1.in) -- ++(-1,0) node[left] {$x_0$}; % Input A
+    \draw (myBuffer1.out) -- ++(1,0) node[right] {}; % Output Y
+    \draw (0.5,-3.49) -- (0.5, -4) -- (-1,-4) node[left] {$b_0$}; % Enable input
+
+    \draw (2.4,0) -- (2.4, -3); 
+		\draw (2.4, -1.5) -- (3, -1.5) node[right] {$z$};
+
+\end{circuitikz}
+\end{center}
+
+Questo componente offre alta indipendeza a tutte le variabili $x_i$ in ingresso tranne una, quella all'indice $j$, selezionata attraverso una variabile di comando $b_j$.
+
+\subsubsection{Linea di ingresso/uscita}
+Si usano le porte tri-state per permettere a componenti di comunicare su linee di ingresso/uscita, ad esempio con la memoria.
+In questo caso, si biforca la linea, ammettendo la linea in entrata così com'è, e mettendo una porta tri-state nella linea in uscita.
+
+\begin{center}
+\begin{circuitikz}
+    \draw (-2,0.1) node[draw, rectangle, minimum width = 2cm, minimum height = 4cm] {};
+		\node at (-2, 0.1) {$S$};
+
+		\node at (-0.75, -1.2) {$b$};
+
+		\draw[<-] (-1,1.5) -- (2.4, 1.5);
+
+		% Draw a tristate buffer
+    \draw (0,0) node[buffer, anchor=in] (myBuffer) {};
+    
+    % Draw inputs and outputs
+		\draw[<-] (myBuffer.in) -- ++(-1,0) {}; % Input A
+		\draw (myBuffer.out) -- ++(1,0) -- (2.4, 1.5); % Output Y
+		\draw (0.5,-0.49) -- (0.5, -1) -- (-1,-1) ; % Enable input
+
+		\draw (2.4,0.75) -- (3, 0.75) node[right] {$d$};
+\end{circuitikz}
+\end{center}
+
+Così, quando il componente $S$ vuole comunicare con l'esterno, imposta l'enabler $b$ a 1 e mette sulla linea $d$ ciò che vuole comunicare. Altrimenti tiene $b$ a 0 e ascolta ciò che arriva su $d$.
+
+Se il componente $S$ comunica con un altro componente $T$, questi dovranno impostare alternativamente i loro enabler $b_S$ e $b_T$ a 1 e 0, scambiandosi messaggi sulla linea $d$.
+
+\subsection{Circuiti di ritardo e formatori di impulso}
+A volte bisogna trattare di \textbf{segnali}.
+In questo caso si usano gli elementi neutri $\Delta$ (realizzati spesso con numeri pari di invertitori), che sappiamo porre un \textbf{ritardo simmetrico} agli ingressi, dove simmetrico significa identico sulle transizioni $0 \rightarrow 1$ e $1 \rightarrow 0$.
+
+Potrebbe essere utile avere circuiti con ritardi \textbf{asimmetrici}, cioè variabili sulle transizioni $0 \rightarrow 1$ e $1 \rightarrow 0$.
+Indichiamo questi componenti come $\Delta^+$.
+
+\subsubsection{Circuito di ritardo sul fronte di discesa}
+Collegando un neutro $\Delta$ assieme al segnale stesso ad una porta AND, si ottiene un'andamento del tipo:
+
+\begin{center}
+	\begin{minipage}{0.2\textwidth}  % Adjust width as needed
+		\begin{circuitikz}
+			\node at(0,0) {$x$};
+			
+			\draw (0.5, 0) -- (1, 0);
+			\draw (1,0.5) -- (1, -0.5);
+			\draw  (1, 0.5) -- (1.96, 0.5);
+
+    	\draw (2.25, 0.5) node[draw, rectangle, minimum width = 0.4cm, minimum height = 0.75cm] {$\Delta$};
+
+			\draw[->] (2.54, 0.5) -- (3.4, 0.5);
+			\draw[->] (1, -0.5) -- (3.4, -0.5);
+			
+    	\draw (4,0) node[draw, rectangle, minimum width = 1cm, minimum height = 1.5cm] {AND};
+			\draw (4.58, 0) -- (5, 0);
+
+			\node at(5.2,0) {$z$};
+		\end{circuitikz}
+	\end{minipage}
+	\hspace{2cm}  % Horizontal space between the two components
+	\begin{minipage}{0.6\textwidth}  % Adjust width as needed
+		\begin{tikzpicture}
+    \begin{axis}[
+        xmin=4, xmax=9,
+        ymin=-1, ymax=6,
+        grid=major,
+        domain=4:9,
+        xtick={5,6,8},
+        ytick={0,5},
+        xticklabels={$t_1$, $t_1 + \Delta$,$t_2$},
+        yticklabels={$0$, $V_{max}$},
+        samples=100,
+        legend pos=north west, % Position of the legend
+        width=9cm,
+        height=7cm
+    ]
+    % Blue plot with legend entry
+    \addplot[blue, thick] {5 * (x >= 5) * (x <=  8)}; 
+    \addlegendentry{$x$} % Legend entry for the blue plot
+    
+    % Red plot with legend entry
+    \addplot[red, thick] {5 * (x >= 6) * (x <= 8) + 0.15};
+    \addlegendentry{$z$} % Legend entry for the red plot
+    \end{axis}
+\end{tikzpicture}
+	\end{minipage}
+\end{center}
+
+Nello specifico, transizionando da $1 \rightarrow 0$, si ha che il primo ingresso che va a 0 porta a 0 l'uscita. C'è un ritardo piccolo da parte della porta AND.
+Quando invece si tranziziona da $0 \rightarrow 1$, si ha che il secondo ingresso che va a 1 (quello che passa da $\Delta$) porta a 1 l'uscita. C'è un ritardo grande da parte del $\Delta$ e della porta AND.
+
+\subsubsection{Circuito di ritardo sul fronte di salita}
+Allo stesso modo, collegando un neutro $\Delta$ assieme al segnale stesso ad una porta OR, si ottiene un'andamento del tipo:
+
+\begin{center}
+	\begin{minipage}{0.2\textwidth}  % Adjust width as needed
+		\begin{circuitikz}
+			\node at(0,0) {$x$};
+			
+			\draw (0.5, 0) -- (1, 0);
+			\draw (1,0.5) -- (1, -0.5);
+			\draw  (1, 0.5) -- (1.96, 0.5);
+
+    	\draw (2.25, 0.5) node[draw, rectangle, minimum width = 0.4cm, minimum height = 0.75cm] {$\Delta$};
+
+			\draw[->] (2.54, 0.5) -- (3.4, 0.5);
+			\draw[->] (1, -0.5) -- (3.4, -0.5);
+			
+    	\draw (4,0) node[draw, rectangle, minimum width = 1cm, minimum height = 1.5cm] {OR};
+			\draw (4.58, 0) -- (5, 0);
+
+			\node at(5.2,0) {$z$};
+		\end{circuitikz}
+	\end{minipage}
+	\hspace{2cm}  % Horizontal space between the two components
+	\begin{minipage}{0.6\textwidth}  % Adjust width as needed
+		\begin{tikzpicture}
+    \begin{axis}[
+        xmin=4, xmax=9,
+        ymin=-1, ymax=6,
+        grid=major,
+        domain=4:9,
+        xtick={5,7,8},
+        ytick={0,5},
+        xticklabels={$t_1$, $t_2$, $t_2 + \Delta$},
+        yticklabels={$0$, $V_{max}$},
+        samples=100,
+        legend pos=north west, % Position of the legend
+        width=9cm,
+        height=7cm
+    ]
+    % Blue plot with legend entry
+    \addplot[blue, thick] {5 * (x >= 5) * (x <=  7)}; 
+    \addlegendentry{$x$} % Legend entry for the blue plot
+    
+    % Red plot with legend entry
+    \addplot[red, thick] {5 * (x >= 5) * (x <= 8) + 0.15};
+    \addlegendentry{$z$} % Legend entry for the red plot
+    \end{axis}
+\end{tikzpicture}
+	\end{minipage}
+\end{center}
+
+Nello specifico, transizionando da $0 \rightarrow 1$, si ha che il primo ingresso che va a 1 porta a 1 l'uscita. C'è un ritardo piccolo da parte della porta OR.
+Quando invece si tranziziona da $1 \rightarrow 0$, si ha che il secondo ingresso che va a 0 (quello che passa da $\Delta$) porta a 0 l'uscita. C'è un ritardo grande da parte del $\Delta$ e della porta OR.
+
+\subsubsection{Formatore di impulso sul fronte di salita}
+I formatori di impulso sono reti combinatorie che generano in uscita un \textbf{impulso} di durata nota.
+Si indicano con $P^+$.
+
+Si crea un formatore di impulso sul fronte di salita collegando la negazione di un $\Delta$ e il segnale stesso ad una porta AND, cioé:
+
+\begin{center}
+	\begin{minipage}{0.2\textwidth}  % Adjust width as needed
+		\begin{circuitikz}
+			\node at(0,0) {$x$};
+			
+			\draw (0.5, 0) -- (1, 0);
+			\draw (1,0.5) -- (1, -0.5);
+			\draw  (1, 0.5) -- (1.2, 0.5);
+
+    	\draw (1.5, 0.5) node[draw, rectangle, minimum width = 0.4cm, minimum height = 0.75cm] {$\Delta$};
+    	\draw (2.5, 0.5) node[draw, rectangle, minimum width = 0.4cm, minimum height = 0.75cm] {NOT};
+
+			\draw (1.78, 0.5) -- (1.94, 0.5);
+
+			\draw[->] (3.05, 0.5) -- (3.4, 0.5);
+			\draw[->] (1, -0.5) -- (3.4, -0.5);
+			
+    	\draw (4,0) node[draw, rectangle, minimum width = 1cm, minimum height = 1.5cm] {AND};
+			\draw (4.58, 0) -- (5, 0);
+
+			\node at(5.2,0) {$z$};
+		\end{circuitikz}
+	\end{minipage}
+	\hspace{2cm}  % Horizontal space between the two components
+	\begin{minipage}{0.6\textwidth}  % Adjust width as needed
+		\begin{tikzpicture}
+    \begin{axis}[
+        xmin=4, xmax=9,
+        ymin=-1, ymax=6,
+        grid=major,
+        domain=4:9,
+        xtick={5,6,8},
+        ytick={0,5},
+        xticklabels={$t_1$, $t_1 + \Delta$, $t_2$},
+        yticklabels={$0$, $V_{max}$},
+        samples=100,
+        legend pos=north west, % Position of the legend
+        width=9cm,
+        height=7cm
+    ]
+    % Blue plot with legend entry
+    \addplot[blue, thick] {5 * (x >= 5) * (x <=  8)}; 
+    \addlegendentry{$x$} % Legend entry for the blue plot
+    
+    % Red plot with legend entry
+    \addplot[red, thick] {5 * (x >= 5) * (x <= 6) + 0.15};
+    \addlegendentry{$z$} % Legend entry for the red plot
+    \end{axis}
+\end{tikzpicture}
+	\end{minipage}
+\end{center}
+
+Nello specifico, transizionando da $0 \rightarrow 1$, si ha che il segnale va a 1, attivando la AND (l'ingresso dalla NOT era già attivo). 
+Dopo il ritardo $\Delta$, NOT torna a 0, e quindi l'uscita della AND va a 0.
+Si ha quindi un'impulso di durata del ritardo $\Delta$.
+Transizionando da $1 \rightarrow 0$, invece, si ha che il segnale "ancora" istantaneamente l'uscita della AND a zero, ergo non si hanno altri artefatti.
+
+\subsubsection{Formatore di impulso sul fronte di discesa}
+Si crea un formatore di impulso sul fronte di discesa collegando la negazione di un $\Delta$ e il segnale stesso ad una porta NOR, cioé:
+
+\begin{center}
+	\begin{minipage}{0.2\textwidth}  % Adjust width as needed
+		\begin{circuitikz}
+			\node at(0,0) {$x$};
+			
+			\draw (0.5, 0) -- (1, 0);
+			\draw (1,0.5) -- (1, -0.5);
+			\draw  (1, 0.5) -- (1.2, 0.5);
+
+    	\draw (1.5, 0.5) node[draw, rectangle, minimum width = 0.4cm, minimum height = 0.75cm] {$\Delta$};
+    	\draw (2.5, 0.5) node[draw, rectangle, minimum width = 0.4cm, minimum height = 0.75cm] {NOT};
+
+			\draw (1.78, 0.5) -- (1.94, 0.5);
+
+			\draw[->] (3.05, 0.5) -- (3.4, 0.5);
+			\draw[->] (1, -0.5) -- (3.4, -0.5);
+			
+    	\draw (4,0) node[draw, rectangle, minimum width = 1cm, minimum height = 1.5cm] {NOR};
+			\draw (4.58, 0) -- (5, 0);
+
+			\node at(5.2,0) {$z$};
+		\end{circuitikz}
+	\end{minipage}
+	\hspace{2cm}  % Horizontal space between the two components
+	\begin{minipage}{0.6\textwidth}  % Adjust width as needed
+		\begin{tikzpicture}
+    \begin{axis}[
+        xmin=4, xmax=9,
+        ymin=-1, ymax=6,
+        grid=major,
+        domain=4:9,
+        xtick={5,7,8},
+        ytick={0,5},
+        xticklabels={$t_1$, $t_2$, $t_2 + \Delta$},
+        yticklabels={$0$, $V_{max}$},
+        samples=100,
+        legend pos=north west, % Position of the legend
+        width=9cm,
+        height=7cm
+    ]
+    % Blue plot with legend entry
+    \addplot[blue, thick] {5 * (x >= 5) * (x <=  7)}; 
+    \addlegendentry{$x$} % Legend entry for the blue plot
+    
+    % Red plot with legend entry
+    \addplot[red, thick] {5 * (x >= 7) * (x <= 8) + 0.15};
+    \addlegendentry{$z$} % Legend entry for the red plot
+    \end{axis}
+\end{tikzpicture}
+	\end{minipage}
+\end{center}
+
+Nello specifico, transizionando da $0 \rightarrow 1$, si ha che il segnale va a 1,ergo la NOR resta a 0 (l'ingresso dalla NOT era già attivo, e due ingressi attivi sono sempre 0 della NOR). 
+Dopo il ritardo $\Delta$, l'uscita della NOT torna a 0, così che quando si stacca il segnale, per una durata $\Delta$ entrambe le linee in entrata alla NOR vanno a 0, e quindi questa va a 1.
+Dopo il ritardo $\Delta$, NOT torna a 0, e quindi l'uscita della AND va a 0.
+Si ha quindi, ancora una volta, un'impulso di durata del ritardo $\Delta$.
+
+\end{document}
