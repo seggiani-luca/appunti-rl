@@ -260,7 +260,7 @@ Negli esempi, le destinazioni quoziente resto sono rispettivamente AL e AH, EAX 
 
 \subsubsection{INTEGER DIVIDE}
 \begin{itemize}
-	\item \textbf{Formato:} \lstinline|MUL source|
+	\item \textbf{Formato:} \lstinline|IMUL source|
 	\item \textbf{Azione:} considera l'operando sorgente come un divisore, l'operando destinatario (implicito) come un dividendo, e effettua la divisione assumendo i numeri interi. Nello specifico:
 	\begin{itemize}
 	\item Sorgente a 8 bit, si ha $\text{AL} = \text{AX} / \text{source}$, e $ \text{AH} = \text{AX} \mod \text{source} $;

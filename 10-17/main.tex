@@ -1,0 +1,440 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 17-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Rappresentazione dei numeri naturali}
+Noi rappresentiamo i numeri naturali attraverso una notazione posizionale, ovvero come:
+\begin{itemize}
+	\item Un numero $\beta \geq 2$, detto \textbf{base di rappresentazione}. Nel caso del sistema decimale, $\beta = 10$.
+	\item Un'insieme di $\beta$ simboli, detti \textbf{cifre}, a ciascuno dei quali è associato un numero naturale $\in [0, \beta - 1]$.
+	\item Una \textbf{legge di rappresentazione} che fa corrispondere ad ogni sequenza di cifre un numero naturale.
+\end{itemize}
+
+\subsubsection{Notazione posizionale}
+Dato un numero $A \in \mathbb{N}$, lo posso rappresentare in base $\beta$ attraverso una sequenza di cifre:
+$$ A \equiv (a_{n-1}a_{n-2} ... a_1 a_0)_\beta, \quad 0 \leq a_i \leq \beta - 1, \quad 0 \leq i \leq n - 1 $$
+dove la legge di rappresentazione è:
+$$
+A = \sum_{i=0}^{n-1} a_i \cdot \beta^i
+$$
+
+Nella rappresentazione di un numero naturale, una cifra contribuisce a determinare il numero in modo differente a seconda della propria posizione nella sequenza.
+
+Normalmente usiamo il sistema decimale, con $\beta = 10$. Nell'informatica, ci interessiamo al sistema binario, con $\beta = 2$.
+
+\subsection{Teorema della divisione con resto}
+Vediamo come trovare la rappresentazione di un naturale $A$ in una base $\beta$, noto che questo è sempre possibile:
+\begin{theorem}{della divisone con resto}
+	Dato $x \in \mathbb{N}, \beta \in \mathbb{N}, \beta > 0$, esiste ed è unica la coppia di numeri $q,r$:
+	\begin{itemize}
+		\item $q \in \mathbb{N}$;
+		\item $r \in \mathbb{N}, \quad 0 \leq r < \beta$;
+	\end{itemize}
+	tale che $x = q \cdot \beta + r$.
+\end{theorem}
+
+questo vale anche per gli interi $\in \mathbb{Z}$, scambiando i simboli $\mathbb{N}$ con $\mathbb{Z}$.
+
+\par\medskip
+\noindent
+\textbf{\textsf{Dimostrazione}} \\
+Pensiamo di dividere $\mathbb{Z}$ in intervalli:
+$$
+[n \cdot \beta, (n+1) \cdot \beta[, \quad n \in \mathbb{Z}
+$$
+Si avrà che 
+$$
+\bigcup_{n \in \mathbb{Z}} [n \cdot \beta, (n+1) \cdot \beta[ \equiv \mathbb{Z}
+$$
+ergo $x$ farà parte del $q$-esimo intervallo di questa lista.
+Possiamo definire allora $r = x - q \cdot \beta$, e da come abbiamo preso gli intervalli, $0 \leq r < \beta$.
+
+Resta da dimostrare l'unicità dei $q,r$ trovati.
+Possiamo sostenere per assurdo che esistano due coppie $(q_1,r_1)$ e $(q_2,r_2)$ diverse tali che $ x = q_1 \cdot \beta + r_1 = q_2 \beta + r_2$, con le ipotesi $q_i \in \mathbb{Z}$ e $0 \leq r_i < \beta$.
+
+Varrà allora:
+$$ (q_1 - q_2) \cdot \beta = r_2 - r_1 $$
+e dall'ipotesi:
+$$ -\beta < (r_2 - r_1) < \beta \rightarrow -\beta < (q_1 - q_2) \cdot \beta < \beta $$
+Cioè:
+$$ -1 < (q_1 - q_2) < 1 $$
+che in $Z$ significa $q_1 - q_2 = 0$, che è contro l'ipotesi.
+
+L'unicità del risultato è garantita da $0 \leq r \leq \beta - 1$. 
+
+\subsubsection{Divisioni}
+Si ha che una divisione restituisce quoziente e resto:
+$$
+q = \left\lfloor \frac{x}{\beta} \right\rfloor, \quad r = |x|_\beta, \quad x = q \cdot \beta + r = \left\lfloor \frac{x}{\beta} \right\rfloor \cdot \beta + |x|_\beta
+$$
+
+Se la divisione è tra naturali, anche $q$ è naturale, cioè $x \in \mathbb{N} \Rightarrow q \in \mathbb{N}$.
+
+\subsubsection{Proprietà dell'operatore modulo}
+Abbiamo usato l'operatore modulo ($|x|_\beta$). Vediamone alcune proprietà, dato $\alpha \in \mathbb{N}^+$:
+
+\begin{enumerate}
+	\item $| x + k \cdot \alpha |_\alpha = |x|_\alpha, \quad k \in \mathbb{Z} $ \\
+	Questo da:
+	$$
+	x = \left\lfloor \frac{x}{\alpha} \right\rfloor \cdot \alpha + |x|_\alpha, \quad x + k \cdot \alpha = \left( \left\lfloor \frac{x}{\alpha} \right\rfloor  + k \right) \cdot \alpha + |x|_\alpha
+	$$
+	chiamiamo $x' = x + k \cdot \alpha$:
+	$$
+	x' = \left\lfloor \frac{x'}{\alpha} \right\rfloor \cdot \alpha + |x'|_\alpha = \left\lfloor \frac{x}{\alpha} + k \right\rfloor \cdot \alpha + |x'|_\alpha = \left( \left\lfloor \frac{x}{\alpha}  \right\rfloor + k \right) \cdot \alpha + |x'|_\alpha
+	$$
+	Dove il passaggio $\left\lfloor \frac{x}{\alpha} + k \right\rfloor = \left\lfloor \frac{x}{\alpha}  \right\rfloor + k $ è concesso da $ k \in \mathbb{Z}$.
+	Notiamo che le ultime due espresioni ricavate si equivalgono, ergo dev'essere vero che $|x'|_\alpha = |x|_\alpha$, da cui la tesi.
+
+\item $ |x  + y|_\alpha = \left| |x|_\alpha + |y|_\alpha \right|_\alpha $ \\ 
+	Questo da:
+	$$ 
+	| x + y |_\alpha = \left| \left\lfloor \frac{x}{\alpha} \right\rfloor \cdot \alpha + |x|_\alpha + \left\lfloor \frac{y}{\alpha} \right\rfloor \cdot \alpha + |y|_\alpha \right|_\alpha = \left| \left( \left\lfloor \frac{x}{\alpha} \right\rfloor + \left\lfloor \frac{y}{\alpha} \right\rfloor \right) \cdot \alpha +  |x|_\alpha + |y|_\alpha \right|_\alpha 
+	$$
+	e l'applicazione della proprietà (1), da cui la tesi.
+
+\item $ | x \cdot y |_\alpha = \left| |x|_\alpha \cdot |y|_\alpha \right|_\alpha $ \\ 
+	Questo da:
+	$$
+| x \cdot y |_\alpha = \left| \left( \left\lfloor \frac{x}{\beta} \right\rfloor \cdot \beta + |x|_\beta \right) \left( \left\lfloor \frac{y}{\beta} \right\rfloor \cdot \beta + |y|_\beta \right)\right| 
+	$$
+	$$
+ = \left| \left\lfloor \frac{x}{\alpha} \right\rfloor \left\lfloor \frac{y}{\alpha} \right\rfloor \alpha^2 + \left( \left\lfloor \frac{x}{\alpha} \right\rfloor |y|_\alpha +  \left\lfloor \frac{y}{\alpha} \right\rfloor |y|_\alpha\right) \alpha + |x|_\alpha \cdot |y|_\alpha \right| 
+	$$
+	Chiamiamo allora: 
+	$$
+	\left\lfloor \frac{x}{\alpha} \right\rfloor \left\lfloor \frac{y}{\alpha} \right\rfloor \alpha + \left( \left\lfloor \frac{x}{\alpha} \right\rfloor |y|_\alpha +  \left\lfloor \frac{y}{\alpha} \right\rfloor |y|_\alpha\right) = k
+	$$
+	da cui:
+	$$
+	|x \cdot y|_\alpha = | k \cdot \alpha + |x|_\alpha \cdot |y|_\alpha |_\alpha
+	$$
+	che ancora applicando la proprietà (1) dà la tesi.
+\end{enumerate}
+
+\subsubsection{Algoritmo delle divisioni successive}
+Possiamo usare il teorema della divisione con resto iterativamente per trovare la sequenza di cifre che rappresentano $A$ in base $\beta$:
+\begin{algorithm}[H]
+\caption{delle divisioni successive}
+\begin{algorithmic}
+	\STATE \textbf{Input:} un naturale $A$ e una base $\beta$ % input
+	\STATE \textbf{Output:} la rappresentazione di $A$ in base $\beta$ % output
+	% body
+	\STATE$i \leftarrow 1$
+	\WHILE{$q_i \neq 0$}
+		\STATE $A = q_i \cdot \beta + \alpha_{i-1}$
+		\STATE $i \leftarrow i + 1$
+	\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+Dimostriamo la correttezza dell'algoritmo: si ha che eseguendo i passaggi ricaviamo una forma:
+$$ 
+A = a_0 + \beta \cdot q_1 = a_0 + \beta \cdot (a_1 + \beta (a_2 + \beta \cdot (...)))
+$$
+e quindi:
+$$ 
+A = \sum_{i=0}^{n-1} a_i \cdot \beta^i
+$$
+che è per definizione la rappresentazione di $A$ in base $\beta$.
+Inoltre, il teorema della divisione con resto garantisce che la $n$-upla di cifre trovata è \textbf{unica}.
+
+\subsubsection{Rappresentazione su un numero finito di cifre}
+Con $n$ cifre in base $\beta$, sappiamo che potremo formulare $\beta^n$ sequenze differenti quindi rappresentare al massimo il numero $\beta^n - 1$, cioè quello dove tutte le cifre hanno valore massimo, $\beta - 1$.
+
+Ciò si dimostra da:
+$$
+A = \sum_{i=0}^{n-1} (\beta - 1) \cdot \beta^i = \sum_{i=0}^{n-1} \beta^{i + 1} - \sum_{i=0}^{n-1} \beta^i = \sum_{i=1}^{n} \beta^{i} - \sum_{i=0}^{n-1} \beta^i  = \beta^n - 1 $$
+
+Il numero di cifre necessario per rappresentare $A$ è il numero minimo $n$ per cui $\beta^n - 1 \geq A$, ergo:
+$$
+n = \log_\beta (\beta^n) \geq \log_\beta (A + 1) \rightarrow n = \lceil \log_\beta (A + 1) \rceil
+$$
+
+\subsection{Reti combinatorie per i numeri naturali}
+Vogliamo cosotruire reti logiche che elaborino numeri naturali rappresentati in una data base $\beta$, generalmente $\beta = 2$.
+Si useranno \textbf{reti combinatorie}, dove lo \textit{stato di uscita} è il \textbf{risultato} e lo \textit{stato di ingresso} sono gli \textbf{operandi}.
+
+Per ogni operazione aritmetica di base daremo una descrizione \textbf{indipendente dalla base}, usando le proprietà della notazione posizionale per scomporre l'operazione in blocchi elementari.
+In seguito, dettaglieremo le reti logiche che implementano questi blocchi elementari in base 2, attraverso le porte logiche già studiate.
+
+Notiamo che spesso ci concentreremo più sulle \textbf{cifre} che sulle codifiche, indipendentemente dalla base.
+
+\subsubsection{Complemento}
+Dato $A = (a_{n-1} a_{n-2} ... a_1 a_0)_\beta$, in base $\beta$ su $n$ cifre, $0 \leq A \leq \beta^n$, definisco complemento di $a$ in base $\beta$ il numero:
+$$
+\overline{A} = \beta^n - 1 - A
+$$
+
+Si ha che il complemento di un numero a $n$ cifre sta su $n$ cifre,  e che:
+$$
+\overline{A} = \beta^n - 1 - A = \sum_{i=0}^{n-1} (\beta - 1) \beta^i - \sum_{i=0}^{n-1} \alpha_i \beta^i = \sum_{i = 0}^{n-1} (\beta - 1 - a_i)\beta^i
+$$
+
+$\beta - 1 -\alpha_i$ è una cifra in base $\beta$ in quanto compresa fra $0$ e $\beta - 1$.
+Quindi, $\overline{A} = (\overline{a_{n-1}} \overline{a_{n-2}} ... \overline{a_{1}} \overline{a_{0}})_\beta$.
+
+Questo significa che basta saper fare il complemento di una singola cifra per fare il complemento di un numero.
+In base 2, questo significa usare una porta not.
+In altre basi diventà più complicato, ad esempio in base 10 con codifica BCD avrò un circuito con 4 ingressi e 4 uscite, con tabella di verità:
+
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c  c  c  c | c  c  c  c }
+		$x_3$ & $x_2$ & $x_1$ & $x_0$ & $z_3$ & $z_2$ & $z_1$ & $z_0$ \\ 
+		\hline
+		$0$ & $0$ & $0$ & $0$ & $1$ & $0$ & $0$ & $1$ \\
+		$0$ & $0$ & $0$ & $1$ & $1$ & $0$ & $0$ & $0$ \\
+		$0$ & $0$ & $1$ & $0$ & $0$ & $1$ & $1$ & $1$ \\
+		$0$ & $0$ & $1$ & $1$ & $0$ & $1$ & $1$ & $0$ \\
+		$0$ & $1$ & $0$ & $0$ & $0$ & $1$ & $0$ & $1$ \\
+		$0$ & $1$ & $0$ & $1$ & $0$ & $1$ & $0$ & $0$ \\
+		$0$ & $1$ & $1$ & $0$ & $0$ & $0$ & $1$ & $1$ \\
+		$0$ & $1$ & $1$ & $1$ & $0$ & $0$ & $1$ & $0$ \\
+		$1$ & $0$ & $0$ & $0$ & $0$ & $0$ & $0$ & $1$ \\
+		$1$ & $0$ & $0$ & $1$ & $0$ & $0$ & $0$ & $0$ \\
+		$1$ & $0$ & $1$ & $0$ & $-$ & $-$ & $-$ & $-$ \\
+		$1$ & $0$ & $1$ & $1$ & $-$ & $-$ & $-$ & $-$ \\
+		$1$ & $1$ & $0$ & $0$ & $-$ & $-$ & $-$ & $-$ \\
+		$1$ & $1$ & $0$ & $1$ & $-$ & $-$ & $-$ & $-$ \\
+		$1$ & $1$ & $1$ & $0$ & $-$ & $-$ & $-$ & $-$ \\
+		$1$ & $1$ & $1$ & $1$ & $-$ & $-$ & $-$ & $-$ \\
+	\end{tabular}
+\end{table}
+
+che dopo una sintesi dà:
+\[
+	\begin{cases}
+		z_3	= \overline{x_3}\overline{x_2}\overline{x_1} \\ 
+		z_2 = \overline{x_3}\overline{x_2}x_1 + x_2\overline{x_1} \\ 
+		z_1 = x_1 \\ 
+		z_0 = \overline{x_0}
+	\end{cases}
+\]
+
+\end{document}
