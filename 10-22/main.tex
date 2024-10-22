@@ -1,0 +1,647 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 22-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Operazioni a costo nullo}
+\subsubsection{Moltiplicazioni e divisioni per potenze di base}
+Moltiplicare e dividere per potenze della base $\beta$ significa semplicemente aggiungere o togliere zeri, ergo si tratta di operazioni a \textbf{costo nullo}.
+Se le operazioni sono a costo nullo, è molto probabile che le reti che le implementano sono \textbf{prive di logica}.
+
+\begin{itemize}
+	\item \textbf{Moltiplicazione:} effettivamente, la rete che implementa una moltiplicazione per $\beta$ sposta gli input $x_{n - 1}, ..., x_0$ "su", attraverso una mappa:
+\begin{center}
+	\begin{tikzpicture}
+		\node at(0,0) {$x_0$};
+		\node at(0,0.5) {$x_1$};
+		\node at(0,1) {$...$};
+		\node at(0,1.5) {$x_{n-2}$};
+		\node at(0,2) {$x_{n-1}$};
+
+		\draw[->] (0.5,0) -- (2.5,0.5);
+		\draw[->] (0.5,0.5) -- (2.5,1);
+		\draw[->] (0.5,1.5) -- (2.5,2);
+		\draw[->] (0.5,2) -- (2.5,2.5);
+
+		\node at(3,0) {$0$};
+		\node at(3,0.5) {$y_1$};
+		\node at(3,1) {$y_2$};
+		\node at(3,1.5) {$...$};
+		\node at(3,2) {$y_{n-1}$};
+		\node at(3,2.5) {$y_n$};
+	\end{tikzpicture}
+\end{center}
+assegnando $y_0$ ad un generatore di zero.
+
+Per reti che moltiplicano per multipli $\beta \cdot k$, generalizzeremo la stessa cosa come:
+\[
+	\begin{cases}
+		y_j = x_{j - k}, \quad k \leq j \leq n - 1 + k \\ 
+		y_j = 0, \quad 0 \leq j \leq k-1 \\ 
+	\end{cases}
+\]
+ottenendo quindi la mappa:
+\begin{center}
+	\begin{tikzpicture}
+		\node at(0,0) {$x_0$};
+		\node at(0,0.5) {$x_1$};
+		\node at(0,1) {$...$};
+		\node at(0,1.5) {$x_{n-2}$};
+		\node at(0,2) {$x_{n-1}$};
+
+		\draw[->] (0.5,0) -- (2.5,1.5);
+		\draw[->] (0.5,0.5) -- (2.5,2);
+		\draw[->] (0.5,1.5) -- (2.5,3);
+		\draw[->] (0.5,2) -- (2.5,3.5);
+
+    \draw[decorate,decoration={brace,amplitude=10pt,mirror}] (3.5,0) -- (3.5, 1)
+        node[midway,right=10pt]{$k$};
+
+		\node at(3,0) {$0$};
+		\node at(3,0.5) {$...$};
+		\node at(3,1) {$0$};
+		\node at(3,1.5) {$y_k$};
+		\node at(3,2) {$y_{k+1}$};
+		\node at(3,2.5) {$...$};
+		\node at(3.25,3) {$y_{n-2+k}$};
+		\node at(3.25,3.5) {$y_{n-1+k}$};
+	\end{tikzpicture}
+\end{center}
+
+\item \textbf{Quoziente:} allo stesso modo, si ha che si vogliono spostare gli input "giù", ovvero applicare:
+\[
+	\begin{cases}
+y_j = x_{j + k}, \quad k \leq j \leq n - 1 -k \\ 
+	\end{cases}
+\]
+che per $k=1$ è:
+\begin{center}
+	\begin{tikzpicture}
+		\node at(0,0) {$x_0$};
+		\node at(0,0.5) {$x_1$};
+		\node at(0,1) {$x_2$};
+		\node at(0,1.5) {$...$};
+		\node at(0,2) {$x_{n-2}$};
+		\node at(0,2.5) {$x_{n-1}$};
+
+		\draw[->] (0.5,0.5) -- (2.5,0);
+		\draw[->] (0.5,1) -- (2.5,0.5);
+		\draw[->] (0.5,2) -- (2.5,1.5);
+		\draw[->] (0.5,2.5) -- (2.5,2);
+
+		\node at(3,0) {$y_0$};
+		\node at(3,0.5) {$y_1$};
+		\node at(3,1) {$...$};
+		\node at(3,1.5) {$y_{n-3}$};
+		\node at(3,2) {$y_{n-2}$};
+	\end{tikzpicture}
+\end{center}
+e per $k$ arbitrari è:
+\begin{center}
+	\begin{tikzpicture}
+		\node at(0,0) {$x_0$};
+		\node at(0,0.5) {$...$};
+		\node at(0,1) {$x_{k-1}$};
+		\node at(0,1.5) {$x_k$};
+		\node at(0,2) {$x_{k+1}$};
+		\node at(0,2.5) {$...$};
+		\node at(0,3) {$x_{n-2}$};
+		\node at(0,3.5) {$x_{n-1}$};
+
+		\draw[->] (0.5,1.5) -- (2.5,0);
+		\draw[->] (0.5,2) -- (2.5,0.5);
+		\draw[->] (0.5,3) -- (2.5,1.5);
+		\draw[->] (0.5,3.5) -- (2.5,2);
+
+    \draw[decorate,decoration={brace,amplitude=10pt,mirror}] (-0.5,1) -- (-0.5,0)
+        node[midway,left=10pt]{$k$};
+
+		\node at(3,0) {$y_0$};
+		\node at(3,0.5) {$y_1$};
+		\node at(3,1) {$...$};
+		\node at(3.25,1.5) {$y_{n-2-k}$};
+		\node at(3.25,2) {$y_{n-1-k}$};
+	\end{tikzpicture}
+\end{center}
+dove i primi $k$ elementi di $x$ vengono trascurati (\textbf{troncamento}).
+
+\item \textbf{Resto:} il resto significa semplicemente "tagliare" tutti gli ingressi prima di $x_k$, ergo:
+	\[
+		\begin{cases}
+			y_j = x_j, \quad 0 \leq j \leq k- 1	
+		\end{cases}
+	\]
+\end{itemize}
+secondo la mappa:
+\begin{center}
+	\begin{tikzpicture}
+		\node at(0,0) {$x_0$};
+		\node at(0,0.5) {$x_1$};
+		\node at(0,1) {$...$};
+		\node at(0,1.5) {$x_{k-2}$};
+		\node at(0,2) {$x_{k-1}$};
+		\node at(0,2.5) {$...$};
+		\node at(0,3) {$x_{n-1}$};
+
+		\draw[->] (0.5,0) -- (2.5,0);
+		\draw[->] (0.5,0.5) -- (2.5,0.5);
+		\draw[->] (0.5,1.5) -- (2.5,1.5);
+		\draw[->] (0.5,2) -- (2.5,2);
+
+		\node at(3,0) {$y_0$};
+		\node at(3,0.5) {$y_1$};
+		\node at(3,1) {$...$};
+		\node at(3,1.5) {$y_{k-2}$};
+		\node at(3,2) {$y_{k-1}$};
+	\end{tikzpicture}
+\end{center}
+
+\subsubsection{Concatenamento}
+Concatenare in $X$ due numeri $Y$ e $Z$ a $k$ e $n-k$ cifre significa dire:
+$$ 
+X = Z \cdot \beta^k + Y
+$$
+
+Anche questa è un'operazione a complessità nulla, in quanto significa prendere le cifre di $Y$ e $Z$:
+\[
+	\begin{cases}
+		x_j = y_j, \quad 0 \leq j \leq k - 1\\ 	
+		x_j = z_j, \quad k \leq j \leq n - 1 \\ 	
+	\end{cases}
+\]
+secondo la mappa:
+\begin{center}
+	\begin{tikzpicture}
+		\node at(0,0) {$y_0$};
+		\node at(0,0.5) {$...$};
+		\node at(0,1) {$y_{k-1}$};
+		\node at(0,1.5) {$z_0$};
+		\node at(0,2) {$...$};
+		\node at(0,2.5) {$z_{n-k-1}$};
+
+		\draw[->] (0.5,0) -- (2.5,0);
+		\draw[->] (0.5,0.5) -- (2.5,0.5);
+		\draw[->] (0.5,1.5) -- (2.5,1.5);
+		\draw[->] (0.75,2.5) -- (2.5,2.5);
+
+    \draw[decorate,decoration={brace,amplitude=10pt,mirror}] (-0.5,1) -- (-0.5,0)
+        node[midway,left=10pt]{$y$};
+
+    \draw[decorate,decoration={brace,amplitude=10pt,mirror}] (-0.75,2.5) -- (-0.75,1.5)
+        node[midway,left=10pt]{$z$};
+		
+		\node at(3,0) {$y_0$};
+		\node at(3,0.5) {$..$};
+		\node at(3,1) {$y_{k-1}$};
+		\node at(3,1.5) {$y_k$};
+		\node at(3,2) {$...$};
+		\node at(3,2.5) {$y_n$};
+
+	\end{tikzpicture}
+\end{center}
+
+\subsubsection{Estensione di campo}
+L'estensione di campo è l'operazione con cui rappresentiamo un naturale su $n$ cifre su un numero maggiore di cifre.
+Per i naturali dobbiamo trivialmente aggiungere zero a sinistra della MSD, mentre vedremo che per l'aritmetica intera dovremmo replicare la MSD sulle cifre aggiunte per mantenere il segno corretto.
+
+Abbiamo quindi che per un numero $x = (x_{n-1}, ..., x_0)$ su $n$ cifre vogliamo trovare l'esteso $x' = (x_{n-1+k}, ..., x_0)$ su $n + k$ cifre, cioè il numero tale per cui:
+\[
+	\begin{cases}
+		x'_j = x_j, \quad 0 \leq j \leq n - 1 \\ 
+		x_j = 0, \quad n \leq j \leq n - 1 + k
+	\end{cases}
+\]
+cioè che rispetta la mappa:
+\begin{center}
+	\begin{tikzpicture}
+		\node at(0,0) {$x_0$};
+		\node at(0,0.5) {$x_1$};
+		\node at(0,1) {$...$};
+		\node at(0,1.5) {$x_{n-2}$};
+		\node at(0,2) {$x_{n-1}$};
+
+		\draw[->] (0.5,0) -- (2.5,0);
+		\draw[->] (0.5,0.5) -- (2.5,0.5);
+		\draw[->] (0.5,1.5) -- (2.5,1.5);
+		\draw[->] (0.5,2) -- (2.5,2);
+
+    \draw[decorate,decoration={brace,amplitude=10pt,mirror}] (3.75,2.5) -- (3.75,3.5)
+        node[midway,right=10pt]{$k$};
+
+		\node at(3,0) {$y_0$};
+		\node at(3,0.5) {$y_1$};
+		\node at(3,1) {$...$};
+		\node at(3,1.5) {$y_{n-2}$};
+		\node at(3,2) {$y_{n-1}$};
+		\node at(3,2.5) {$0_n$};
+		\node at(3,3) {$...$};
+		\node at(3,3.5) {$0_{n-1+k}$};
+	\end{tikzpicture}
+\end{center}
+
+\subsection{Addizione}
+La somma, sostanzialmente, consiste nel:
+\begin{enumerate}
+	\item Sommare le coppie di cifre di pari posizione, singolarmente, dalla LSD alla MSD e tenendo conto dell'eventuale \textbf{riporto entrante};
+	\item Se la somma di cifre non è rappresentabile su una singola cifra, usare il \textbf{riporto uscente} per la coppia di cifre successive.
+\end{enumerate}
+Abbiamo che il riporto è sempre $\in \{0, 1\}$, e che per la prima coppia di cifre possiamo assumerlo $= 0$.
+Ad ogni passaggio, quindi, applichiamo una funzione:
+$$
+(a_i, b_i, c_{in}) \rightarrow (s_i, c_{out})
+$$
+
+Inoltre, si ha che l'algoritmo non dipende dalla base $\beta$, ma solamente dalla \textbf{notazione posizionale}.
+
+\subsubsection{Dimensioni di somme}
+Avevamo quindi che, dati $X$, $Y$ in base $\beta$ su $n$ cifre,  cioè $X, Y \in [0, \beta^n - 1$], con $C_{in} \in [0, 1]$, volevamo calcolare:
+$$ Z = X + Y + C_{in} $$
+ovvero trovare il cosiddetto \textbf{full adder}.
+Possiamo dimostrare che il numero di cifre su cui sta il risultato è:
+$$ 0 \leq X + Y + C_{in} \leq 2\beta^n - 1 \leq \beta^{n+1} - 1 $$
+dove la cifra $n+1$ è compresa in $Z_{n+1} \in [0, 1]$, cioè rappresenta il riporto uscente di $X + Y$. 
+
+\par\smallskip
+
+Possiamo quindi affermare con sicurezza che la sommma fra due naturali espressi in base $\beta$ su $n$ cifre più un'eventuale riporto entrante $C_{in}$ produce un naturale che è sempre rappresentabile su $n+1$ cifre in base $\beta$, delle quali la $n+1$-esima cifra è il riporto uscente, e può valere soltanto $0$ o $1$.
+
+Quello che vogliamo è un circuito sommatore in base $\beta$ a $n$ cifre che prenda le cifre di due naturali $X$ e $Y$ su $n$ cifre e un riporto entrante $C_{in}$ (un bit), e restituisca un'altro naturale $Z$, sempre su $n$ cifre e un riporto uscente $C_{out}$ (sempre un bit). 
+
+Nel caso uno dei numeri abbia $m > n$ cifre, si estende il numero su $n$ cifre fino a $m$ (aggiungendo $n - m$ zeri in testa), e poi si somma.
+Se si vuole poi che la somma sia \textit{sempre} rappresentabile, bisogna usare un sommatore ad $n+1$ cifre, ed estenedere gli ingressi su $n+1$ cifre.
+In questo caso l'ultimo riporto sarà sempre zero.
+
+\subsubsection{Ripple carry e full adder}
+Creare circuiti per $2n + 1$ ingressi può essere complicato, quindi si preferisce adottare un approccio \textbf{modulare}, dove si scompone ogni somma su una singola coppia di cifre, purchè:
+\begin{itemize}
+	\item Le somme vengano eseguite dalla LSD alla MSD;
+	\item Il rapporto si \textbf{propaghi} (in inglese \textit{ripple}) da una cifra alla successiva.
+\end{itemize}
+Chiamiamo quindi ogni sommatore su due cifre (una di $X$ e una di $Y$) \textbf{full adder}, e il montaggio in cui li disponiamo a \textbf{ripple carry} (\textit{propagazione dei resti}).
+
+\subsubsection{Full adder in base 2}
+In base 2, un full adder è un circuito con 3 ingressi ($x_i$, $y_i$ e $c_{in}$) e 2 uscite ($s_i$ e $c_{out}$).
+Abbiamo che la rete dovrebbe avere tabella di verità:
+
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c  c  c | c  c }
+		$x_i$ & $y_i$ & $c_{in}$ & $s_{i}$ & $c_{out}$ \\ 
+		\hline
+		0 & 0 & 0 & 0 & 0 \\ 
+		0 & 0 & 1 & 1 & 0 \\ 
+		0 & 1 & 0 & 1 & 0 \\ 
+		0 & 1 & 1 & 0 & 1 \\ 
+		1 & 0 & 0 & 1 & 0 \\ 
+		1 & 0 & 1 & 0 & 1 \\ 
+		1 & 1 & 0 & 0 & 1 \\ 
+		1 & 1 & 1 & 1 & 1 
+	\end{tabular}
+\end{table}
+
+Potremmo adesso applicare Karnaugh, ma notiamo che $s_i$ vale 1 quando la somma degli ingressi è dispari, cioè si può dire che è lo XOR in cascata di $x_i$, $y_i$ e $c_{in}$. 
+Allo stesso modo, il $c_{out}$ non sarà altro che un circuito SP standard, che prende gli AND di ogni coppia di ingressi e li passa attraverso un OR.
+Abbiamo che il full adder è una rete a 2 livelli di logica.
+
+\subsubsection{Incrementatore}
+Abbiamo che in assembler potevamo distinguere fra le operazioni \lstinline|ADD $1, %al| e \lstinline|INC %al|.
+Possiamo fare l'assunzione che almeno uno degli ingressi di un full adder sia sempre zero per realizzare un \textbf{half adder}: ad esempio, prendiamo $y_i = 0$. 
+In questo caso, $c_{out}$ potrà essere prodotto con un solo livello di logica, cioè attraverso l'AND fra $x_i$ e $c_{in}$.
+Allo stesso modo, potremo ridurre $s_i$ ad un solo XOR fra $x_i$ e $c_{in}$.
+
+Facciamo delle considerazioni sulle prestazioni: se in un full adder ogni input arriva in tempo $t$, dopo 2 livelli di logica il $c_{in}$ del prossimo full adder arriverà a $t + 2$.
+Quindi il risultato di quel full adder uscirà a $t + 4$ e così via.
+Si ha che per $n$ full adder concatenati, ergo $n$ cifre, l'$n-1$-esima cifra viene computata in tempo $t + 2n$.
+Questo ci dice che la somma è si \textbf{scomponibile}, ma non \textbf{parallelizzabile}.
+
+In verità, negli anni, sono state sviluppate architetture che implementano il \textbf{carry lookahead}, cioè implementano su due livelli di logica, con 5 ingressi, un "precalcolo" del carry a qualche $t + 4$, cioè ogni due full adder (i 5 ingressi sono il primo carry e i 2 + 2 ingressi dei 2 full adder).
+Questo pressapoco raddoppia la velocità di calcolo delle somme su $n$ cifre, passando quindi da $t + 2n$ a $\approx t + n$.
+
+Riassumendo, quindi, gli incrementatori risultavano più veloci dei full adder per ottimizzazioni di questo tipo e in quanto implementavano tutto su un solo ivello di logica.
+
+\subsection{Sottrazione}
+L'algoritmo di sottrazione consiste nell'applicare un'algoritmo analogo alla somma ma con prestiti al contrario, cioè nel:
+\begin{enumerate}
+	\item Sotrarre le coppie di cifre di pari posizione, singolarmente, dalla LSD alla MSD;
+	\item Se la somma di cifre non è rappresentabile su una singola cifra, generare un \textbf{prestito} (\textit{borrow}) per la coppia di cifre successive.
+\end{enumerate}
+
+Si ha anche qui che il prestito è sempre $\in [0, 1]$.
+Inoltre, anche questo algoritmo non dipende dalla base $\beta$, ma solo dalla notazione posizionale.
+
+\subsubsection{Dimensioni di sottrazioni}
+Abbiamo quindi due naturali $X$ e $Y$ in base $\beta$ su $n$ cifre, quindi tali che $X, Y \in [0, \beta^n - 1]$, e un bit $B_{in}$ con $0 \leq b_{in} \leq 1$.
+Voglio calcolare il naturale:
+$$
+Z = X - Y - b_{in}
+$$
+ammesso che questo naturale \textit{esista!}.
+Questo perché i naturali non sono chiusi rispetto ala sottrazione, cioè:
+$$ - \beta^n \leq X-Y-b_{in} \leq \beta^n -1$$
+potrei avere $Z \in \mathbb{Z}$.
+
+\subsubsection{Rappresentabilità}
+Dico quindi che, dal teorema della divisione con resto, posso scrivere $Z$ come quoziente e resto di una divisione per $\beta^n$:
+$$ Z = -b_{out} \cdot \beta^n + D = X - Y - b_{in} $$
+definito:
+$$
+-b_{out} = \left\lfloor \frac{X-Y-b_{in}}{\beta^n} \right\rfloor, \quad D = |X-Y-b_{in}|_{\beta^n}
+$$
+dove noto che $b_{out} \in \{0 ,1\}$ indipendentemente da $\beta$ (si comporta come il \textit{carry} della somma). 
+
+Posso quindi scrivere $Y$ come il suo complemento, noto che:
+$$ 
+Y + \overline{Y} = \beta^n - 1, \quad Y = \beta^n - 1 - \overline{Y}
+$$
+da cui sostituendo:
+$$
+(1 - b_{out}) \cdot \beta^n + D = X + \overline{Y} + (1-b_{in}) \equiv \overline{b_{out}} \cdot \beta^n + D = X + \overline{Y} + \overline{b_{in}}
+$$
+dove si complementano i bit $b_{in}$ e $b_{out}$.
+Chiamiamo:
+\[
+	\begin{cases}
+		\overline{b_{out}} = c_{out} \\ 
+		\overline{b_{in}} = c_{in}
+	\end{cases}
+\]
+
+Otteniamo che l'equazione finale è sostanzialmente quella di un sommatore:
+$$ 
+\overline{b_{out}} \cdot \beta^n + D = X + \overline{Y} + \overline{b_{in}} \equiv c_{out} \cdot \beta^n + D = X + \overline{Y} + c_{in}
+$$
+dove la differenza fra $X$ e $Y$ meno un prestito entrante, se naturale, può essere ottenuta se sommo $X$ ad $\overline{Y}$, più un'eventuale riporto entrante ottenuto complementando il prestito entrante.
+Se a questo punto il riporto uscente di $\overline{b_{out}}$ vale 1, si ha che la differenza è un naturale pari a $D$, altrimenti non è rappresentabile.
+
+\subsubsection{Comparazione di numeri naturali}
+Dati due \textbf{naturali} $X$ e $Y$, si possono usare i sottrattori per comparare i loro valori, cioè per ottenere $x < Y$.
+Per fare ciò, si calcola $X - Y$ e si guarda il prestito uscente: se $b_{out} = 1$, allora $X<Y$, altrimenti viceversa.
+
+Per controllare l'uguaglianza, invece, si prende $b_{out}$ e $D$: se $b_{out} = 1$ (differenza rappresentabile) e $D=0$, allora $X = Y$, altrimenti viceversa.
+
+\subsection{Moltiplicazione}
+Dati $X$ e $C$ naturali in base $\beta$ su $n$ cifre, cioè $X,C \in [0, \beta^n - 1]$, e $Y$ naturale in base $\beta$ su $m$ cifre, cioè $Y \in [0, \beta^m - 1]$, vogliamo calcolare:
+$$
+P = X \cdot Y + C 
+$$
+
+\subsubsection{Dimensioni di prodotti}
+Si ha che, da quanto detto prima:
+$$
+P = X \cdot Y + C \leq (\beta^n - 1) \cdot (\beta^m - 1) + (\beta^n - 1) = \beta^m \cdot (\beta^n - 1) < \beta^{n+m} - 1 
+$$
+cioè il risultato sta su $n+m$ cifre.
+
+\subsubsection{Algoritmo di moltiplicazione}
+La moltiplicazione fra naturali si effettua come segue:
+
+\begin{enumerate}
+	\item Si motliplica $X$ per tutte le cifre di $Y$, iterativamente;
+	\item Moltiplicando, si generano \textbf{risultati parziali}, che vengono disposti a partire dalla cifra per cui stiamo moltiplicando, per quanto ci riguarda si tratta di una moltiplicazione per $\beta^k$;
+	\item I risultati parziali vengono sommati fra di loro con riporto.
+\end{enumerate}
+
+Diverse architetture implementano diversi algoritmi di moltiplicazione, ma l'idea fondamentale è quella di creare risultati parziali e sommarli fra di loro.
+Un modo particolarmente efficiente di fare moltiplicazioni è quello di:
+\begin{enumerate}
+	\item Moltiplicare un numero ad $n$ cifre per un numero ad una sola cifra;
+	\item Sommare gli $m$ addendi, opportunamente traslati, per ottenere il risultato finale.
+\end{enumerate}
+
+Possiamo sfruttare il fatto che la somma è \textbf{associativa}, e che la cifra $i$-esima del prodotto, con $0 \leq i \leq n - 1$, è determinata univocamente dai prodotti parziali $j \leq i$, ergo possiamo sommare i risultati parziali mentre si svolgono le moltiplicazioni. 
+Quest'ultima differenza è la più sostanziale dalla classica moltiplicazione \textit{"in colonna"} insegnata a scuola.
+
+Si va quindi a definire una rete detta \textbf{moltiplicatore con addizionatore}, che:
+\begin{enumerate}
+	\item Moltiplica $X$ per una cifra di $Y$, sommando un termine $C$ inizialmente nullo, che viene poi impostato alle cifre più significative del risultato parziale trovato.
+		La LSD, invece, viene assegnata direttamente alla posizione corrispondente nel risultato finale.
+	\item Infine, concatena tutti le cifre ottenute come LSD nel risultato finale.
+\end{enumerate}
+
+In questo modo possiamo fare solo moltiplicazioni su $n \times 1$ cifra e somme su due addendi su $n+1$ cifre.
+
+\end{document}
