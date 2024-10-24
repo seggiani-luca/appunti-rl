@@ -644,4 +644,47 @@ Si va quindi a definire una rete detta \textbf{moltiplicatore con addizionatore}
 
 In questo modo possiamo fare solo moltiplicazioni su $n \times 1$ cifra e somme su due addendi su $n+1$ cifre.
 
+\subsubsection{Moltiplicatore con addizionatore in base 2}
+Vediamo quindi come realizzare un moltiplicatore con addizionatore $n \times 1$ in base 2, cioè un moltiplicatore con addizionatore ad una cifra.
+
+Vorremmo il risultato, piuttosto triviale in $\beta = 2$:
+$$
+P_i = y_i \cdot X + C =
+	\begin{cases}
+		(0 \, +) \, C, \quad y_i = 0 \\ 
+		X + C, \quad \, \, y_i = 1
+	\end{cases}
+$$
+
+Possiamo effettuare la selezione su $y_i$ attraverso quello che è effettivamente un \textbf{multiplexer}.
+Quello che facciamo quindi è collegare un muliplexer fra $X$ e $0$ con variabile di controllo $y_i$ a un ingresso di un full adder, e $C$ all'altro ingresso.
+L'ingresso $C_{in}$ del full adder varrà 0, mentre l'uscita $C_{out}$ verrà concatenata alla somma $S$.
+
+Abbiamo che in base 2 un multiplexer a due ingressi, con uno di questi negato, è effettivamente una porta AND fra l'ingresso non nullo e la variabile di controllo.
+Sostituiamo quindi il multiplexer con un AND a $n$ fra $X$ e $y_i$.
+
+\subsubsection{Richiamo all'assembler}
+Avevamo visto che in assembler la moltiplicazione aveva un solo operando esplicito, mentre l'altro era implicito su AL, AX o EAX.
+Il risultato veniva poi concatenato in AX, DX\_AX o EDX\_EAX.
+Questo rispetta la logica vista finora:partendo da fattori su $n$ e $m$ bit, con $n = m$, si arriva ad un risultato rappresentabile su $n + m = 2n$ bit, cioè $8 + 8 = 16$ bit (AL $\rightarrow$ AX), $16 + 16 = 32$ bit (AX $\rightarrow$ DX\_AX) e $16 + 16 = 32$ bit (EAX $\rightarrow$ EDX\_EAX)
+
+\subsubsection{Convertitori di base}
+Vediamo come realizzare un convertitore da 2 cifre, $x_1$ e $x_0$ in codifica BCD, alla codifica binaria.
+Due cifre rappresentano al massimo 99, che in binario sta su 7 bit.
+Ergo vogliamo un circuito con 8 bit di ingresso (4 bit + 4 bit degli ingressi BCD) e 7 bit di uscita.
+Abbiamo che, banalmente, la conversione si effettua come:
+$$
+y = 10 \cdot x_1 + x_0 
+$$
+Questo si può realizzare con un moltiplicatore con addizionatore con $X=x_1$, $Y=10$ e $C=x_0$.
+Abbiamo che il risultato è su 8 bit, di cui sappiamo però possiamo ridurre il campo a 7.
+\par\smallskip 
+Un circuito più efficiente può essere realizzato usando solo somme e shift, infatti abbiamo che:
+$$ y = 10 \cdot x_1 + x_ 0 = 8 \cdot x_1 + 2 \cdot x_1 + x_0 $$
+che appare migliore dal punto di vista della realizzazione in aritmetica binaria (8 e 2 sono $2^3$ e $2^1$).
+Abbiamo quindi che possiamo usare i moltiplicatori per $b^k$, e ottenere un circuito con lo stesso comportamento.
+
+Per la precisione, prendiamo $8 \cdot x_1$ e troviamo che si estende fino a 7 bit.
+Prendiamo poi  $2 \cdot x_1 + x_0$ e vediamo che la somma si rappresenta su 5 bit.
+Sommando i 7 bit di $8 \cdot x_1$ ai 5 di $2 \cdot x_1 + x_0$ abbiamo un risultato sempre su 7 bit.
 \end{document}

@@ -1,3 +1,4 @@
+
 #gitignore generato da me (si spera che funzioni!)
 #ignora oggetti eseguibili
 *.exe
@@ -13,6 +14,7 @@
 *.fls
 *.log
 *.synctex.gz
+*.synctex
 
 #ignora archivi senno fai danni
 *.zip
