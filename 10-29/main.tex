@@ -1,0 +1,506 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 29-10-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Riduzione di campo di interi}
+Vogliamo creare un circuito che passa dalla rappresentazione $A$ su $n+1$ cifre di un numero intero $a$, ad un $A^{RID}$ su $n$ cifre, che rappresenta sempre $a$. 
+Chiaramente questo non è sempre possibile, e vale soltanto se:
+$$
+a \in \left[ -\frac{\beta^n}{2}, \frac{\beta^n}{2} - 1 \right] \subset \left[ -\frac{\beta^{n+1}}{2}, \frac{\beta^{n+1}}{2} - 1 \right]
+$$
+
+Avremo quindi bisogno di un flag di overflow \lstinline|ow|, per indicare la non rappresentabilità.
+Verifichiamo da quanto visto sulle estensioni di campo, che i numeri che rispettano tale proprietà sono i tali per cui $\text{MSD} = 0$ e la cifra successiva $a_{n-1} < \frac{\beta}{2}$, e i tali per cui $\text{MSD} = \beta - 1$ e la cifra successiva $a_{n-1} \geq \frac{\beta}{2}$. Quindi:
+
+$$
+\mathtt{ow} = 0 \Leftrightarrow \left( a_n = 0 \wedge a_{n-1} < \frac{\beta}{2} \right) \vee \left( a_n = \beta - 1 \wedge a_{n-1} \geq \frac{\beta}{2} \right)
+$$
+
+Abbiamo sul grafico a farfalla adattato all'estensione su $n+1$ bit, che queste regole isolano le due sezioni del campo di numeri estesi ( $\left[ -\frac{\beta^{n+1}}{2}, \frac{\beta^{n+1}}{2} - 1 \right]$ ) che hanno riscontro nel campo ridotto ( $\left[ -\frac{\beta^n}{2}, \frac{\beta^n}{2} - 1 \right]$ ).
+
+Quindi, in questo caso, il numero $a$ è rappresentabile su $n$ cifre, e si può calcolare il ridotto $A^{RID}$ semplicemente rimuovendo l'ultima cifra, cioè calcolando:
+$$
+A^{RID} = |A|_{\beta^n}
+$$
+
+Chiamiamo il circuito che riconosce la non riducibilità \textbf{circuito di overflow}.
+In base 2, si ha rispetto alle cifre che $a_{n-1} < \frac{\beta}{2}$ vale se $a_{n-1} = 0$, e viceversa $a_{n-1} \geq \frac{\beta}{2}$ vale se $a_{n-1} = 1$, cioè un numero non è rappresentabile su $n-1$ bit se le sue due cifre più significative sono uguali. In questo modo il circuito si traduce in un confronto fra le due cifre più significative $a_n$ e $a_{n-1}$, che si fa con uno XOR.
+
+\subsubsection{Moltiplicazione di interi per potenza della base}
+Vediamo come si realizza un moltiplicatore per $b = \beta \cdot a$, dato $A = \left(a{n-1} a_{n-2} ... a_0 \right)$ rappresentante $a$ su $n$ cifre, $B$ rappresentante $b$ su $n+1$ cifre.
+
+Vogliamo chiederci prima di tutto se $b$ è sempre rapprsentabile da $B$ su $n+1$ cifre. Questo è vero, in quanto si può dimostrare che:
+$$
+B = \beta \cdot A
+$$
+Questo viene da:
+$$
+L: \quad B =
+\begin{cases}
+	b = \beta \cdot a, \quad 0 \leq a < \frac{\beta^n}{2} \\ 
+	\beta^{n+1} + b = \beta^{n+1} + \beta \cdot a = \beta \cdot \left( \beta^n + a \right), \quad -\frac{\beta^n}{2} \leq a < 0
+\end{cases}
+$$
+dove si nota che $a$ e $\beta^n + a$ valgono $A$ nei rispettivi campi di esistenza.
+Si applica quindi quanto conoscevamo sulle moltiplicazioni per potenze di base su naturali, e il prodotto sta su $n+1$ cifre.
+
+Per prodotti con potenze ulteriori della base, diciamo $\beta^k$, si ha che:
+$$
+b = \beta^k \cdot a \equiv B = \beta^k \cdot A
+$$
+e quindi il risultato starà su $n + k$ cifre.
+
+\subsubsection{Divisione per potenza della base}
+Vogliamo fare l'operazione equivalente per le divisioni, cioè dato $A$ rappresentante $a$ su $n+1$ cifre, trovare $B$ rappresentante $b$ su $n$ cifre tale per cui $b = \left\lfloor \frac{a}{\beta} \right\rfloor$.
+
+Possiamo dimostrare, come prima, che:
+$$
+B = \left\lfloor \frac{A}{\beta} \right\rfloor
+$$
+
+Per fare ciò, approfittiamo della proprietà vista sul complemento a radice che ci permette di rappresentare $B$ come $|b|_{\beta^n}$:
+$$
+B = \left| \left\lfloor \frac{a}{\beta} \right\rfloor \right|_{\beta^n} = \left| \left\lfloor \frac{ \lfloor a/\beta^{n+1} \rfloor \cdot \beta^{n+1} + |a|_{\beta^n+1} }{\beta} \right\rfloor \right|_{\beta^n} = \left| \left\lfloor \lfloor a / \beta^{n+1} \rfloor \cdot \beta^n + \frac{|a|_{\beta^{n+1}}}{\beta} \right\rfloor  \right|_{\beta^n}
+$$
+$$
+\left| \left\lfloor \frac{|a|_{\beta^{n+1}}}{\beta} \right\rfloor  \right|_{\beta^n}
+= \left| \left\lfloor \frac{A}{\beta} \right\rfloor \right| = \left\lfloor \frac{A}{\beta} \right\rfloor
+$$
+
+Abbiamo quindi che possiamo sfruttare quanto avevamo detto sulla divisione per potenze di basi su naturali, e il quoziente sta su $n$ cifre.
+
+Per divisioni con potenze ulteriori della base, diciamo $\beta^k$, si ha che:
+$$
+b = \left\lfloor \frac{a}{\beta^k} \right\rfloor \equiv B = \left\lfloor \frac{A}{\beta^k} \right\rfloor 
+$$
+e quindi il risultato starà su $n - k$ cifre (o $A$ dovrà stare su $n + k$ cifre rispetto a $B$, solita cosa).
+
+\subsubsection{Note sugli shift logico e aritmetico}
+Abbiamo visto come sono state definiti operazioni diverse per lo shift logico (SH) e aritmetico (SA) in linguaggio assembly.
+Abbiamo visto adesso, però, che moltiplicazione e divisione per la base si fanno allo stesso modo sia su interi che su naturali.
+
+Possiamo dire che, nel caso dello shift a sinistra, effettivamente le operazioni eseguite dal calcolatore sono uguali sia nel caso di SHL che SAR.
+Per quanto riguarda lo shift a destra, invece, dobbiamo renderci conto che la $n-1$-esima cifra (quella che avevamo escluso dicendo che $A$ su $n+1$ cifre va in $B$ su $n$ cifre) resterà comunque nella locazione di memoria, cioè non si possono ridimensionare le locazioni.
+C'è quindi una differenza sul modo in cui si popola l'$n-1$-esimo bit entrante: lo shift aritmetico SAL ripete il MSD (cioè estende l'intero su $n$ cifre) e lo shift logico SHL introduce sempre zeri (ergo perde i segni nel caso di $a$ ngativi).
+
+\subsection{Somma di interi}
+Dati $A$ e $B$ in base $\beta$ su $n$ cifre, rappresentanti rispettivamente gli interi $a$ e $b$, vogliamo calcolare $S$ su $n$ cifre tale $S$ rappresenta $s$ e $s = a + b$.
+Abbiamo, che la somma potrebbe uscire dall'intervallo di rappresentabilità su $n$ cifre, in quanto sta su:
+$$
+-\beta^n \leq s \leq \beta^n -2
+$$
+e starebbe al massimo su $n + 1$ cifre:
+$$
+\left[ -\beta^n, \beta^n -2 \right] \subset \left[ -\frac{\beta^{n+1}}{2}, \frac{\beta^n+1}{2} - 1 \right]
+$$
+
+Abbiamo quindi bisogno di flag di overflow, \lstinline|ow|.
+
+Quando $s$ è invece rappresentabile su $n$ cifre, si ha che:
+$$
+S = |s|_{\beta^n} = |a+b|_{\beta^n} = \left| |a|_{\beta^n} + |b|_{\beta^n} \right|_{\beta^n} = | A + B |_{\beta^n}
+$$
+
+Questa è la proprietà fondamentale per cui si usa il complemento alla radice, e lo passiamo dimostrare da quanto già dimostrato sulle proprietà dell'operatore modulo.
+
+Si può quindi usare un sommatore (che è quindi indifferente per naturali e interi), e l'unico problema resta determinare il flag \lstinline|ow|.
+
+L'unica cosa che dovremo aggiungere è un modo per calcolare il flag \lstinline|ow|.
+Per adesso abbiamo dal sommatore l'uscita $C_{out}$, cioè il riporto della somma: questa non basta da sola a verificare la rappresentabilità del risultato.
+Notiamo che la somma è sempre rappresentabile estendendo gli ingressi a $n+1$ bit e riducendo in uscita. Se la riduzione è possibile, ergo le ultime due cifre più significative sono diverse, allora la somma è rappresentabile.
+
+In una base arbitraria, per fare ciò devo effettivamente fare lo XOR delle due cifre, mentre in binario posso sfruttare le proprietà dello XOR, ricordando che internamente al full adder, la cifra in uscita $s$ non è altro che $a \oplus b \oplus c$. Si ha quindi:
+$$
+\mathtt{ow} = s_n \oplus s_{n-1} = (a_{n} \oplus b_{n} \oplus c_{n}) \oplus (a_{n-1} \oplus b_{n-1} \oplus c_{n-1}) = 0 \oplus c_n \oplus c_{n-1} = c_n \oplus c_{n-1}
+$$
+
+Possiamo quindi ricavare il flag \lstinline|ow| confrontando il $C^{n}_{out}$ con l'$n-1$-esimo $C^{n-1}_{out}$: a bit uguali sia \lstinline|ow| falso, e viceversa, cioè si usa un singolo XOR
+
+Si ha quindi che la stessa circuiteria esegue somme sia fra interi che fra naturali.
+In assembly, avevamo visto che la ADD esegue le stesse operazioni, ed è compito del programmatore controllare i flag di carry o di overflow a seconda di ciò che era andato a sommare (interi $\rightarrow$ overflow, naturali $\rightarrow$ carry).
+
+\subsection{Sottrazione di interi}
+La sottrazione fra interi è analoga alla somma: abbiamo sempre due $A$ e $B$ in base $\beta$ su $n$ cifre, e vogliamo trovare $D$ sempre su $n$ cifre tale per cui fra $a$, $b$ e $d$ rappresentati vale $a - b = d$.
+Si ha, prendendo il complemento a radice:
+$$  
+D = |d|_{\beta^n} = |a-b|_{\beta^n} = \left| a - b \right|_{\beta^{n}} = \left| |a|_{\beta^n} - |b|_{\beta^n} \right| = |A - B|_{\beta^n} = |A + \overline{B} + 1|_{\beta^n}
+$$
+
+Come prima, abbiamo che il flag \lstinline|ow| è dato dallo XOR degli ultimi due prestiti (prima erano riporti).
+Questo si dimostra analogamente a prima, prendendo il bit esteso:
+$$
+D^{EST} = |d|_{\beta^{n+1}} = |a-b|_{\beta^{n+1}} = \left| |a|_{\beta^{n+1}} - |b|_{\beta^{n+1}} \right|_{\beta^{n+1}} 
+$$
+$$
+= |A^{EST} - B^{EST}|_{\beta^{n+1}} = |A^{EST} + \overline{B^{EST}} -1|_{\beta^{n+1}}
+$$
+cioè si ha che sull'$n+1$-esimo bit la differenza è uguale prendendo le estensioni degli ingressi su $n+1$ bit, ergo la rappresentabilità è data dalla riducibilità del risultato su $n$ bit, e quindi come prima dallo XOR sugli ultimi due prestiti.
+
+\subsection{Comparazione di numeri interi}
+Notiamo che c'è una differenza fra la comparazione fra interi e quella fra naturali.
+Per quanto riguarda l'uguaglianza $a = b$, abbiamo effettivamente la stessa cosa dei naturali.
+
+Invece, per la minoranza $a < b$, non possiamo più controllare i prestiti uscenti.
+Dobbiamo quindi guardare il segno del risultato della sottrazione, che deve quindi poter essere svolta: si estende su $n+1$ cifre e si controlla la $n$ esima cifra del risultato: questa varrà da $\mathrm{sgn}(a-b)$, e quindi da flag di minoranza per $a < b$.
+Se non si fosse esteso su $n+1$ cifre, non avremmo potuto essere sicuro di non aver scartato eventuali valori negativi (negli intervalli di non rappresentabilità).
+
+\subsection{Moltiplicazione e divisione di interi}
+Moltiplicazioni e divisioni di interi riescono più facili se prima si converte in rappresentazione modulo e segno: i moduli si moltiplicano o dividono come naturali, e il segno viene determinato dai segni degli operandi attraverso la comune algebra alternante ($+ \cdot + = +$, $+ \cdot - = -$, $- \cdot - = +$).
+
+Ricordiamo di aver già visto un circuito di conversione da CR a MS.
+Ci manca quindi il circuito di conversione opposto:
+
+\subsubsection{Conversone da MS a CR}
+Vogliamo una rete che prende in ingresso il valore assoluto su $n$ cifre ed il segno della rappresentazione di un numero intero, e produce un uscita la sua rappresentazione in complemento alla radice su $n$ cifre.
+Quest'operazione non è sempre possibile: abbiamo $-(\beta^n - 1) \leq a \leq \beta^n - 1$ in ingresso e $-\frac{\beta^n}{2} \leq a \leq \frac{\beta^n}{2} - 1$ in uscita.
+
+Se l'operazione è fattibile, avremo che:
+$$
+A = |a|_{\beta^n} =
+\begin{cases}
+	|ABS_a|_{\beta^n}, \quad a \geq 0 \\ 
+	|-ABS_a|_{\beta^n}, \quad a < 0 \\ 
+\end{cases} = 
+\begin{cases}
+	|ABS_a|_{\beta^n}, \quad a \geq 0 \\ 
+	|\overline{ABS_a} + 1|_{\beta^n}, \quad a < 0 \\ 
+\end{cases} 
+$$
+
+Quindi si usa un multiplexer, con il segno della rappresentazione MS a variabile di controllo, che distingue fra la rappresentazione stessa $ABS_a$ e il suo complemento (calcolato con un circuito di inversione e incremento).
+
+Per quanto riguarda l'overflow, abbiamo invece che \lstinline|ow| è impostato in due casi:
+\begin{itemize}
+	\item Siamo fuori dal campo di rappresentabilità: questo si verifica quando $\mathrm{abs}(a) > \frac{\beta^N}{2}$, cioè si è passati oltre agli $n-1$ bit su cui dobbiamo ridurre il modulo;
+	\item Si è sull'unico valore positivo che non ha rappresentazione con $a = \frac{\beta^n}{2}$ e il bit di segno vale 0, cioè $a$ è uguale al massimo rappresentabile $\frac{\beta^n}{2} - 1 + 1$. 
+\end{itemize}
+
+Questo si sintetizza nella regola, espressa attraverso l'operatore ternario:
+$$
+\mathtt{ow} = \left( \left( \mathrm{abs}(a) > \frac{\beta^n}{2} \right) \vee \left( \left( \mathrm{abs}(a) = \frac{\beta^n}{2} \right) \wedge \left( \mathrm{sgn}(a) = 1 \right) \right) \right) \ ? \ 1 : 0
+$$
+
+Occorre stare attenti fra la funzione segno e il valore del bit di segno, in quanto vale, come per la convenzione solita sul bit di segno:
+\[
+	\begin{cases}			
+\mathrm{sgn}(a) = 1 \Rightarrow \mathtt{ow} = 0 \\
+\mathrm{sgn}(a) = -1 \Rightarrow \mathtt{ow} = 1
+	\end{cases}
+\]
+
+\par\medskip 
+
+Riassumiamo brevemente come si svolge la conversione fra complemento a radice e rappresentazione modulo e segno.
+Abbiamo sostanzialmente che, salvo il caso della conversione da MS a CR dove si può incappare in non rappresentabilità, la conversione da CR a MS e viceversa si fa sempre con un multiplexer che distingue fra la rappresentazione $A$ presa così com'è e il suo complemento calcolato con inversione incremento. 
+In particolare:
+\begin{itemize}
+	\item Nel caso \textbf{CR a MS}, si prende $A$ se per la cifra più significativa $a_{n-1}$ vale $a_{n-1} \geq \frac{\beta}{2}$, altrimenti il complemento $\overline{A}$: questo significa che il multiplexer è pilotato dalla MSD;
+	\item Nel caso \textbf{MS a CR}, si prende $A$ se il bit di segno non è impostato, e il complemento $\overline{A}$ altrimenti: questo significa che il multiplexer è pilotato dal bit di segno.
+\end{itemize}
+
+\subsubsection{Moltiplicazione}
+Per svolgere la moltiplicazione vogliamo quindi trasformare due ingressi $A$ e $B$, rappresentanti gli interi $a$ e $b$ su $n$ e $m$ bit, nella loro rappresentazione MS come:
+$$
+a \Rightarrow \mathrm{sgn}(a), \mathrm{abs}(a), \quad 
+a \Rightarrow \mathrm{sgn}(a), \mathrm{abs}(a), 
+$$
+dove i segni stanno su un bit e i moduli su $n$ e $m$ bit.
+
+Abbiamo che la moltiplicazione dei moduli di $A$ e $B$ è sempre rappresentabile, in quanto:
+$$
+\mathrm{sgn}(A) \cdot \mathrm{sgn}(B) \leq \frac{\beta^n}{2} \cdot \frac{\beta^m}{2} = \frac{\beta^{n+m}}{2}
+$$
+
+Osserviamo quindi che il prodotto intero $p$ è:
+$$
+p =
+\begin{cases}
+	\mathrm{abs}(a) \cdot \mathrm{abs}(b), \quad \mathrm{sgn}(a) = \mathrm{sgn}(b) \\ 
+	-\mathrm{abs}(a) \cdot \mathrm{abs}(b), \quad \mathrm{sgn}(a) \neq \mathrm{sgn}(b)
+\end{cases}
+$$
+ergo:
+\[
+	\begin{cases}
+		\mathrm{abs}(p) = \mathrm{abs}(a) \cdot \mathrm{abs}(b) \\ 	
+		\mathrm{sgn}(p) = \mathrm{sgn}(a) \cdot \mathrm{sgn}(b)
+	\end{cases}
+\]
+cioè quanto avevamo detto sulla rappresentazione modulo e segno per i prodotti. 
+
+Si ha quindi che il moltiplicatore fra interi si realizza convertendo gli ingressi da CR a MS, mandando i valori assoluti ad un moltiplicatore per naturali, e ricavando il segno del successivo convertitore da MS a CR (che ci darà il risultato) da uno XOR fra i segni degli MS in ingresso.
+L'overflow non è considerato in quanto non potra mai verificarsi (da sopra).
+
+\subsubsection{Divisione}
+Vogliamo calcolare, dati due naturali $A$ e $B$ rappresentanti gli interi $a$ e $b$ su $n$ e $m$ cifre, il quoziente $Q$ e il resto $R$, rispettivamente su $n$ e $m$ cifre, tali che:
+$$
+a = q \cdot b + r
+$$
+
+Per svolgere questa divisione abbiamo bisogno di una riformulazione del teorema della divisione con resto che funzioni sull'anello $\mathbb{Z}$, in quanto adesso la semplice $a = q \cdot b + r$ con $r < b$ ammette infiniti valori di $r$ (che può essere negativo).
+Decidiamo quindi di imporre:
+\begin{itemize}
+	\item Il quoziente $q$ è positivo se i segni di $a$ e $b$ sono concordi, e negativo viceversa;
+	\item $r$ e $b$ sono uguali in segno.
+\end{itemize}
+
+Da qui si ha la proprietà più importante, cioè:
+\[
+	\begin{cases}
+		\mathrm{abs}(r) < \mathrm{abs}(b) \\ 
+		\mathrm{sgn}(r) = \mathrm{sgn}(b)
+	\end{cases}
+\]
+
+Si verifica che questo significa che vogliamo i risultati che ci aspettiamo dalla comune divisione fra interi.
+
+Abbiamo quindi, pensando in modulo e segno, che:
+$$
+a = q \cdot b + r 
+$$
+diventa:
+$$
+\mathrm{sgn}(a) \cdot \mathrm{abs}(a) = q \cdot \mathrm{sgn}(b) \cdot \mathrm{abs}(b) + \mathrm{sgn}(r) \cdot \mathrm{abs}(r)
+$$
+Ma se avevamo $\mathrm{sgn}(a) = \mathrm{sgn}(r)$, allora:
+$$
+\mathrm{abs}(a) = \left( q \cdot \mathrm{sgn}(b) \cdot \mathrm{sgn}(a) \right) \cdot \mathrm{abs}(b) + \mathrm{abs}(r)
+$$
+
+Si nota quindi che $ q \cdot \mathrm{sgn}(b) \cdot \mathrm{sgn}(a) $ è semplicemente $\mathrm{abs}(q)$, ergo si può rendere la divisione fra interi come la divisione fra i moduli di quegli interi, prendendo il segno separatamente (che è quello che avevamo fatto per la moltiplicazione).
+
+Resta da trovare il valore del flag di non fattibilità \lstinline|no_div|.
+Abbiamo, dal divisore fra naturali, che la rappresentabilità è data da:
+$$
+\mathrm{abs}(a) < \beta^n \cdot \mathrm{abs}(q)
+$$
+
+Questa condizione non basta, in quanto non si è ancora assicurato che l'intero in uscita sia rappresentabile su $n$ cifre.
+Si prende quindi anche il flag di overflow \lstinline|ow|, ricavato dalla conversione finale da MS a CR, e si mette a OR con il flag \lstinline|no_div| che abbiamo ricavato dal circuito divisore.
+
+\end{document}

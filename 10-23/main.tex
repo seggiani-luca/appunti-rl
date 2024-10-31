@@ -251,6 +251,8 @@ L'ipotesi potrebbe sembrare limitante, ma visto che si può ricavare $n$ che sod
 
 Nel caso il numero di cifre $n$, $m$ sia dato dal problema, cioè quando si lavora su \textbf{campi finiti}, l'ipotesi è restrittiva.
 
+L'obiettivo è quello di progettare circuiti che eseguano questa divisione su campi di dimensioni prestabilite: dovremmo ricordare questa proprietà nello sviluppo e del circuito (e noteremo ha un significato specifico), e quando andiamo ad utilizzarlo, cioè quando si scrivono istruzioni assembly che ordinano divisioni fra numeri su registri di dimensione diversa.
+
 \subsubsection{Modulo divisore}
 Vogliamo quindi realizzare un circuito che:
 \begin{enumerate}
@@ -259,10 +261,11 @@ Vogliamo quindi realizzare un circuito che:
 \end{enumerate}
 
 La divisione viene svolta, tradizionalmente, prendendo un sottoinsieme delle $n$ cifre più significative del dividendo, tali per cui possiamo trovare quante volta il divisore sta nel sottoinsieme.
+Visto che non possiamo riscalare il numero di cifre prese dal divisore una volta assemblato il circuito, abbiamo bisogno di un numero minimo di cifre da prendere ogni volta, per essere sicuri di poter eseguire la divisione. 
 Formalmente, quindi, prendo il minimo numero di cifre più significative di $X$ per ottenere un $X' \in [Y, \beta \cdot Y[$
-Si nota che $m$ cifre possono non bastare, mentre $m+1$ bastano sempre (purchè $X$ non abbia zeri in testa).
+In questo $m$ cifre possono non bastare (potremmo avere che le $m$ cifre più significative di $X$ sono $< Y$), mentre $m+1$ bastano sempre (purchè $X$ non abbia zeri in testa).
 
-Calcolo quindi dei quozienti e resti \textbf{parziali}, $q$ e $R'$, dalla divisione di $X'$ e $Y$.
+Si calcolano quindi i quozienti e i resti \textbf{parziali}, $q$ e $R'$, dalla divisione di $X'$ e $Y$.
 Si ha che $q$ sta su una sola cifra, perchè $X' < \beta \cdot Y$ dall'ipotesi.
 
 Calcolo quindi il nuovo dividendo $X'$ concatenando $R'$ con la cifra più significativa non ancora utilizzata di $X$.
@@ -274,9 +277,13 @@ $$
 Si itera fino ad esaurimento delle cifre del dividendo.
 A questo punto il \textbf{quoziente} è ottenuto dal concatenamento dei quozienti parziali, e il resto è l'ultimo resto parziale.
 
-\par\smallskip
-
 Abbiamo che l'unica divisione effettiva è quella di $m+1$ per $m$ cifre, mentre tutte le altre sono effettivamente scomposizioni, quindi circuiti di logica a costo nullo.
+Resta quindi da calcolare solo il flag di non fattibilità \lstinline|no_div|: questo deriva naturalmente da quanto avevamo detto riguardo alle dimensioni del dividendo:
+$$
+X < \beta^n \cdot Y
+$$
+
+Inoltre, vogliamo impostare \lstinline|no_div| anche nel caso $Y$ sia nullo, per ovvi motivi.
 
 \subsubsection{Divisione nei processori Intel x86}
 Abbiamo visto come nei processori Intel x86, abbiamo a disposizione tre versioni della divisione:
