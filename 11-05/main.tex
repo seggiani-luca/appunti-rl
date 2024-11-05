@@ -1,0 +1,382 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 05-11-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{D-Latch trasparente}
+Introduciamo una nuova rete sequenziale dotata di due ingressi, $d$ (data) e $c$ (control), e un'uscita $q$.
+Il D-latch memorizza il bit in $d$ quando $c$ (\textbf{trasparenza}) vale 1.
+Quando $c$ vale 0, invece, si dice che è in \textbf{conservazione}, ergo memorizza l'ultimo valore che $d$ ha assunto quando $c$ valeva 1.
+
+La tabella di flusso di questa rete è la seguente, assunti in quest'ordine $c$ e $d$:
+\begin{table}[h!]
+	\center 
+	\begin{tabular} { c | c | c | c | c || c }
+		& 00 & 01 & 10 & 11 & q \\ 
+		\hline 
+		$s_0$ & $s_0$ & $s_0$ & $s_0$ & $s_1$ & 0 \\ 
+		$s_1$ & $s_1$ & $s_1$ & $s_0$ & $s_1$ & 1\\
+	\end{tabular}
+\end{table}
+
+cioè quando si è in conservazione, qualsiasi valore di $d$ viene ignorato e si memorizza il valore passato.
+Quando si è in trasparenza, invece, $q$ si asegua a $d$.
+
+Si può realizzare un D-latch attraverso un latch SR, con in ingresso una certa rete combinatoria.
+Quello che vogliamo fare è portare $d$ e $c$ in $s$ e $r$, attraverso la tabella di verità:
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c  c | c  c }
+		$c$ & $d$ & $s$ & $r$ \\
+		\hline
+		0 & 0 & 0 & 0 \\ 
+		0 & 1 & 0 & 0 \\ 
+		1 & 0 & 0 & 1 \\ 
+		1 & 1 & 1 & 0
+	\end{tabular}
+\end{table}
+
+Questo si sintetizza in $s = c \cdot d$ e $r = c \cdot \overline{d}$.
+Si ha che le porte AND che rappresentano le congiunzioni in questa rete combinatoria possono collassare con le porte AND che formavano la rete combinatoria del latch SR che permetteva preset e preclear.
+
+\subsubsection{Pilotaggio del D-Latch}
+Nel pilotaggio del D-latch, dobbiamo assicurarci che $d$ sia costante a cavallo della transizione di $c$ da 1 a 0, in quanto potremmo finire per memorizzare dati ignoti (l'ultima cosa che il D-latch ha "visto" prima del reset di $c$).
+I tempi per cui $d$ deve essere costante, rispettivamente \textbf{prima} e \textbf{dopo} della transizione di $c$, si dicono $T_{setup}$ e $T_{hold}$, e sono dati di progetto.
+
+\subsubsection{Trasparenza}
+Quando il D-latch è in \textbf{trasparenza}. il suo ingresso è direttamente connesso, in \textbf{senso logico} (ci sono comunque ritardi nella logica delle reti), all'uscita.
+Per questo motivo, se $q$ e $d$ sono collegati in \textbf{retroazione negativa} (un feedback loop negato), si ha che con $c=1$ abbiamo oscillazioni incontrollate, e che con $c=0$ in $q$ (cioè lo stato interno) resta un valore casuale (l'ultimo rilevato durante le oscillazioni casuali prima che $c$ sia transito a 0).
+
+Questo significa che il D-latch è una rete \textbf{trasparente}, cioè \textit{la sua uscita cambia mentre la rete è sensibile alle variazioni di ingresso}.
+Questo significa che non possiamo memorizzare niente che sia funzione dell'uscita (saremmo nel caso della retroazine negativa di prima).
+
+Poniamo di voler eseguire un'istruzione semplice come \lstinline|INC %AX|. 
+A livello hardware, questo significà connettere un registro (quindi una serie di D-latch) ad una rete combinatoria per l'incremento (probabilmente un half adder), e quindi l'uscita di questa rete di nuovo al D-latch.
+Quello che abbiamo essenzialmente creato è un ciclo di retrazione: il sistema devolverà velocemente in uno stato di oscillazione incontrollata.
+
+\subsection{D flip-flop}
+Il \textbf{D flip-flop} è una rete sequenziale \textbf{non trasparente} che si pone di risolvere i problemi di trasparenza del D-latch.
+Quello che vedremo nel dettaglio è il \textbf{positive edge-triggered D flip-flop}, che è una rete che si comporta come segue, sulla base degli ingressi $d$ (data) e $p$, e l'uscita $q$: quando $p$ ha un fronte di salita, memorizza $d$, \textit{attendi} un determinato istante temporale e adegua l'uscita.
+
+Possiamo concettualizzare il D flip-flop come composto, alla base, da un D -latch.
+Mettiamo a $c$, invece dell'ingresso $p$, il \textbf{generatore di impulso} $P^+$ sul fronte di salita di $p$.
+In uscita a $q$, poi, abbiamo un buffer $\Delta$, che introduce ritardo.
+La proprietà fondamentale che desideriamo è:
+$$
+\Delta > P^+ 
+$$
+Questo significa che $q$ si adegua al valore campionato di $d$ soltanto \textit{dopo} che la rete ha smesso di essere sensibile a $d$.
+È questa proprietà a rendere il D flip-flop una rete non trasparente.
+
+\subsubsection{Pilotaggio del D flip-flop}
+Innanzitutto, a cavallo del fronte di salita di $p$ l'ingresso $d$ deve rimanere costante, ergo si hanno gli stessi $_{setup}$ e $T_{hold}$ del D-latch.
+Inoltre, si ha il ritardo di adeguamento dell'uscita, che denominiamo $T_{prop}$ (dall'inglese \textit{propagation}).
+Qui la diseguaglianza d prima si traduce come:
+$$
+T_{prop} > T_{hold}
+$$
+
+\par\medskip 
+
+Si che l'uscita di un D-FF non oscilla mai, a differenza di quella del D-Latch: l'adeguamento avviene in modo "secco", sul fronte di salita, e di li in poi fino a reset e successivo set di $p$, l'uscita $q$ e in conservazione e ignora il comportamento di $d$.
+
+\subsubsection{Sintesi Master-Slave di un D flip-flop}
+Storicamente, un D flip-flop è stato realizzato attraverso un montaggio master/slave, attraverso due D-latch in cascata (di cui uno master, e l'altro chiaramente slave).
+Si invia quindi l'ingresso $p$ allo slave, e il suo negato al master, e si fa passare la linea $d$ prima dal master, poi dalla sua uscita all'ingresso del slave, e poi al $q$ del D flip-flop.
+Si ha che negli stati:
+\begin{itemize}
+	\item $p=0$: \textbf{master} e in \textit{trasparenza}, \textbf{slave} in \textit{conservazione};
+	\item $p=1$: \textbf{master} in \textit{conservazione}, \textbf{slave} in \textit{trasparenza}.
+\end{itemize}
+
+Quando $p$ è a 0, lo slave è in conservazione, quindi la rete memorizza.
+Nel frattempo il master è in trasparenza, quindi reagisce al valore in entrata di $d$.
+Quando $p$ transisce a $1$, lo slave passa in trasparenza, e quindi risponde a quello che esce dal master, che invece si trova in conservazione del valore che aveva un'attimo prima della transizione.
+Il risultato è un comportamento effettivamente analogo a quello della struttura a generatore di impulso e buffer vista prima.
+
+Si possono avere problemi nel funzionamento transitorio dei due D-latch: per questo si agisce elettronicamente, sviluppando questi per commutare $c$ a valori di tensione diversi.
+In particolare, vogliamo che in transizione di $p$ da 1 a 0 lo slave conservi il valore prima che il master passi a trasparenza, quindi che $c$ dello slave commuti prima di $c$ del master.
+
+Nella pratica, infine, si ha che la sintesi reale di un D flip-flop è fatta a partire da un latch SR, prima del quale si dispone una rete sequenziale asincrona la cui sintesi è fuori dagli scopi del corso.
+
+\subsection{Memorie RAM statiche}
+Esistono due tipi principali di memoria:
+\begin{itemize}
+	\item \textbf{S-RAM}, costituite da matrici di D latch;
+	\item \textbf{D-RAM}, realizzate in modo diverso, che per adesso ingnoreremo. 
+\end{itemize}
+
+Una riga di D latch rappresenta quindi una \textbf{locazione di memoria}, che può essere \textbf{letta} o \textbf{scritta} con apposite operazioni, strettamente \textbf{non simultanee}.
+
+Una SRAM è presenta gli ingressi e le uscite:
+\begin{itemize}
+	\item \textbf{Ingressi di indirizzo:} in numero sufficiente per indirizzare tutte le celle di memoria. Ad esempio, con $2^{23}$ celle di 4 bit, 23 ingressi;
+	\item \textbf{Ingressi/uscite di dati:} che andranno forchettati con porte \textbf{tri-state};
+	\item \textbf{Memory read} e \textbf{memory write}, segnali attivi bassi;
+	\item \textbf{Select}, segnale attivo basso che fa da \textbf{enabler}, in modo simile a quanto avevamo visto nei decoder.
+\end{itemize}
+
+Il comportamento che vogliamo dalla SRAM è il seguente:
+\begin{table}[h!]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c | c | c || c }
+		\bfseries \lstinline|/s| & \bfseries \lstinline|/mr| & \bfseries \lstinline|/mw| & \bfseries Azione \\
+		\hline 
+		1 & - & - & Nulla \\ 
+		0 & 1 & 1 & Nulla \\ 
+		0 & 0 & 1 & Lettura in corso \\ 
+		1 & 1 & 0 & Scrittura in corso \\ 
+	\end{tabular}
+\end{table}
+
+\subsubsection{Temporizzazione delle RAM statiche}
+Facciamo innanzitutto la divisione lettura/scrittura:
+\begin{itemize}
+	\item \textbf{Lettura:} per fare una lettura bisogna dare il comando (attivo basso) di memory read (\lstinline|/mr|), e impostare l'indirizzo di lettura.
+Il comando di select (\lstinline|/s|) arriva in ritardo, e a quel punto, quando sia \lstinline|/s| che \lstinline|/mr| sono in conduzione, i multiplexer vanno a regime e si può fare una lettura sull'uscita dei dati.
+Infine, quando \lstinline|/mr| torna a 1, i dati tornano ad alta impedenza, e l'indirizzo di lettura e la select possono assumere valori arbitrari.
+	\item \textbf{Scrittura:} si ha che la scrittura è \textbf{distruttiva} (manda i D-latch in trasparenza). Bisogna quindi attendere che il select \lstinline|/s| e gli indirizzi siano stabili prima di abbassare \lstinline|mw| per dare il comando di scrittura (l'opposto di quanto avevamo fatto in lettura, qui vogliamo scrivere solo quando siamo sicuri di poterlo fare, ergo i multiplexer sono a regime).
+		A questo punto, abbiamo che quando \lstinline|mw| torna alto dobbiamo assicurarci che i dati in scrittura siano fermi, in quanto i multiplexer riportano gli ingressi di controllo dei D-latch a 0 e l'indirizzo di lettura e la select possono, nuovamente, assumere valori arbitrari.
+\end{itemize}
+
+\subsubsection{Montaggio di banchi di memoria}
+Vediamo come combinare più banchi di memoria per aumentare lo spazio di memoria indirizzabile.
+\begin{itemize}
+	\item \textbf{Montaggio in parallelo:} 
+prendiamo in considerazione due banchi di memoria da $8 \text{M} \times 4$ bit, e vediamo come collegarli per formare un singolo banco di memoria da $8 \text{M} \times 8$ bit, quindi raddoppiando la dimensione delle locazioni.
+\begin{itemize}
+	\item Per quanto riguarda gli \textbf{indirizzi di lettura}, basta inviare l'indirizzo ad entrambi i banchi, da cui preleveremo la parte \textit{alta} e \textit{bassa} della locazione;
+	\item Per quanto riguarda gli \textbf{ingressi/uscite di dati}, avremo che la combinazione delle linee sui due banchi, da 4 bit ciascuna, formano un singolo byte da 8 bit, ergo la locazione di memoria completa.
+\end{itemize}
+	\item \textbf{Montaggio in serie:}  
+prendiamo in considerazione due banchi di memoria da $8 \text{M} \times 8$ bit, e vediamo come collegarli per formare un singolo banco di memoria da $16 \text{M} \times 8$ bit, quindi raddoppiamdo il numero di locazioni.
+\begin{itemize}
+	\item Per quanto riguarda gli \textbf{indirizzi di lettura}, discrimina dal MSB dell'indirizzo se selezionare dal primo o dal secondo banco, che faranno quindi da parte \textit{alta} e \textit{bassa} dello spazio di memoria indirizzabile. Facciamo questo attraverso l'ingresso di select \lstinline|/s|, che useremo per determinare altri due segnali di select \lstinline|/sl| e \lstinline|sh| (\textit{select low} e \textit{select high}), che a loro volta ci permettono di discriminare sulla base del MSD quale banco andiamo a selezionare (effettivamente rendere attivo); 
+	\item Per quanto riguarda gli \textbf{ingressi/uscite di dati}, avremo che il banco attivo in un dato momento determina completamente le uscite. Potremmo pensare di dover inserire porte tri-state in uscita ai singoli banchi di memoria sulla linea di ingresso/uscita, ma questo non è necessario: le \lstinline|sl| e \lstinline|sh| sono mutualmente esclusive, e quindi non si verificherà mai il caso in cui le linee di uscita di entrambi i banchi sono in conduzione contemporaneamente.
+\end{itemize}
+\end{itemize}
+\end{document}
