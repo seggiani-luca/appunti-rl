@@ -1,0 +1,320 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 07-11-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Reti sequenziali sincronizzate}
+Le reti sequenziali sincronizzate (RSS), a differenza della asincrone (RSA), non si aggiornano per la sola variazione degli ingressi, ma per l'arrivo di un determinato segnale periodico, che chiamiamo \textbf{clock}.
+
+Il clock è un segnale con forma d'onda periodica, di frequenza $1 \over T$ periodo, e \textit{duty cicle} (ciclo di lavoro) $\tau \over T$ intorno al 50\%.
+Solitamente l'evento di sincronia delle reti sequenziali sincronizzate è il \textbf{fronte di salita} del clock.
+
+\subsection{Registri}
+Un registro a $W$ bit è una collezione di $W$ D flip-flop positive edge-triggered, che hanno:
+\begin{itemize}
+	\item $W$ ingressi $d_i$ e $W$ uscite $q_i$ separate (in verità ricordiamo che troviamo sempre $q$ e $\overline{q}$ negata, noi riporteremo solo la prima per semplicità);
+	\item Un ingresso $p$ comune.
+\end{itemize}
+
+Si ha che $p$ funge da \textbf{segnale di sincronizzazione}.
+
+\subsubsection{Pilotaggio di registri}
+Per il corretto pilotaggio di un registro gli ingressi $d_i$ devono essere stabili intorno al fronte di salita del clock, per un tempo $T_{setup}$ prima e $T_{hold}$ dopo il fronte stesso.
+L'uscita cambia dopo, come avevamo visto per i D flip-flop, un tempo $T_{prop} > T_{hold}$.
+
+Tutto cio che accade in ingresso fra due istanti di sincronizzazione è irrilevante e non viene memorizzato.
+
+\par\smallskip
+
+Il registro \textit{memorizza} lo stato di ingresso al \textbf{fronte di salita}.
+Gli stati di ingresso fra due fronti di salita adiacenti possono essere identici, adiacenti o non adiacenti: è irrilevante in quanto, come abbiamo detto, l'aggiornamento accade soltanto nelle condizioni di stabilità intorno al fronte di salita del clock.
+
+Dopo il fronte di salita, le uscite cambiano il loro valore dopo $T_{prop}$.
+
+\par\medskip
+
+Possiamo quindi aggiornare la nostra definizione di RSS come \textit{collezione di registri e reti combinatorie}, montati arbitrariamente, purchè non ci siano anelli di retroazione di reti combinatorie (costituirebbero reti sequenziali asincrone).
+I registri hanno tutti lo stesso clock in comune, e possono formare anelli, in quanto abbiamo visto dal loro pilotaggio, questo non genera problemi.
+
+\subsubsection{Regole di pilotaggio per RSS}
+Dato l'$i$-esimo fronte di salita del clock al tempo $t_i$, lo stato di ingresso ai registri dovrà essere stabile, dalle loro regole di pilotaggio, nell'intervallo $[t_i - T_{setup}, t_i + T_{hold}]$.
+Non potrò quindi scegliere periodi $T$ del clock piccoli a piacere: dovrò lasciare tempo ai registri di produrre nuovi valori (in tempo $T_{prop}$), e alle reti combinatorie di elaborare tali valori coi loro tempi di ritardo interni,e quindi di propagarsi nuovamente fino ai registri.
+
+Definiamo, nello specifico, i ritardi:
+\begin{itemize}
+	\item $T_{in\_to\_reg}$: il tempo di attraversamento della catena di sole reti combinatorie che da uno degli ingressi della rete all'ingresso di un registro;
+	\item $T_{reg\_to\_reg}$: il tempo di attravarsamento fra l'uscita e l'ingresso di un registro;
+	\item $T_{in\_to\_out}$: il tempo di attraversamento fra un ingresso e un uscita dell'intera rete;
+	\item $T_{reg\_to\_out}$: il tempo di attraversamento fra l'uscita di un registro e un uscita della rete.
+\end{itemize}
+
+Dobbiamo introdurre poi i tempi $T_{a\_monte}$ e $T_{a\_valle}$, cioè i tempi necessari all'utente della rete per, rispettivamente, \textbf{modificare} gli ingressi e \textbf{leggere} le uscite.
+Questi formano due ulteriori vincoli di pilotaggio in ingresso e in uscita.
+
+Possiamo quindi porre le diseguaglianze:
+\[
+	\begin{cases}
+		T \geq T_{hold} + T_{a\_monte} + T_{in\_to\_reg} + T_{setup} \\ 
+		T \geq T_{prop} + T_{reg_to_reg} + T_{setup} \\ 
+		T \geq T_{hold} + T_{a\_monte} + T_{in\_to\_out} + T_{a\_valle} \\
+		T \geq T_{prop} + T_{reg\_to\_out} + T_{a\_valle}
+	\end{cases}
+\]
+
+che riguardano rispettivamente i tempi di percorrenza ingresso-registro, registro-registro, ingresso-uscita e registro-uscita.
+
+In verità, avremo altri due ritardi di cui tenere conto:
+\begin{itemize}
+	\item $T_{sfas}$: il \textbf{massimo sfasamento} fra due clock.
+		Visto che questo viene portato a elementi diversi, a qualche registro arrivera prima e a qualche registro arrivera dopo;
+	\item $T_{reg}$: se un registro è formato da $W$ > 1 bit, questi non cambieranno tutti contemporaneamente: dovremmo aggiungere $T_{prop} + T_{reg} = T'_{prop}$. A questo punto possiamo considerare solo $T'_{prop}$.
+\end{itemize}
+
+\subsubsection{Modello di Moore e di Mealy ritardato}
+Potremmo voler determinare qual'è la più vincolante fra le diseguaglianze riportate prima.
+Questa, chiaramente, è quella che copre il percorso più lungo, cioè la terza.
+Se decidiamo di vietare il percorso che copre, cioè quello diretto fra ingressi e uscite, otteniamo il cosiddetto \textbf{modello di Moore}: cioè, un modello di RSS dove non si ammettono reti combinatorie che collegano gli ingressi direttamente alle uscite.
+
+Un'altro vincolo che potremmo voler rilassare è il quarto, nel cosiddetto \textbf{modello di Mealy ritardato}.
+Questo equivale a prelevare le uscite direttamente dalle uscite dei registri, cioè a eliminare il tempo $T_{reg_to_out}$.
+
+\subsection{Contatori}
+Un contatore è una RSS il cui stato di uscita può essere visto come un \textbf{numero naturale} ad $n$ cifre in base $\beta$.
+Ad ogni clock, il contatore \textbf{incrementa} o \textbf{decrementa}.
+
+Abbiamo che si può realizzare un contatore collegando un modulo sommatore a $n$ cifre a un registro a $n$ cifre.
+L'uscita del registro viene collegata in anello di retrazione a uno degli ingressi del sommatore.
+Impostando il $C_{in}$ del sommatore a 1, e il suo secondo ingresso ad un'array di $n$ generatori di costante 0, si ha un contatore \textbf{incrementatore}, cioè che incrementa il suo valore ad ogni ciclo di clock.
+L'equivalente \textbf{decrementatore} si può creare usando un sottrattore a $n$ cifre invece di un sommatore.
+
+Si può creare un contatore con ingresso di abilitazione (sostanzialmente una \textbf{variabile di controllo}), cioè che incrementa o decrementa solo se è alto un certo bit di controllo, collegando tale bit al carry (o al borrow) del sommatore (sottrattore).
+
+\subsubsection{Scomposizione in moduli di contatori}
+Un contatore può essere scomposto, in qualsiasi base, in una serie di contatori ad una cifra collegati a \textbf{catena di riporti} (\textit{ripple carry}).
+In questo caso il registro è dato dalla combinazione di $n$ registri, uno per ogni cifra (e quindi per ogni contatore), tutti sincronizzati sullo stesso clock.
+
+\end{document}

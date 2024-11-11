@@ -219,32 +219,90 @@
 \makeatother
 
 \begin{document}
+% sezione (data)
+\section{Lezione del 08-11-24}
 
-\pagestyle{fancy}
+% stili pagina
 \thispagestyle{empty}
-\renewcommand{\thispagestyle}[1]{}
+\pagestyle{fancy}
 
-\maketitle
-\input{../09-24/main.tex}
-\input{../09-25/main.tex}
-\input{../09-26/main.tex}
-\input{../09-27/main.tex}
-\input{../10-01/main.tex}
-\input{../10-02/main.tex}
-\input{../10-03/main.tex}
-\input{../10-08/main.tex}
-\input{../10-09/main.tex}
-\input{../10-10/main.tex}
-\input{../10-11/main.tex}
-\input{../10-15/main.tex}
-\input{../10-17/main.tex}
-\input{../10-22/main.tex}
-\input{../10-23/main.tex}
-\input{../10-24/main.tex}
-\input{../10-29/main.tex}
-\input{../10-30/main.tex}
-\input{../11-05/main.tex}
-\input{../11-06/main.tex}
-\input{../11-07/main.tex}
-\input{../11-08/main.tex}
+% testo
+\subsection{Contatori e divisione in frequenza}
+Si ha che i contatori \textit{contano} i cicli di clock a cui sono sottoposti (cioè incrementano per ogni ciclo).
+Possiamo usare un contatore per \textbf{dividere} la frequenza del clock per un dato valore.
+Ad esempio, il MSB di un contatore in base 3 va 3 volte più lento del clock che lo pilota.
+In generale, si ha che per un contatore a $N$ cifre in base 2 che riceve clock a periodo $T$, l'MSB è a periodo $2^N \cdot T$.
+
+Si potrebbe pensare di usare l'uscita di riporto del contatore in MSB come uscita divisa del clock: questo non è raccomandabile in quanto l'uscita di riporto è un \textbf{uscita combinatoria}, che non è né \textbf{stabile} né a \textbf{temporizzazione certa} (a differenza dell'uscita di un registro).
+
+\subsection{Registro multifunzionale}
+Un registro multifunzionale è una rete che, all'arrivo del clock, memorizza nello stesso registro una tra $K$ funzioni combinatorie possibili, scelte impostando un certo numero di variabili di comando $W = \log_2 K$.
+
+L'implementazione effettiva del registro è data da un multiplexer da $0$ a $K-1$ reti combinatorie, dove $W$ è la variabile di comando, la cui uscita viene inviata a un certo registro (che spedisce poi la sua uscita in retroazione alle reti combinatorie funzionali, e cosi via).
+
+\subsection{Modello di reti sequenziali sincronizzate}
+Definiamo tre modelli per le RSS (che abbiamo già introdotto parlando delle regole di pilotaggio):
+
+\subsubsection{Modello di Moore}
+Una RSS di Moore è definita a partire da:
+\begin{itemize}
+	\item Un insieme di $N$ variabili logiche di ingressi:
+	\item Un insieme di $M$ variabili logiche di uscita;
+	\item Un \textbf{meccanismo di marcatura}, che a ogni istante marca uno \textbf{stato interno presente}, scelto fra $K$ finito stati interni $S \equiv \{ S_0, ..., S_{K-1} \}$;
+	\item Una legge di evoluzione nel tempo $A: X \times S \rightarrow S$, che mappa una coppia, data da un $X$ stato di ingresso e un elemento $s \in S$ stato interno, ad un nuovo stato interno (diciamo $s' \in S$);
+	\item Una legge di evoluzione nel tempo $B:S \rightarrow Z$, che mappa uno stato interno $s \in S$ a uno stato di uscita $Z$.
+\end{itemize}
+
+La rete riceve \textbf{segnali di sincronizzazione}, come ad esempio le transizioni da 0 a 1 del segnale di clock (avevamo detto il \textit{leading edge}).
+La legge di temporizzazione di una RSS di Moore è quindi la seguente: dato un elemento $s \in S$, stato interno marcato ad un certo istante, e dato $X$ ingresso ad un certo istante immediatamente precedente l'arrivo di un segnale di sincronizzazione:
+
+\begin{enumerate}
+	\item Si individua il nuovo stato interno da marcare $s' = A(X, s)$;
+	\item Si aspetta $T_{prop}$ dopo l'arrivo del segnale di sincronizzazione;
+	\item Si promuove $s'$ al rango di \textbf{stato interno marcato}.
+\end{enumerate}
+
+Lo stato interno marcato viene memorizzato in un apposito registro, detto \textbf{STAR} (da \textit{STAtus Register}).
+Questo viene implementato con una batteria di D flip-flop non trasparenti.
+
+In una RSS di Moore si hanno quindi i seguenti vincoli di pilotaggio:
+\[
+	\begin{cases}
+		T \geq T_{hold} + T_{a\_monte} + T_A + T_{setup} \\ 
+		T \geq T_{prop} + T_A + T_{setup} \\ 
+		T \geq T_{prop} + T_Z + T_{a\_valle}
+	\end{cases}
+\]
+
+che riguardano rispettivamente i tempi ingresso-STAR, STAR-STAR e STAR-uscita.
+
+\subsubsection{Flip-flop JK}
+Un'esempio di RSS di Moore è il flip-flop JK, che valuta due ingressi $j$ e $k$ e si comporta come segue:
+\begin{table}[h!]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c | c | c }
+		$j$ & $k$ & Azione \\ 
+		\hline 
+		0 & 0 & Conserva \\ 
+		1 & 0 & Setta \\ 
+		0 & 1 & Resetta \\ 
+		1 & 1 & Commuta
+	\end{tabular}
+\end{table}
+
+Un modo di vedere questa rete è come un registro multifunzionale ad un bit, con tabella di applicazione:
+\begin{table}[h!]
+	\center 
+	\begin{tabular} { c  c | c  c }
+		$q$ & $q'$ & $j$ & $k$ \\ 
+		\hline 
+		0 & 0 & 0 & - \\ 
+		0 & 1 & 1 & - \\ 
+		1 & 0 & - & 1 \\ 
+		1 & 1 & - & 0
+	\end{tabular}
+\end{table}
+
+# quando puoi fai un ripassone
+
 \end{document}

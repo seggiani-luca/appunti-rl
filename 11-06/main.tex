@@ -219,32 +219,70 @@
 \makeatother
 
 \begin{document}
+% sezione (data)
+\section{Lezione del 06-11-24}
 
-\pagestyle{fancy}
+% stili pagina
 \thispagestyle{empty}
-\renewcommand{\thispagestyle}[1]{}
+\pagestyle{fancy}
 
-\maketitle
-\input{../09-24/main.tex}
-\input{../09-25/main.tex}
-\input{../09-26/main.tex}
-\input{../09-27/main.tex}
-\input{../10-01/main.tex}
-\input{../10-02/main.tex}
-\input{../10-03/main.tex}
-\input{../10-08/main.tex}
-\input{../10-09/main.tex}
-\input{../10-10/main.tex}
-\input{../10-11/main.tex}
-\input{../10-15/main.tex}
-\input{../10-17/main.tex}
-\input{../10-22/main.tex}
-\input{../10-23/main.tex}
-\input{../10-24/main.tex}
-\input{../10-29/main.tex}
-\input{../10-30/main.tex}
-\input{../11-05/main.tex}
-\input{../11-06/main.tex}
-\input{../11-07/main.tex}
-\input{../11-08/main.tex}
+% testo
+\subsection{Collegamento al bus e maschere}
+Resta da capire da dove vengono gli indirizzi di lettura usati nell'accesso alla SRAM.
+Questi si trovano su un \textbf{bus indirizzi}, il cui valore è impostato dal processore ogni volta che vuole effettuare un accesso.
+Ad esempio, per un modulo di RAM da $256 \text{M} \times 8$ bit, quindi con 28 ingressi, si avrà che bisogna di montare banchi di memoria a partire da \lstinline|0xE0000000| fino a \lstinline|0xEFFFFFFF|.
+
+L'ingresso di select verrà quindi generato a partire dalla parte alta dell'indirizzo, fatto passare attraverso una certa maschera, facendo quindi corrispondere una certa impostazione dei bit più significativi (in questo caso 4) al segnale di select.
+Visto che avevamo detto si parte da \lstinline|0xE0000000|, vogliamo \lstinline|0xE| = \lstinline|B1110|, quindi serve la rete combinatoria (maschera):
+$$
+\mathtt{/s} = \overline{a_{31}} + \overline{a_{30}} + \overline{a_{29}} + a_{28}
+$$
+
+Con un montaggio di questo tipo possiamo usare il select per scegliere quale banco di memoria RAM è associato a quale parte dello spazio indirizzabile.
+Questo tipo di configurazione giustifica inoltre il fatto che il bit di select viene impostato con ritardo rispetto agli indirizzi: visto che deve essere calcolato sulla base di quest'ultimi, risentirà del ritardo della rete combinatoria che lo genera.
+
+\subsection{Memorie ROM a sola lettura}
+Le memorie a sola lettura, dette ROM, sono effettivamente reti combinatorie: l'uscita è costante qualunque siano gli stati passati.
+Vengono montate nello spazio di memoria assieme alla RAM, e rappresentano la parte \textbf{non volatile} (persistente) dello spazio di memoria stesso (abbiamo visto come contengono le prime istruzioni eseguite dal processore).
+La loro struttura interna ricalca quella della memoria RAM, privata della circuiteria necessaria alla lettura, e che usa generatori di costante al posto dei D-latch.
+
+Una ROM può essere realizzata attraverso il MSU (\textit{Modello Strutturale Universale}), collegando in maniera ortogonale file di OR alle uscite di un decoder (come ci è concesso dall'espansione di Shannon), nei punti in cui vogliamo che un'uscita corrisponda a un certo ingresso.
+Nella pratica, si usano più spesso porte NOR per ragioni elettroniche, e quindi si collegano le linee nel caso un uscita corrisponde alla negazione dell'ingresso.
+Questo circuito viene solitamente stampato su un singolo chip di silicio, il cui costo fisso di progettazione è giustificato solo nel caso di produzione su larga scala.
+Conviene quindi realizzare delle alternative, le \textbf{ROM programmabili}.
+
+\subsubsection{ROM programmabili}
+In una memoria ROM programmabile, le porte NOR sono tutte attaccate alle linee degli AND del decoder.
+Si possono disabilitare selettivamente alcune di queste porte NOR per effettivamente \textbf{programmare} la memoria contenuta nella ROM.
+
+Possiamo individuare delle categorie per queste reti:
+
+\begin{itemize}
+	\item Le \textbf{OTPROM} (\textit{One Time Programmable ROM}) vengono realizzate attraverso questa tecnologia, è la loro progammazione risulta quindi \textbf{distruttiva} (una volta programmato un bit non si può più rimuovere).
+	\item  Una tecnologia più sofisticata è rappresentata dalle \textbf{EPROM} (\textit{Erasable programmable ROM}).
+Queste vengono realizzate attraverso tranistor a field-effect.
+La scrittura della EPROM può essere ripetuta sottoponendola a una luce ultravioletta, e quindi cancellando tutti i dati, per poi riscrivene altri.
+
+Di una EPROM ci interessano:
+\begin{itemize}
+	\item \textbf{Endurance:} quante riscritture successive può supportare (solitamente dalle 10K alle 100K volte);
+	\item \textbf{Data retention:} il periodo per cui si può fare affidamento sui dati contenuti in una EPROM (solitamente dai 10 ai 100 anni).
+\end{itemize}
+	\item Infine, le \textbf{EEPROM} (\textit{Electrically Erasable Programmable ROM}) permettono la riprogrammazione direttamente attraverso segnali elettrici, sul chip già montato nello spazio di memoria.
+		Potremmo pensare che EEPROM e RAM sono effettivamente equivalente.
+		Ci sono invece alcune differenze, che sono:
+		\begin{itemize}
+			\item L'EEPROM è persistente, mentre la RAM è volatile;
+			\item Il numero di volte in cui si può riprogrammare una EEPROM è comunque limitato;
+			\item Il tempo di riprogrammazione di una EEPROM è maggiore del tempo di lettura della RAM;
+			\item Le tensioni che si usano nella programmazione di una EEPROM (12V-18V) sono maggiori dei 5V (o 3.3V) che richiede la RAM. 
+		\end{itemize}
+\end{itemize}
+
+\subsection{Il linguaggio Verilog}
+Per descrivere le reti logiche fa comodo adottare una \textbf{notazione testuale}.
+Finora abbiamo usato disegni o espressioni algebriche: adesso introduciamo un \textbf{linguaggio di descrizione hardware}, il \textbf{Verilog}.
+Questo linguaggio è più \textbf{compatto}, e può essere \textbf{interpretato} automaticamente da una macchina, permettendoci di effettuare prove (in modo simile a come avevamo introdotto coi diagrammi di temporizzazione).
+
+
 \end{document}
