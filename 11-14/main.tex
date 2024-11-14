@@ -42,10 +42,6 @@
 \usepackage{circuitikz}
 \usetikzlibrary{babel}
 
-% testo cerchiato
-\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
-            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
-
 % disponi il titolo
 \makeatletter
 \renewcommand{\maketitle} {
@@ -223,33 +219,76 @@
 \makeatother
 
 \begin{document}
+% sezione (data)
+\section{Lezione del 14-11-24}
 
-\pagestyle{fancy}
+% stili pagina
 \thispagestyle{empty}
-\renewcommand{\thispagestyle}[1]{}
+\pagestyle{fancy}
 
-\maketitle
-\input{../09-24/main.tex}
-\input{../09-25/main.tex}
-\input{../09-26/main.tex}
-\input{../09-27/main.tex}
-\input{../10-01/main.tex}
-\input{../10-02/main.tex}
-\input{../10-03/main.tex}
-\input{../10-08/main.tex}
-\input{../10-09/main.tex}
-\input{../10-10/main.tex}
-\input{../10-11/main.tex}
-\input{../10-15/main.tex}
-\input{../10-17/main.tex}
-\input{../10-22/main.tex}
-\input{../10-23/main.tex}
-\input{../10-24/main.tex}
-\input{../10-29/main.tex}
-\input{../10-30/main.tex}
-\input{../11-05/main.tex}
-\input{../11-06/main.tex}
-\input{../11-07/main.tex}
-\input{../11-08/main.tex}
-\input{../11-12/main.tex}
+% testo
+\subsection{Riconoscitore di sequenze}
+Vediamo come sintetizzare un circuito \textbf{riconoscitore di sequenze}, sia come rete di Moore che come rete di Mealy:
+
+\subsubsection{Sintesi in rete di Moore}
+# fallo
+
+\subsubsection{Sintesi in rete di Mealy}
+# fallo
+
+\subsection{Confronto fra Moore e Mealy}
+Abbiamo che le reti di Moore hanno leggi $B$ meno flessibili delle reti di Mealy, e quindi in una rete di Mealy si hanno meno stati interni che in una rete di Moore.
+Si potrebbe quindi pensare che una rete di Mealy può esprimere funzioni che una rete di Moore non può rappresentare.
+Questo è falso, in quanto si può dimostrare che Moore e Mealy hanno la \textbf{stessa potenza descrittiva}: per una rete di Moore, si può ricavare l'equivalente di Mealy, e viceversa.
+
+Tra le altre differenze che possiamo notare, si ha che il clock di una rete di Moore al pari di una rete di Mealy deve essere più veloce, e sopratutto che una rete di Mealy si aggiorna \textit{al pari} con gli ingressi, cioè è una rete \textbf{trasparente}.
+
+Un anello di retroazione fra due reti di Mealy può infatti creare un \textbf{anello combinatorio}, che sappiamo essere suscettibile a oscillazioni incontrollate.
+Di contro, fra due reti di Moore incontreremo sempre un registro, ergo non avrmo problemi di formazione di anelli combinatori.
+
+\subsection{Modello di Mealy ritardato}
+Creiamo una cosiddetta rete di \textbf{Mealy ritardato} prendendo una rete di Mealy e introducendo un ulteriore registro, \textbf{OUTR}, in uscita.
+Le uscite, come nelle reti di Moore, non sono più trasparenti e variano all'arrivo del clock dopo un tempo $T_{prop}$.
+
+# rimetti in ordine da Mealy
+
+\subsubsection{Temporizzazione del modello di Mealy ritardato}
+# riporta
+
+\subsection{Assegnamenti procedurali}
+# leggi max chiedi foto simone
+
+In Verilog possiamo descrivere il comportamento di una rete di Mealy attraverso i cosiddetti \textbf{assegnamenti procedurali}.
+Notiamo la temporizzazione di una forma del tipo:
+\begin{lstlisting}[language=verilog, style=codestyle]	
+s0: begin STAR<=S1; OUTR<=STAR; end
+\end{lstlisting}
+Le istruzioni contenute nel blocco \lstinline|begin| (...) \lstinline|end| accadono \textbf{contemporaneamente}, e il fatto che STAR sia a sinistra nel primo assegnamento e OUTR sia sinistra nel secondo indica che questi avvengono \textit{dopo il clock}, cioè \textit{prima del clock} si legge il valore (S1 o STAR nell'esempio) e soltanto dopo si scrive effettivamente sul registro.
+
+# finisci slide
+
+
+\subsection{Reti sequenziali complesse}
+I modelli concettuali che abbiamo visto finora (Moore, Mealy e Mealy ritardato) riescono a sintetizzare solo reti molto semplici.
+Prendiamo ad esempio il modello di Mealy ritardato.
+
+Vogliamo creare una rete che conta, modulo 16, il numero di sequenze corrette 00, 01, 10 ricevute in ingresso.
+Quindi, ogni volta che viene registrata una sequenza corretta, la rete incrementa di 1 l'uscita, rappresentata su 4 bit.
+Abbiamo quindi \textbf{2 ingressi}, \textbf{4 uscite}, e 3 stati interni per 16 stati di OUTR, cioè 48 stati interni totali.
+
+Modellizzare questa rete con un tale numero di ingressi risulta chiaramente molto laborioso: un apporccio migliore sarebbe creare una rete di Mealy ritardato che riconosce una sola sequenza, e mandarla in input a un contatore a 4 bit.
+# potresti fare disegnini però è laborioso pure quello
+
+\textit{Esplodendo} una rete siffatta troviamo un modello formato da una rete di Mealy ritardato (cioè da una rete combinatoria \textit{di riconoscimento} nel caso del riconoscitore di sequenza, annessa ai registri STAR e OUTR), e da un contatore (formato a sua volta da una rete combinatoria che implementa la logica del contatore e un altro registro, che chiameremo \textbf{COUNT}).
+L'uscita di questa rete sarà formata dal registro COUNT, e potremo inoltre racchiudere le due reti combinatorie in un unica RC totale.
+
+La rete così ottenuta non rispetta il modello di Mealy ritardato: ha più di due registri, e sopratutto fa rientrare nella RC totale più di un registro uscente (finora era stato STAR).
+Troviamo che questo è molto comodo: introducendo \textbf{registri operativi} abbiamo a disposizione locazioni di memoria che supportano sia uscite che computazioni intermedie.
+
+Possiamo quindi distinguere i registri in due categorie:
+\begin{itemize}
+	\item \textbf{Registri di stato:} simili a quelli che abbiamo già visto, cioò che rappresentano lo stato interno della rete;
+	\item \textbf{Registri operativi:} che contengono sia \textit{valori di uscita} che \textit{valori intermedi} (o \textit{computazioni intermedie}, insomma risultati utili al ricavo dell'uscita della rete). 
+\end{itemize}
+
 \end{document}
