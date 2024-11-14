@@ -22,9 +22,9 @@
 \usepackage{karnaugh-map}
 
 % imposta il titolo
-\title{Appunti title-tag}
-\author{author-tag}
-\date{year-tag}
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
 
 % imposta lo stile
 % usa helvetica
@@ -41,10 +41,6 @@
 % circuiti
 \usepackage{circuitikz}
 \usetikzlibrary{babel}
-
-% testo cerchiato
-\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
-            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
 
 % disponi il titolo
 \makeatletter
@@ -224,12 +220,45 @@
 
 \begin{document}
 % sezione (data)
-\section{Lezione del date-tag}
+\section{Lezione del 12-11-24}
 
 % stili pagina
 \thispagestyle{empty}
 \pagestyle{fancy}
 
 % testo
+\subsection{Riconoscitore di sequenze}
+Un riconoscitore di sequenze è una rete sequenziale sincronizzata a $N$ ingressi ed un uscita.
+Questa rete si evolve secondo la legge seguente: se si presenta, in sequenza, una sequenza di stati di ingresso voluta, l'uscita vale 1, 0 altrimenti.
 
+Ogni stato di ingresso deve essere presentato prima del prossimo ciclo di clock, e per $n$ stati di ingresso avremo bisogno di $n$ cicli di clock per leggerli tutti.
+Inoltre, se un valore permane per più di un ciclo di clock, si considera questa una ripetizione.
 
+Si ha che qesta è una \textbf{rete con memoria}: deve ricordare ad ogni stato di ingresso la sequenza degli stati di ingresso \textbf{corretti} e \textbf{consecutivi} visti finora, cioè $K + 1$ stati (compreso lo stato finale con l'uscita a 1) per sequenze di $K$ stati.
+
+# la sintesi è un esercizio per casa
+
+\subsection{Modello di Mealy}
+Nel modello di Moore avevamo detto che l'uscità è funzione soltanto dello stato interno precedente: $B : S \rightarrow Z$.
+Nelle reti di mealy, la legge $B$ è più generale, e dipende anche dagli ingressi: $B : X \times S \rightarrow Z$.
+
+Vediamo che le reti RCA e RCB, a questo punto, possono essere espresse come un unica grande rete RC con cicli di retroazione dal registro STAR.
+Possiamo quindi riformuare le diseguaglianze di temporizzazione come:
+\[
+	\begin{cases}
+		T \geq T_{hold} + T_{a\_monte} + T_{RC} + T_{setup} \\ 
+		T \geq T_{prop} + T_{RC} + T_{setup} \\ 
+		T \geq T_{hold} + T_{a\_monte} + T_{RC} + T_{a\_valle} \\
+		T \geq T_{prop} + T_{RC} + T_{a\_valle}
+	\end{cases}
+\]
+
+dove i tempi di attraversamento da ingresso a registro, da registro a registro e da registro a uscita sono sostituiti dal tempo di attraversamento di RC # come mai?
+
+Notiamo che al variare dell'ingresso, una rete di Mealy può produrre una nuova uscita \textit{prima dell'aggiornamento del clock}.
+Questo rende le reti di Mealy \textbf{non trasparenti}: gli ingressi sono connessi direttamente alle uscite (in senso logico), ergo cicli di retroazione possono creare oscillazioni incontrollate.
+Prendiamo ad esempio il contatore visto precedentemente: è effettivamente una \textbf{rete di Mealy} rispetto alle uscite di riporto $eu$ e $ei$. 
+L'uscita $q$, invece, che è collegata direttamente al registro, non è trasparente (la chiamiamo \textit{uscita di Moore}).
+Notiamo quindi che basta un'\textit{uscita di Mealy} a rendere una rete una rete di Mealy.
+
+\end{document}

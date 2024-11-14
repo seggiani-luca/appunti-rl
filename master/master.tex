@@ -42,6 +42,10 @@
 \usepackage{circuitikz}
 \usetikzlibrary{babel}
 
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
 % disponi il titolo
 \makeatletter
 \renewcommand{\maketitle} {
@@ -247,4 +251,5 @@
 \input{../11-06/main.tex}
 \input{../11-07/main.tex}
 \input{../11-08/main.tex}
+\input{../11-12/main.tex}
 \end{document}

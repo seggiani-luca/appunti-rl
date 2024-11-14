@@ -1,4 +1,3 @@
-
 \documentclass[a4paper,11pt]{article}
 \usepackage[a4paper, margin=8em]{geometry}
 
@@ -235,11 +234,11 @@ Quando $c$ vale 0, invece, si dice che è in \textbf{conservazione}, ergo memori
 La tabella di flusso di questa rete è la seguente, assunti in quest'ordine $c$ e $d$:
 \begin{table}[h!]
 	\center 
-	\begin{tabular} { c | c | c | c | c || c }
+	\begin{tabular} { c | c  c  c  c | c }
 		& 00 & 01 & 10 & 11 & q \\ 
 		\hline 
-		$s_0$ & $s_0$ & $s_0$ & $s_0$ & $s_1$ & 0 \\ 
-		$s_1$ & $s_1$ & $s_1$ & $s_0$ & $s_1$ & 1\\
+		$S_0$ & \circled{$S_0$} & \circled{$S_0$} & \circled{$S_0$} & $S_1$ & 0 \\ 
+		$S_1$ & \circled{$S_1$} & \circled{$S_1$} & $S_0$ & \circled{$S_1$} & 1\\
 	\end{tabular}
 \end{table}
 
@@ -282,7 +281,7 @@ Quello che abbiamo essenzialmente creato è un ciclo di retrazione: il sistema d
 Il \textbf{D flip-flop} è una rete sequenziale \textbf{non trasparente} che si pone di risolvere i problemi di trasparenza del D-latch.
 Quello che vedremo nel dettaglio è il \textbf{positive edge-triggered D flip-flop}, che è una rete che si comporta come segue, sulla base degli ingressi $d$ (data) e $p$, e l'uscita $q$: quando $p$ ha un fronte di salita, memorizza $d$, \textit{attendi} un determinato istante temporale e adegua l'uscita.
 
-Possiamo concettualizzare il D flip-flop come composto, alla base, da un D -latch.
+Possiamo concettualizzare il D flip-flop come composto, alla base, da un D-latch.
 Mettiamo a $c$, invece dell'ingresso $p$, il \textbf{generatore di impulso} $P^+$ sul fronte di salita di $p$.
 In uscita a $q$, poi, abbiamo un buffer $\Delta$, che introduce ritardo.
 La proprietà fondamentale che desideriamo è:
@@ -302,7 +301,7 @@ $$
 
 \par\medskip 
 
-Si che l'uscita di un D-FF non oscilla mai, a differenza di quella del D-Latch: l'adeguamento avviene in modo "secco", sul fronte di salita, e di li in poi fino a reset e successivo set di $p$, l'uscita $q$ e in conservazione e ignora il comportamento di $d$.
+Si che l'uscita di un D-FF non oscilla mai, a differenza di quella del D-Latch: l'adeguamento avviene in modo "secco", sul fronte di salita, e di lì in poi fino a reset e successivo set di $p$, l'uscita $q$ è in conservazione e ignora il comportamento di $d$.
 
 \subsubsection{Sintesi Master-Slave di un D flip-flop}
 Storicamente, un D flip-flop è stato realizzato attraverso un montaggio master/slave, attraverso due D-latch in cascata (di cui uno master, e l'altro chiaramente slave).
@@ -315,7 +314,7 @@ Si ha che negli stati:
 
 Quando $p$ è a 0, lo slave è in conservazione, quindi la rete memorizza.
 Nel frattempo il master è in trasparenza, quindi reagisce al valore in entrata di $d$.
-Quando $p$ transisce a $1$, lo slave passa in trasparenza, e quindi risponde a quello che esce dal master, che invece si trova in conservazione del valore che aveva un'attimo prima della transizione.
+Quando $p$ transisce a $1$, lo slavean automa in automaton theory  passa in trasparenza, e quindi risponde a quello che esce dal master, che invece si trova in conservazione del valore che aveva un'attimo prima della transizione.
 Il risultato è un comportamento effettivamente analogo a quello della struttura a generatore di impulso e buffer vista prima.
 
 Si possono avere problemi nel funzionamento transitorio dei due D-latch: per questo si agisce elettronicamente, sviluppando questi per commutare $c$ a valori di tensione diversi.

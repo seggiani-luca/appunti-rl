@@ -42,6 +42,10 @@
 \usepackage{circuitikz}
 \usetikzlibrary{babel}
 
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
 % disponi il titolo
 \makeatletter
 \renewcommand{\maketitle} {
@@ -305,12 +309,34 @@ Questo è il punto di forza che lo rende la rete alla base dei registri e di tut
 
 \subsubsection{Lo stato iniziale}
 Abbiamo detto che l'SR è l'elemento alla base dei circuiti di memoria.
+Un SR può contenere informazioni, che corrispondono allo \textit{stato} $S_0$ o $S_1$ in cui si trova.
 Si ha, però, che all'accensione il bit contenuto nell'SR è \textbf{casuale} (da quello che avevamo visto dalle modalità di pilotaggio).
 All'accensione di un calcolatore, si ha che alcuni elementi possono avere un valore casuale (ad esempio la RAM), altri no (ad esmpio l'instruction pointer).
 Si definisce quindi una \textbf{fase di reset}, distinta dalla \textbf{fase operativa}, cioè quella di operatività standard.
 Nella fase di reset si inizializzano gli elementi di memoria: notiamo che questo reset non corrisponde al comando R, di RESET, che diamo ai latch.
-In generale non è vero che gli elementi di memoria contengono tutti zero all'accensione del calcolatore.
+In generale, quindi, non è vero che gli elementi di memoria contengono tutti zero all'accensione del calcolatore.
 
+Vediamo quindi il circuito:
+\begin{center}
+	\begin{circuitikz}
+		\draw (0, 0) node[spdt, xscale=-1] (on) {};	
+		\draw (0, -2) node[spdt, xscale=-1] (reset) {};
+		\draw (on.out 2) node[ground] {};
+		\draw (reset.out 2) node[ground] {};
+		\node[anchor=east] at (on.out 1) {Vcc};
+
+		\draw (on.in) -- (2, 0)
+			to [ resistor, l = $R$ ] (2, -2)
+			to [ capacitor, l = $C$] (2, -3);
+		\draw (2, -3) node[ground] {};
+		\draw (4, -2) node [ schmitt ] (schm) {};
+		\draw (reset.in) -- (schm.in);
+		\node[anchor=west] at (4.75, -2) {/reset};
+
+		\node at (0, 0.75) {ON/OFF};
+		\node at (0, -1.25) {reset};
+	\end{circuitikz}
+\end{center}
 Abbiamo che la circuiteria di trigger è realizzata attraverso un circuito RC, fra l'interruttore ON/OFF e il pulsante di reset, con $\tau = R \cdot C \approx 0 \, \mathrm{\mu s}$, dove si collega il nodo fra R e C ad un trigger di Schmitt.
 Il trigger di Schmitt effettivamente "quantizza" la tensione, cioè scatta ad un valore 1 di tensione solamente quando la tensione in entranta è maggiore di una certa soglia.
 Abbiamo quindi che, spostando l'interruttore nella posizione ON, il circuito raggiunge il regime in un tempo $\approx \tau$, e quindi il trigger va a 1 in un tempo $\approx \tau$. Lo stesso quando si preme il pulsante di reset, il capacitore C si scarica e dobbiamo riportare nuovamente il circuito a regime, per cui abbiamo un istante $\approx \tau$ dove il trigger è a 0. 
@@ -321,25 +347,77 @@ Per implementare effettivamente il meccanismo di reset si dota il latch SR di du
 Si distinguono quindi i seguenti casi:
 \begin{itemize}
 	\item $\mathrm{/preset} = \mathrm{/preclear} = 1$: la rete si comporta come un latch SR normale;
-	\item $\mathrm{/preset} = 0$: la rete si comporta nello stato $S_1$ (indipendentemente dallo stato di $s$ e $r$);
-	\item $\mathrm{/preclear} = 0$: la rete si comporta nello stato $S_0$ (indipendentemente dallo stato di $s$ e $r$);
+	\item $\mathrm{/preset} = 0$: la rete si trova nello stato $S_1$ (indipendentemente dallo stato di $s$ e $r$);
+	\item $\mathrm{/preclear} = 0$: la rete si trova nello stato $S_0$ (indipendentemente dallo stato di $s$ e $r$);
 	\item $\mathrm{/preset} = \mathrm{/preclear} = 0$: abbiamo, come nel caso già visto dei semplici ingressi Set e Reset, che questo stato non è permesso, e quindi non è interessante conoscere il funzionamento della rete in tale stato.
 \end{itemize}
 
 Abbiamo quindi che per inizializzare un latch SR a 1 si porta /preset a /reset, e /preclear al Vcc.
 Viceversa, per inizializzare il latch a 0 si porta /preset al Vcc e /preclear a /reset.
 
-Vogliamo quindi modificare la sintesi del latch SR: conviene unirlo ad una rete combinatoria, che ha per ingresso S, R, /preset e /preclear, e in uscita $z_r$ e $z_s$ (che andranno in ingresso al latch vero e proprio).
+Vogliamo quindi modificare la sintesi del latch SR: conviene unirlo ad una rete combinatoria, che ha per ingresso S, R, /preset e /preclear, e in uscita $z_s$ e $z_r$ (che andranno in ingresso al latch vero e proprio).
+L'obiettivo di questa rete è di impostare i corrispondenti comandi di SET e RESET se uno fra /preset e /preclear è attivo basso, o di restituire S e R così come sono in caso entrambi siano alti. 
 
-Abbiamo, dalla sintesi con le mappe di Karnaugh, posto $X_1X_0 \leftarrow \mathrm{/preset}\mathrm{/preclear}$ e $X_3X_2 \leftarrow SR$:
+Abbiamo, dalla sintesi con le mappe di Karnaugh, riportando i valori in coppie $(z_s, z_r)$:
 
 \begin{center}
-	\begin{karnaugh-map}
-			\manualterms{--, 10, 01, 00, --, 10, 01, 01, --, 10, 01, 10, --, 10, 01, 10}
+	\begin{karnaugh-map}[4][4][1][/preclear][/preset][R][S]
+		\manualterms{--, 10, 01, 00, --, 10, 01, 01, --, 10, 01, 10, --, 10, 01, 10}
 	\end{karnaugh-map}
 \end{center}
 
-Da cui si ricava la sintesi:
+Si visualizzano i sottocubi nelle mappe presi separatamente $z_s$ e $z_r$:
+\begin{itemize}
+	\item $z_s$:
+\begin{center}
+\noindent
+\begin{minipage}{0.3\textwidth}
+	\begin{karnaugh-map}[4][4][1][/preclear][/preset][R][S]
+		\manualterms{-, 1, 0, 0, -, 1, 0, 0, -, 1, 0, 1, -, 1, 0, 1}
+		\implicant{0}{9}
+		\implicant{13}{11}
+	\end{karnaugh-map}
+\end{minipage}%
+\hspace{3cm}
+\begin{minipage}{0.3\textwidth}
+	\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+		\begin{tabular} { c || c | c | c | c}
+			& S & R & /preset & /preclear \\ 
+			\hline 
+			\rowcolor{red!20!white} A & - & - & 0 & - \\
+			\rowcolor{green!20!white} B & 1 & - & - & 1 \\
+		\end{tabular}
+	\end{table}
+\end{minipage}
+\end{center}
+\item $s_r$:
+\begin{center}
+\noindent
+\begin{minipage}{0.3\textwidth}
+	\begin{karnaugh-map}[4][4][1][/preclear][/preset][R][S]
+		\manualterms{-, 0, 1, 0, -, 0, 1, 1, -, 0, 1, 0, -, 0, 1, 1}
+		\implicantedge{0}{8}{2}{10}
+		\implicant{7}{14}
+	\end{karnaugh-map}
+\end{minipage}%
+\hspace{3cm}
+\begin{minipage}{0.3\textwidth}
+	\begin{table}[H]
+		\center \rowcolors{2}{white}{black!10}
+		\begin{tabular} { c || c | c | c | c}
+			& S & R & /preset & /preclear \\ 
+			\hline 
+			\rowcolor{red!20!white} A & - & - & - & 0 \\
+			\rowcolor{green!20!white} B & - & 1 & 1 & - \\
+		\end{tabular}
+	\end{table}
+\end{minipage}
+\end{center}
+\end{itemize}
+
+
+Da cui si ricavano le due sintesi di $z_s$ e $z_r$:
 \[
 	\begin{cases}
 		z_s = \overline{\mathrm{/preset}} + (\mathrm{/preclear} \cdot s) \\ 
@@ -347,30 +425,65 @@ Da cui si ricava la sintesi:
 	\end{cases}
 \]
 
-A questo punto, visto che il latch SR è realizzato a porte NOR, possiamo semplificare gli OR e i NOR in cascata: se assumiamo una NOR come una OR in serie ad una NOT, si ha che due OR equivalgono a una singola OR, ergo si possono mandare le uscite delle reti combinatorie appena sintetizzate direttamente ai NOR del latch SR, rimuovendo leOR che avremmo normalmento introdotto in una sintesi SP. 
+A questo punto, visto che il latch SR è realizzato a porte NOR, possiamo semplificare gli OR e i NOR in cascata: se assumiamo una NOR come una OR in serie ad una NOT, si ha che due OR equivalgono a una singola OR, ergo si possono mandare le uscite delle reti combinatorie appena sintetizzate direttamente ai NOR del latch SR, rimuovendo le OR che avremmo normalmento introdotto in una sintesi SP. 
+Questo processo viene a volte detto \textit{compenetrazione}.
 
 \subsection{Tabelle e grafi di flusso}
-Le RSA (Reti Sequenziali Asincrone) si descrivono usando \textbf{tabelle di flusso} e \textbf{grafi di flusso}.
+Le reti sequenziali, pi+ spesso che con la tabella di applicazione, si descrivono usando \textbf{tabelle di flusso} e \textbf{grafi di flusso}.
+
+\subsubsection{Tabelle di flusso}
 Una tabella di flusso è una tabella che descrive come si evolvono lo stato interno e l'uscita al variare degli stati di ingresso.
-Ad esempio, per un latch SR:
+Ad esempio, per un latch SR, ignorando /preclear e /preset:
 
 \begin{table}[h!]
 	\center 
-	\begin{tabular} { c | c | c | c | c || c }
+	\begin{tabular} { c | c  c  c  c | c }
 		& 00 & 01 & 11 & 10 & q \\ 
 		\hline 
-		$s_0$ & $s_0$ & $s_0$ & - & $s_1$ & 0 \\ 
-		$s_1$ & $s_1$ & $s_0$ & - & $s_1$ & 1\\
+		$S_0$ & \circled{$S_0$} & \circled{$S_0$} & - & $s_1$ & 0 \\ 
+		$S_1$ & \circled{$S_1$} & $s_0$ & - & \circled{$S_1$} & 1\\
 	\end{tabular}
 \end{table}
 
-Si ha che nella tabella, le righe rappresentano gli stati e le colonne i possibili comandi in entrata: all'intersezione fra uno stato e un comando si ha lo stato successivo.
-Inoltre, l'ultima colonna indica il valore effettivo delle uscite in ogni stato (qui si è riportato solo $q$).
+Si ha che nella tabella, le righe rappresentano gli \textbf{stati interni presenti} (SIP) e le colonne i possibili ingressi in entrata: all'intersezione fra uno stato e un ingresso si ha lo \textbf{stato interno successivo} (SIS).
+Si indicano con la barra ($-$) gli stati non definiti (in questo caso \textit{non permessi}).
+Inoltre, l'ultima colonna indica il valore effettivo delle uscite in ogni stato (qui si è riportato solo $q$, e non $q_N$).
+Gli stati interni successivi cerchiati sono quelli che restano invariati dagli stati interni presenti precedenti: cioè, le coppie di stati interni presenti e ingressi che individuano uno stato interno successivo cerchiato sono coppie \textbf{stabili}.
 
-Un formalismo del tutto identico è quello del grafo di flusso: si prendono gli stati come nodi, e si disegnano archi (diretti) etichettati con gli stati di ingresso. \TODO %disegni grafo 
+\subsubsection{Grafi di flusso}
+Un formalismo del tutto identico è quello del grafo di flusso: si prendono gli stati come nodi, e si disegnano archi (orientati) etichettati con gli stati di ingresso.
+Gli archi uscenti da un nodo simboleggiano quindi i possibili ingressi di quello stato, e entrano nei nodi che rappresentano gli stati interni successivi.
+Ad esempio, il grafo corrispondente alla tabella di flusso precedente è:
+\begin{center}
+	\begin{circuitikz}
+		\node[draw, circle] (1) at (0, 0) {$S_0 / 0$};
+		\node[draw, circle] (2) at (4, 0) {$S_1 / 1$};
+		
+		\draw[->] (1) to [out=45, in=135, looseness=1] (2);
+		\node at (2,1.5) {sr = 10};
+
+		\draw[->] (2) to [out=225, in=-45, looseness=1] (1);
+		\node at (2,-1.5) {sr = 01};
+		
+		\draw[->] (1) to [out=70, in=110, looseness=5] (1);
+		\node at (0, 1.5) {sr = 00};
+		\draw[->] (2) to [out=70, in=110, looseness=5] (2);
+		\node at (4, 1.5) {sr = 00};
+	
+		\draw[->] (1) -- (0, -1.2); 
+		\node at (0, -1.5) {sr = 11};
+		\draw[->] (2) -- (4, -1.2); 
+		\node at (4, -1.5) {sr = 11};
+	\end{circuitikz}
+\end{center}
+
+Notiamo come ad ogni nodo si può associare, separato dalla barra ($/$), l'uscita corrispondente a un dato stato interno presente.
+Inoltre, gli stati non definiti vengono indicati con frecce non dirette verso alcun nodo.
+
+\par\smallskip 
 
 Questi strumenti sono utili per la descrizione e la verifica (in questo caso, sotto \textbf{ispezione}, \textbf{statica}) delle reti logiche.
-Nel caso di reti sequenziali, la verifica \textbf{dinamica} si fa attraverso un \textbf{diagramma di temporizzazione}: 
+Nel caso di reti sequenziali, poi, la verifica \textbf{dinamica} si fa attraverso un \textbf{diagramma di temporizzazione}, cioè un grafico temporale del valore logico di ogni variabile di interesse, creato seguendo i passaggi:
 \begin{enumerate}
 	\item Si decide uno stato iniziale;
 	\item Si attribuiscono valori agli ingressi nel tempo;
