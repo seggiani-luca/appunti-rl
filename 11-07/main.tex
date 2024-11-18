@@ -237,10 +237,11 @@ Solitamente l'evento di sincronia delle reti sequenziali sincronizzate è il \te
 Un registro a $W$ bit è una collezione di $W$ D flip-flop positive edge-triggered, che hanno:
 \begin{itemize}
 	\item $W$ ingressi $d_i$ e $W$ uscite $q_i$ separate (in verità ricordiamo che troviamo sempre $q$ e $\overline{q}$ negata, noi riporteremo solo la prima per semplicità);
-	\item Un ingresso $p$ comune.
+	\item Un ingresso $p$ in parallelo a tutti gli ingressi $p_i$ dei singoli D flip-flop.
 \end{itemize}
 
-Si ha che $p$ funge da \textbf{segnale di sincronizzazione}.
+Si ha che $p$ funge da \textbf{segnale di sincronizzazione} (effettivamente il nostro \textit{clock}).
+Consideriamo quindi le variabili di entrata e di uscita di un registro come due singole variabili a più bit, $d_{W-1}\_d_0$ e $q_{W-1}\_q_0$.
 
 \subsubsection{Pilotaggio di registri}
 Per il corretto pilotaggio di un registro gli ingressi $d_i$ devono essere stabili intorno al fronte di salita del clock, per un tempo $T_{setup}$ prima e $T_{hold}$ dopo il fronte stesso.
@@ -266,16 +267,36 @@ Non potrò quindi scegliere periodi $T$ del clock piccoli a piacere: dovrò lasc
 
 Definiamo, nello specifico, i ritardi:
 \begin{itemize}
-	\item $T_{in\_to\_reg}$: il tempo di attraversamento della catena di sole reti combinatorie che da uno degli ingressi della rete all'ingresso di un registro;
-	\item $T_{reg\_to\_reg}$: il tempo di attravarsamento fra l'uscita e l'ingresso di un registro;
-	\item $T_{in\_to\_out}$: il tempo di attraversamento fra un ingresso e un uscita dell'intera rete;
-	\item $T_{reg\_to\_out}$: il tempo di attraversamento fra l'uscita di un registro e un uscita della rete.
+	\item $T_{in\_to\_reg}$: il tempo di attraversamento massimo della catena di sole reti combinatorie che da uno degli ingressi della rete all'ingresso di un registro;
+	\item $T_{reg\_to\_reg}$: il tempo di attravarsamento massimo fra l'uscita e l'ingresso di un registro;
+	\item $T_{in\_to\_out}$: il tempo di attraversamento massimo fra un ingresso e un uscita dell'intera rete;
+	\item $T_{reg\_to\_out}$: il tempo di attraversamento massimo fra l'uscita di un registro e un uscita della rete.
 \end{itemize}
 
 Dobbiamo introdurre poi i tempi $T_{a\_monte}$ e $T_{a\_valle}$, cioè i tempi necessari all'utente della rete per, rispettivamente, \textbf{modificare} gli ingressi e \textbf{leggere} le uscite.
 Questi formano due ulteriori vincoli di pilotaggio in ingresso e in uscita.
 
-Possiamo quindi porre le diseguaglianze:
+Queste variabili di temporizzazione daranno vita ad un sistema di 4 diseguaglianze. Vediamole nel dettaglio:
+\begin{itemize}
+	\item $T \geq T_{hold} + T_{a\_monte} + T_{in\_to\_reg} + T_{setup}$ \\ 
+		Questa diseguaglianza assicura che un registro abbia tempo $T_{hold}$ di immagazinare il valore dello scorso ciclo, l'utente esterno abbia tempo $T_{a\_monte}$ di modificare l'ingresso della rete, e che questo ingresso abbia tempo di arrivare ai registri $T_{in\_to\_reg}$ prima del tempo di setup $T_{setup}$ degli stessi, che sappiamo essere necessario perchè al clock seguente i registri memorizzino effettivamente il valore (dopo $T_{hold}$, e lo replichino dopo $T_{prop}$);
+	\item $T \geq T_{prop} + T_{reg\_to\_reg} + T_{setup}$ \\ 
+		Questa diseguaglianza assicura che il valore generato dai registri possa propagarsi dopo $T_{prop}$, arrivare ai registri stessi in tempo $T_{reg\_to\_reg}$ per il $T_{setup}$ necessario perche lo memorizzino.
+		In sostanza, è come la precedente ma riferita alle uscite dei registri anziché dell'utente;
+	\item $T \geq T_{hold} + T_{a\_monte} + T_{in\_to\_out} + T_{a\_valle}$ \\
+		Questa diseguaglianza assicura che la rete abbia tempo di aggiornarsi dopo un ingresso dell'utente ($T_{a\_monte}$), e restituire il risultato per un tempo che basti all'utente per leggere l'uscita ($T_{a\_valle}$).
+		Nello specifico, sappiamo che l'utente non proverà a modificare gli ingressi della rete prima del $T_{hold}$ necessario ad aggiornare i registri al positive edge del clock, e quindi impiegherà un tempo $T_{a\_monte}$ per farlo.
+		A questo punto, il segnale di uscità dovra viaggiare almeno dall'ingresso all'uscita, quindi si dovrà aspettare un tempo $T_{in\_to\_out}$, e infine resterà il tempo $T_{a\_valle}$ perchè l'utente abbia modo di effettuare la lettura.
+		Notiamo che questa legge si rende necessaria in quanto un aggiornamento degli ingressi può comportare un aggiornamento delle uscite \textit{prima} che i registri ne rispondano.
+		In altre parole, reti di questo tipo non sono automaticamente \textbf{trasparenti};
+	\item $T \geq T_{prop} + T_{reg\_to\_out} + T_{a\_valle}$ \\ 
+		Quest'ultima diseguaglianza assicura che la rete abbia tempo di aggiornare le sue uscite, e quindi farle leggere all'utente ($T_{a\_valle}$), a memorizzazione effettuata dei registri.
+		Nello specifico, i registri otterrano il valore al ciclo corrente nel tempo compreso fra $T_{setup}$ e $T_{hold}$ centrato sul positive edge dello scorso clock, e quindi si adegueranno dopo un tempo $T_{prop}$ rispetto al positive edge stesso.
+		Di qui in poi dovremo aspettare un tempo $T_{reg\_to\_out}$ perchè questo valore attraversi la rete fino alle uscite, e infine il tempo $T_{a\_valle}$ perchè l'utente abbia modo di effettuare la lettura.
+		Questa legge si rende necessaria, al contrario della precedente, sia per reti \textit{trasparenti} che per reti \textbf{non trasparenti}, e anzi vedremo che reti non trasparenti saranno proprio i registri a fornire le uscite. 
+\end{itemize}
+
+Possiamo quindi porre il sistema completo: 
 \[
 	\begin{cases}
 		T \geq T_{hold} + T_{a\_monte} + T_{in\_to\_reg} + T_{setup} \\ 
@@ -285,22 +306,22 @@ Possiamo quindi porre le diseguaglianze:
 	\end{cases}
 \]
 
-che riguardano rispettivamente i tempi di percorrenza ingresso-registro, registro-registro, ingresso-uscita e registro-uscita.
+Dove, riassumendo, le prime due condizioni garantiscono che lo stato delle variabili di ingresso resti stabile negli intervalli $(-T_{setup}, T_{hold})$ centrati sui positive edge di ogni clock; la prima e la terza tengono conto del mondo esterno \textit{a monte}, quindi in fase di scrittura; la seconda e la quarta tengono conto del mondo esterno \textit{a valle}, quindi in fase di lettura. 
 
 In verità, avremo altri due ritardi di cui tenere conto:
 \begin{itemize}
 	\item $T_{sfas}$: il \textbf{massimo sfasamento} fra due clock.
 		Visto che questo viene portato a elementi diversi, a qualche registro arrivera prima e a qualche registro arrivera dopo;
-	\item $T_{reg}$: se un registro è formato da $W$ > 1 bit, questi non cambieranno tutti contemporaneamente: dovremmo aggiungere $T_{prop} + T_{reg} = T'_{prop}$. A questo punto possiamo considerare solo $T'_{prop}$.
+	\item $T_{reg}$: se un registro è formato da $W$ > 1 bit, questi non cambieranno tutti contemporaneamente: dovremmo aggiungere $T_{prop} + T_{reg} = T'_{prop}$. A questo punto, però, possiamo considerare solo $T_{prop} \leftarrow T'_{prop}$ e ignorare $T_{reg}$.
 \end{itemize}
 
-\subsubsection{Modello di Moore e di Mealy ritardato}
+\subsubsection{Anticipazioni sui modelli di Moore e di Mealy ritardato}
 Potremmo voler determinare qual'è la più vincolante fra le diseguaglianze riportate prima.
 Questa, chiaramente, è quella che copre il percorso più lungo, cioè la terza.
 Se decidiamo di vietare il percorso che copre, cioè quello diretto fra ingressi e uscite, otteniamo il cosiddetto \textbf{modello di Moore}: cioè, un modello di RSS dove non si ammettono reti combinatorie che collegano gli ingressi direttamente alle uscite.
 
 Un'altro vincolo che potremmo voler rilassare è il quarto, nel cosiddetto \textbf{modello di Mealy ritardato}.
-Questo equivale a prelevare le uscite direttamente dalle uscite dei registri, cioè a eliminare il tempo $T_{reg_to_out}$.
+Questo equivale a prelevare le uscite direttamente dalle uscite dei registri, cioè a eliminare il tempo $T_{reg\_to\_out}$.
 
 \subsection{Contatori}
 Un contatore è una RSS il cui stato di uscita può essere visto come un \textbf{numero naturale} ad $n$ cifre in base $\beta$.
