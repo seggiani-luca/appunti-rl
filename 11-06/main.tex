@@ -282,7 +282,59 @@ Di una EPROM ci interessano:
 \subsection{Il linguaggio Verilog}
 Per descrivere le reti logiche fa comodo adottare una \textbf{notazione testuale}.
 Finora abbiamo usato disegni o espressioni algebriche: adesso introduciamo un \textbf{linguaggio di descrizione hardware}, il \textbf{Verilog}.
-Questo linguaggio è più \textbf{compatto}, e può essere \textbf{interpretato} automaticamente da una macchina, permettendoci di effettuare prove (in modo simile a come avevamo introdotto coi diagrammi di temporizzazione).
+Questo linguaggio è più \textbf{compatto}, e può essere \textbf{interpretato} automaticamente da una macchina, permettendoci di effettuare prove (in modo simile a come avevamo introdotto coi diagrammi di temporizzazione, o addirittura con programmi come \lstinline|gtkwave| di realizzare veri e propri diagrammi di temporizzazione).
 
+% cosa voglio sapere del verilog? 
+% le basi (cos'è un modulo, cos'è un testbench, ecc...)
+% BENE gli assegnamenti continui, procedurali, bloccanti, non bloccanti, ecc...
+
+Non si riporteranno appunti riguardanti operatori e sintassi particolarmente specifiche del Verilog, in quanto esistono testi sicuramente più utili e approfonditi.
+Parleremo invece della struttura di base di una sintesi in Verilog, con enfasi sugli \textbf{assegnamenti} disponibili.
+
+\subsubsection{Struttura di una sintesi Verilog}
+Il linguaggio Verilog descrive \textbf{moduli}.
+Un modulo è formato da un insieme di \textbf{input} e \textbf{output}, e da una \textbf{struttura interna} che descrive la legge di evoluzione degli output in funzione degli input.
+Ad esempio, il seguente frammento implementa un contatore in base 2 (che vedremo fra poco):
+\begin{lstlisting}[language=verilog, style=codestyle]	
+module b2_counter(eu, q, ei, clock, reset_);
+  input clock, reset_;
+  input ei;
+  output eu, q;
+  reg OUTR;
+  assign q = OUTR;	
+  wire a;
+  assign {a, eu} = ({q, ei} == 'B00) ? 'B00:
+                   ({q, ei} == 'B10) ? 'B10:
+                   ({q, ei} == 'B01) ? 'B10:
+                 /*({q, ei} == 'B11)*/ 'B01;
+  always @(reset_ == 0) #1 OUTR <= 0;
+  always @(posedge clock) if (reset_==1) #2 OUTR <= a;
+endmodule
+\end{lstlisting}
+
+Si parte con la dichiarazione di un modulo \lstinline|b2_counter|, dove la sintassi "ad argomenti" indica le variabili che potremo usare come input o come output.
+Definiamo poi input e output esplicitamente, notando che si può usare (e anzi è consigliata) una separazione logica delle variabili su più righe.
+La parola chhiave \lstinline|reg| definisce poi un registro.
+
+\subsubsection{Assegnamenti}
+Una parte a noi particolarmente interessante del linguaggio è rappresentata dagli \textbf{assegnamenti}.
+Abbiamo fatto 3 assegnamenti nelle ultime 3 istruzioni dell'esempio precedente, prima per implementare un contatore (con \lstinline|assign|), e in seguito specifcare il comportamento al reset e l'aggiornamento del registro (con \lstinline|always|).
+Vediamo nel dettaglio tutte gli assegnamenti possibili e le loro differenze:
+\begin{itemize}
+	\item \textbf{Assegnamenti procedurali:} vengono dichiarati con \lstinline|initial| (per riferirsi a stati iniziali), o con \lstinline|always| (per riferirsi a stati qualsiasi durante la simulazione).
+	In blocchi \lstinline|always|, si può specificare una condizione con il carattere \lstinline|@|, fra cui ad esempio il \lstinline|posedge| che ci permette di ricavare il positive edge di un segnale (il clock nell'esempio precedente).
+	All'interno di assegnamenti procedurali abbiamo a disposizione più operatori:
+	\begin{itemize}
+		\item \textbf{Assegnamenti bloccanti} (=): vengono eseguiti strettamente nell'ordine in cui vengono incontrati (cosa a noi solitamente indesiderata, in quanto vogliamo modellizzare le inaccuratezze delle temporizzazioni, che non sono mai simultanee e non hanno, se non specificato, un ordine preciso);
+		\item \textbf{Assegnamenti non bloccanti} (<=): vengono eseguiti in \textbf{parallelo}, cioè il valore non varia fino alla fine del blocco di assegnamento procedurale, e viene aggiornato con simultaneità al suo termine.
+	\end{itemize}
+\item \textbf{Assegnamenti continui:} legano \textbf{strutturalmente} una variabile ad un altra variabile, o a un costrutto \lstinline|case|, o ancora ad una sintassi ricavata dagli operatori ternari come quella nell'esempio precedente. Il valore legato viene aggiornato ad ogni aggiornamento del valore a cui è legato: vanno effettivamente intesi come fisicamente connessi.
+\end{itemize}
+
+Notiamo come negli assegnamenti in Verilog vale un concetto simile a quello di \lstinline|lvalue| e \lstinline|rvalue| nel C: si assegna sempre a \textit{sinistra}, sulla \textbf{LHS} (LeftHand Side) un valore a \textit{destra}, sulla \textbf{RHS} (RightHand Side).
+Per fare un esempio, notiamo che non si può usare un \lstinline|wire| come LHS (infatti con un \lstinline|wire| ci aspetteremmo di usare una notazione strutturale, come quella data dagli assegnamenti continui).
+Di contro, non si può avere aggiornamento continuo di registri (anche perché non avrebbe particolare significato logico).
+
+Infine, notiamo che si può inserire, negli assegnamenti procedurali, un \textbf{ritardo}, indicato con il simbolo \lstinline|#| e misurato solitamente in secondi.
 
 \end{document}
