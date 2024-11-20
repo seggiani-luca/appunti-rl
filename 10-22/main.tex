@@ -529,10 +529,24 @@ Abbiamo che il full adder è una rete a 2 livelli di logica.
 
 \subsubsection{Incrementatore}
 Abbiamo che in assembler potevamo distinguere fra le operazioni \lstinline|ADD $1, %al| e \lstinline|INC %al|.
-Possiamo fare l'assunzione che almeno uno degli ingressi di un full adder sia sempre zero per realizzare un \textbf{half adder}: ad esempio, prendiamo $y_i = 0$. 
+Possiamo fare l'assunzione che almeno uno degli ingressi di un full adder sia sempre zero per realizzare un \textbf{half adder} o \textit{incrementatore}: ad esempio, prendiamo $y_i = 0$. 
 In questo caso, $c_{out}$ potrà essere prodotto con un solo livello di logica, cioè attraverso l'AND fra $x_i$ e $c_{in}$.
 Allo stesso modo, potremo ridurre $s_i$ ad un solo XOR fra $x_i$ e $c_{in}$.
+Riportiamo una sintesi a tabella di verità e a porte logiche in Verilog:
 
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/b2_halfadder.v}
+
+Analogamente, potremmo pensare di sintetizzare \textbf{incrementatori} (stavolta nel vero senso della parola, e non \textit{half adder}, con cui corrispondevano in base 2 (detto questo, si sono comunque chiamati impropriamente i moduli Verilog \lstinline|b3_halfadder| e \lstinline|b10_halfadder| per congruenza con le altre definizioni)) in base 3: 
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/b3_halfadder.v}
+
+e in base 2: 
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/b10_halfadder.v}
+
+Le sintesi SP (con anche gate XOR aggiunti a discrezione) si ricavano direttamente dagli statement \textbf{assignment} delle descrizioni riportate.
+
+\subsubsection{Parallelizzazione della somma}
 Facciamo delle considerazioni sulle prestazioni: se in un full adder ogni input arriva in tempo $t$, dopo 2 livelli di logica il $c_{in}$ del prossimo full adder arriverà a $t + 2$.
 Quindi il risultato di quel full adder uscirà a $t + 4$ e così via.
 Si ha che per $n$ full adder concatenati, ergo $n$ cifre, l'$n-1$-esima cifra viene computata in tempo $t + 2n$.

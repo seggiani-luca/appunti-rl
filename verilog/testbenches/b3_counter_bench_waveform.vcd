@@ -1,0 +1,329 @@
+$date
+	Tue Nov 19 22:30:55 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench $end
+$var wire 2 ! t_q1_q0 [1:0] $end
+$var wire 1 " t_eu $end
+$var reg 1 # t_clock $end
+$var reg 1 $ t_ei $end
+$var reg 1 % t_reset_ $end
+$scope module count $end
+$var wire 1 # clock $end
+$var wire 1 $ ei $end
+$var wire 2 & q1_q0 [1:0] $end
+$var wire 1 % reset_ $end
+$var wire 1 " eu $end
+$var wire 2 ' a1_a0 [1:0] $end
+$var reg 2 ( OUTR [1:0] $end
+$scope module inc $end
+$var wire 1 $ cin $end
+$var wire 1 " cout $end
+$var wire 2 ) x1_x0 [1:0] $end
+$var wire 1 * x1 $end
+$var wire 1 + x0 $end
+$var wire 2 , s1_s0 [1:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+bx ,
+x+
+x*
+bx )
+bx (
+bx '
+bx &
+0%
+0$
+0#
+0"
+bx !
+$end
+#1
+b0 '
+b0 ,
+0*
+0+
+b0 !
+b0 &
+b0 (
+b0 )
+#5
+1#
+#10
+b1 '
+b1 ,
+0#
+1$
+1%
+#15
+1#
+#17
+b10 '
+b10 ,
+1+
+b1 !
+b1 &
+b1 (
+b1 )
+#20
+0#
+#25
+1#
+#27
+b0 '
+b0 ,
+1"
+1*
+0+
+b10 !
+b10 &
+b10 (
+b10 )
+#30
+0#
+#35
+1#
+#37
+b1 '
+b1 ,
+0"
+0*
+b0 !
+b0 &
+b0 (
+b0 )
+#40
+0#
+#45
+1#
+#47
+b10 '
+b10 ,
+1+
+b1 !
+b1 &
+b1 (
+b1 )
+#50
+0#
+#55
+1#
+#57
+b0 '
+b0 ,
+1"
+1*
+0+
+b10 !
+b10 &
+b10 (
+b10 )
+#60
+0#
+#65
+1#
+#67
+b1 '
+b1 ,
+0"
+0*
+b0 !
+b0 &
+b0 (
+b0 )
+#70
+0#
+#75
+1#
+#77
+b10 '
+b10 ,
+1+
+b1 !
+b1 &
+b1 (
+b1 )
+#80
+0#
+#85
+1#
+#87
+b0 '
+b0 ,
+1"
+1*
+0+
+b10 !
+b10 &
+b10 (
+b10 )
+#90
+0#
+#95
+1#
+#97
+b1 '
+b1 ,
+0"
+0*
+b0 !
+b0 &
+b0 (
+b0 )
+#100
+0#
+#105
+1#
+#107
+b10 '
+b10 ,
+1+
+b1 !
+b1 &
+b1 (
+b1 )
+#110
+0#
+#115
+1#
+#117
+b0 '
+b0 ,
+1"
+1*
+0+
+b10 !
+b10 &
+b10 (
+b10 )
+#120
+0#
+#125
+1#
+#127
+b1 '
+b1 ,
+0"
+0*
+b0 !
+b0 &
+b0 (
+b0 )
+#130
+0#
+#135
+1#
+#137
+b10 '
+b10 ,
+1+
+b1 !
+b1 &
+b1 (
+b1 )
+#140
+0#
+#145
+1#
+#147
+b0 '
+b0 ,
+1"
+1*
+0+
+b10 !
+b10 &
+b10 (
+b10 )
+#150
+0#
+#155
+1#
+#157
+b1 '
+b1 ,
+0"
+0*
+b0 !
+b0 &
+b0 (
+b0 )
+#160
+0#
+#165
+1#
+#167
+b10 '
+b10 ,
+1+
+b1 !
+b1 &
+b1 (
+b1 )
+#170
+0#
+#175
+1#
+#177
+b0 '
+b0 ,
+1"
+1*
+0+
+b10 !
+b10 &
+b10 (
+b10 )
+#180
+0#
+#185
+1#
+#187
+b1 '
+b1 ,
+0"
+0*
+b0 !
+b0 &
+b0 (
+b0 )
+#190
+0#
+#195
+1#
+#197
+b10 '
+b10 ,
+1+
+b1 !
+b1 &
+b1 (
+b1 )
+#200
+0#
+#205
+1#
+#207
+b0 '
+b0 ,
+1"
+1*
+0+
+b10 !
+b10 &
+b10 (
+b10 )
+#210
+0#

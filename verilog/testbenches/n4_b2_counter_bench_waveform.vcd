@@ -1,0 +1,490 @@
+$date
+	Wed Nov 20 01:21:17 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench $end
+$var wire 4 ! t_q3_q0 [3:0] $end
+$var wire 1 " t_eu $end
+$var reg 1 # t_clock $end
+$var reg 1 $ t_ei $end
+$var reg 1 % t_reset_ $end
+$scope module count $end
+$var wire 1 # m_clock $end
+$var wire 1 $ m_ei $end
+$var wire 1 % m_reset_ $end
+$var wire 4 & q3_q0 [3:0] $end
+$var wire 4 ' eu3_eu0 [3:0] $end
+$var wire 1 " eu $end
+$scope module count0 $end
+$var wire 1 # clock $end
+$var wire 1 $ ei $end
+$var wire 1 ( q $end
+$var wire 1 % reset_ $end
+$var wire 1 ) eu $end
+$var wire 1 * a $end
+$var reg 1 ( OUTR $end
+$scope module inc $end
+$var wire 1 $ cin $end
+$var wire 1 ) cout $end
+$var wire 1 * s $end
+$var wire 1 ( x $end
+$upscope $end
+$upscope $end
+$scope module count1 $end
+$var wire 1 # clock $end
+$var wire 1 + ei $end
+$var wire 1 , q $end
+$var wire 1 % reset_ $end
+$var wire 1 - eu $end
+$var wire 1 . a $end
+$var reg 1 , OUTR $end
+$scope module inc $end
+$var wire 1 + cin $end
+$var wire 1 - cout $end
+$var wire 1 . s $end
+$var wire 1 , x $end
+$upscope $end
+$upscope $end
+$scope module count2 $end
+$var wire 1 # clock $end
+$var wire 1 / ei $end
+$var wire 1 0 q $end
+$var wire 1 % reset_ $end
+$var wire 1 1 eu $end
+$var wire 1 2 a $end
+$var reg 1 0 OUTR $end
+$scope module inc $end
+$var wire 1 / cin $end
+$var wire 1 1 cout $end
+$var wire 1 2 s $end
+$var wire 1 0 x $end
+$upscope $end
+$upscope $end
+$scope module count3 $end
+$var wire 1 # clock $end
+$var wire 1 3 ei $end
+$var wire 1 4 q $end
+$var wire 1 % reset_ $end
+$var wire 1 5 eu $end
+$var wire 1 6 a $end
+$var reg 1 4 OUTR $end
+$scope module inc $end
+$var wire 1 3 cin $end
+$var wire 1 5 cout $end
+$var wire 1 6 s $end
+$var wire 1 4 x $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+x6
+05
+x4
+03
+x2
+01
+x0
+0/
+x.
+0-
+x,
+0+
+x*
+0)
+x(
+b0 '
+bx &
+0%
+0$
+0#
+0"
+bx !
+$end
+#1
+0*
+0.
+02
+06
+0(
+0,
+00
+b0 !
+b0 &
+04
+#5
+1#
+#10
+1*
+0#
+1$
+1%
+#15
+1#
+#17
+1.
+1+
+0*
+b1 '
+1)
+b1 !
+b1 &
+1(
+#20
+0#
+#25
+1#
+#27
+02
+0+
+0/
+1*
+0)
+1.
+b0 '
+0-
+0(
+b10 !
+b10 &
+1,
+#30
+0#
+#35
+1#
+#37
+12
+1/
+0.
+1-
+1+
+0*
+b11 '
+1)
+b11 !
+b11 &
+1(
+#40
+0#
+#45
+1#
+#47
+06
+0+
+0/
+03
+1*
+0)
+0.
+0-
+12
+b0 '
+01
+0(
+0,
+b100 !
+b100 &
+10
+#50
+0#
+#55
+1#
+#57
+1.
+1+
+0*
+b1 '
+1)
+b101 !
+b101 &
+1(
+#60
+0#
+#65
+1#
+#67
+06
+03
+12
+01
+0+
+0/
+1*
+0)
+1.
+b0 '
+0-
+0(
+b110 !
+b110 &
+1,
+#70
+0#
+#75
+1#
+#77
+16
+13
+02
+11
+1/
+0.
+1-
+1+
+0*
+b111 '
+1)
+b111 !
+b111 &
+1(
+#80
+0#
+#85
+1#
+#87
+0+
+0/
+03
+0"
+1*
+0)
+0.
+0-
+02
+01
+16
+b0 '
+05
+0(
+0,
+00
+b1000 !
+b1000 &
+14
+#90
+0#
+#95
+1#
+#97
+1.
+1+
+0*
+b1 '
+1)
+b1001 !
+b1001 &
+1(
+#100
+0#
+#105
+1#
+#107
+02
+0+
+0/
+1*
+0)
+1.
+b0 '
+0-
+0(
+b1010 !
+b1010 &
+1,
+#110
+0#
+#115
+1#
+#117
+12
+1/
+0.
+1-
+1+
+0*
+b11 '
+1)
+b1011 !
+b1011 &
+1(
+#120
+0#
+#125
+1#
+#127
+0"
+16
+05
+0+
+0/
+03
+1*
+0)
+0.
+0-
+12
+b0 '
+01
+0(
+0,
+b1100 !
+b1100 &
+10
+#130
+0#
+#135
+1#
+#137
+1.
+1+
+0*
+b1 '
+1)
+b1101 !
+b1101 &
+1(
+#140
+0#
+#145
+1#
+#147
+0"
+16
+05
+03
+12
+01
+0+
+0/
+1*
+0)
+1.
+b0 '
+0-
+0(
+b1110 !
+b1110 &
+1,
+#150
+0#
+#155
+1#
+#157
+1"
+06
+15
+13
+02
+11
+1/
+0.
+1-
+1+
+0*
+b1111 '
+1)
+b1111 !
+b1111 &
+1(
+#160
+0#
+#165
+1#
+#167
+0+
+0/
+03
+0"
+1*
+0)
+0.
+0-
+02
+01
+06
+b0 '
+05
+0(
+0,
+00
+b0 !
+b0 &
+04
+#170
+0#
+#175
+1#
+#177
+1.
+1+
+0*
+b1 '
+1)
+b1 !
+b1 &
+1(
+#180
+0#
+#185
+1#
+#187
+02
+0+
+0/
+1*
+0)
+1.
+b0 '
+0-
+0(
+b10 !
+b10 &
+1,
+#190
+0#
+#195
+1#
+#197
+12
+1/
+0.
+1-
+1+
+0*
+b11 '
+1)
+b11 !
+b11 &
+1(
+#200
+0#
+#205
+1#
+#207
+06
+0+
+0/
+03
+1*
+0)
+0.
+0-
+12
+b0 '
+01
+0(
+0,
+b100 !
+b100 &
+10
+#210
+0#

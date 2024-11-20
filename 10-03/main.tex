@@ -418,7 +418,40 @@ Nell'istante di transizione non abbiamo la sicurezza che le singole transizioni 
 
 Questa considerazione è importante nel caso delle reti logiche asincrone, dove considerare le transizioni come contemporanee potrebbe portare alla comparsa di stati di uscita spuri, e nelle reti sequenziali, dove potrebbe portare ad evoluzioni imprevedibili del sistema.
 
+\subsection{Il linguaggio Verilog}
+Per descrivere le reti logiche fa comodo adottare una \textbf{notazione testuale}.
+Per reti semplici useremo disegni o espressioni algebriche: per reti complesse introduciamo un \textbf{linguaggio di descrizione hardware}, il \textbf{Verilog}.
+Questo linguaggio è più \textbf{compatto}, e può essere \textbf{interpretato} automaticamente da una macchina, permettendoci di effettuare prove (e realizzare \textbf{diagrammi di temporizzazione}).
+
+% cosa voglio sapere del verilog? 
+% le basi (cos'è un modulo, cos'è un testbench, ecc...)
+% BENE gli assegnamenti continui, procedurali, bloccanti, non bloccanti, ecc...
+
+Non si riporteranno appunti riguardanti operatori e sintassi particolarmente specifiche del Verilog, in quanto esistono testi sicuramente più utili e approfonditi: procederemo principalmente per esempi, esplicitando quando si rende necessario particolarità del linguaggio.
+
+\subsubsection{Struttura di una sintesi Verilog}
+Il linguaggio Verilog descrive \textbf{moduli}.
+Un modulo è formato da un insieme di \textbf{input} e \textbf{output}, e da una \textbf{struttura interna} che descrive la legge di evoluzione degli output in funzione degli input.
+Ad esempio, una rete basilare potrebbe essere:
+\begin{lstlisting}[language=verilog, style=codestyle]	
+module rete(x, z);
+	input x;
+	output z;
+	wire y;
+	assign y = x;
+	assign z = y;
+endmodule
+\end{lstlisting}
+
+Nell'esempio, si definisce un modulo \lstinline|rete|, formato da un input $x$ e un output $z$. 
+La realizzazione interna della rete è formata da un filo $y$ a cui sono connessi sia l'input che l'output.
+Il funzionamento della rete è quindi semplicemente quello di replicare il suo ingresso.
+
+In particolare, diciamo che la parola chiave \lstinline|assign| rapprenta un \textbf{assegnamento continuo}.
+Più avanti vedremo i diversi tipi di assegnamento e le differenze fra di loro.
+
 \subsection{Reti combinatorie}
+Il primo tipo di reti logiche che andiamo a studiare sono le \textbf{reti combinatorie}.
 Una rete combinatoria è caratterizzata da:
 \begin{itemize}
 	\item Un'insieme di $N$ variabili logiche di ingresso;

@@ -1,0 +1,214 @@
+$date
+	Tue Nov 19 19:52:35 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench $end
+$var wire 1 ! t_q $end
+$var wire 1 " t_eu $end
+$var reg 1 # t_clock $end
+$var reg 1 $ t_ei $end
+$var reg 1 % t_reset_ $end
+$scope module count $end
+$var wire 1 # clock $end
+$var wire 1 $ ei $end
+$var wire 1 ! q $end
+$var wire 1 % reset_ $end
+$var wire 1 " eu $end
+$var wire 1 & a $end
+$var reg 1 ! OUTR $end
+$scope module inc $end
+$var wire 1 $ cin $end
+$var wire 1 " cout $end
+$var wire 1 & s $end
+$var wire 1 ! x $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+x&
+0%
+0$
+0#
+0"
+x!
+$end
+#1
+0&
+0!
+#5
+1#
+#10
+1&
+0#
+1$
+1%
+#15
+1#
+#17
+0&
+1"
+1!
+#20
+0#
+#25
+1#
+#27
+1&
+0"
+0!
+#30
+0#
+#35
+1#
+#37
+0&
+1"
+1!
+#40
+0#
+#45
+1#
+#47
+1&
+0"
+0!
+#50
+0#
+#55
+1#
+#57
+0&
+1"
+1!
+#60
+0#
+#65
+1#
+#67
+1&
+0"
+0!
+#70
+0#
+#75
+1#
+#77
+0&
+1"
+1!
+#80
+0#
+#85
+1#
+#87
+1&
+0"
+0!
+#90
+0#
+#95
+1#
+#97
+0&
+1"
+1!
+#100
+0#
+#105
+1#
+#107
+1&
+0"
+0!
+#110
+0#
+#115
+1#
+#117
+0&
+1"
+1!
+#120
+0#
+#125
+1#
+#127
+1&
+0"
+0!
+#130
+0#
+#135
+1#
+#137
+0&
+1"
+1!
+#140
+0#
+#145
+1#
+#147
+1&
+0"
+0!
+#150
+0#
+#155
+1#
+#157
+0&
+1"
+1!
+#160
+0#
+#165
+1#
+#167
+1&
+0"
+0!
+#170
+0#
+#175
+1#
+#177
+0&
+1"
+1!
+#180
+0#
+#185
+1#
+#187
+1&
+0"
+0!
+#190
+0#
+#195
+1#
+#197
+0&
+1"
+1!
+#200
+0#
+#205
+1#
+#207
+1&
+0"
+0!
+#210
+0#
