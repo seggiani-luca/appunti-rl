@@ -2,19 +2,19 @@ module testbench();
 	reg t_clock, t_reset_;
 	reg t_ei;
 	wire t_eu;
-	wire[3:0] t_q03_q00;
-	wire[3:0] t_q13_q10;
-	wire[3:0] t_q23_q20;
-	wire[3:0] t_q33_q30;
+	wire[1:0] t_q01_q00;
+	wire[1:0] t_q11_q10;
+	wire[1:0] t_q21_q20;
+	wire[1:0] t_q31_q30;
 
-	n4_b10_counter count (
+	n4_b3_up_counter count (
 		.m_clock(t_clock), .m_reset_(t_reset_),
 		.m_ei(t_ei),
 		.eu(t_eu), 
-		.q03_q00(t_q03_q00),
-		.q13_q10(t_q13_q10),
-		.q23_q20(t_q23_q20),
-		.q33_q30(t_q33_q30)
+		.q01_q00(t_q01_q00),
+		.q11_q10(t_q11_q10),
+		.q21_q20(t_q21_q20),
+		.q31_q30(t_q31_q30)
 	);
 	
 	initial begin
@@ -22,7 +22,7 @@ module testbench();
 	end
 
 	initial begin
-		$dumpfile("n4_b10_counter_bench_waveform.vcd");
+		$dumpfile("n4_b3_up_counter_bench_waveform.vcd");
 		$dumpvars;	
 
 		t_clock = 0;
@@ -34,7 +34,7 @@ module testbench();
 		t_reset_ = 1;
 		t_ei = 1;
 
-		#150000;
+		#1000;
 
 		$finish;
 	end

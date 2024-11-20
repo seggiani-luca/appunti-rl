@@ -1,6 +1,6 @@
-// un contatore a una cifra in base 2 che prende @ei come enabler, e 
-// mette la sua uscita in @q, con eventuale riporto in @eu 
-module b2_counter(eu, q, ei, clock, reset_);
+// un contatore up a una cifra in base 2 che prende @ei come enabler
+// e mette la sua uscita in @q, con eventuale riporto in @eu 
+module b2_up_counter(eu, q, ei, clock, reset_);
   input clock, reset_;
   input ei;
   output eu, q;

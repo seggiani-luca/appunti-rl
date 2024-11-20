@@ -1,6 +1,6 @@
-// un contatore a una cifra in base 10 che prende @ei come enabler, e 
-// mette la sua uscita in @q3_q0, con eventuale riporto in @eu 
-module b10_counter(eu, q3_q0, ei, clock, reset_);
+// un contatore up a una cifra in base 10 che prende @ei come enabler
+// e mette la sua uscita in @q3_q0, con eventuale riporto in @eu 
+module b10_up_counter(eu, q3_q0, ei, clock, reset_);
   input clock, reset_;
   input ei;
   output eu;

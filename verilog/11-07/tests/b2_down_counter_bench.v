@@ -4,7 +4,7 @@ module testbench();
 	wire t_eu;
 	wire t_q;
 
-	b2_counter count (
+	b2_down_counter count (
 		.clock(t_clock), .reset_(t_reset_),
 		.ei(t_ei),
 		.eu(t_eu), .q(t_q)
@@ -15,7 +15,7 @@ module testbench();
 	end
 
 	initial begin
-		$dumpfile("b2_counter_bench_waveform.vcd");
+		$dumpfile("b2_down_counter_bench_waveform.vcd");
 		$dumpvars;	
 
 		t_clock = 0;
