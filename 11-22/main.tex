@@ -1,0 +1,354 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 22-11-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Microprogrammazione della parte di controllo}
+Le tecniche di microprogrammazione ci permettono di sintetizzare la parte di controllo di reti complesse.
+In particolare, associata una codifica ad ogni stato del registro STAR, e chiamata questa codifica per ogni STAR $\boldsymbol{\mu}$\textbf{-indirizzo} dello stato, possiamo creare una tabella:
+\begin{table}[H]
+	\center 
+	\begin{tabular} { c | c  c  c  c }
+		& \multicolumn{4}{c}{$\boldsymbol{\mu}$\bfseries -istruzione} \\ 
+		\hline
+		$\boldsymbol{\mu}$\bfseries-{indirizzo} & 
+		$\boldsymbol{\mu}$\bfseries-{codice} & 
+		$c_{eff}$ & 
+		$\boldsymbol{\mu}$\bfseries-{indirizzo T} & 
+		$\boldsymbol{\mu}$\bfseries-{indirizzo F} \\
+		\hline 
+		00 & 00 & 1 & 00 & 01 \\ 
+		01 & 11 & 0 & 10 & 01 \\ 
+		...
+	\end{tabular}
+\end{table}
+
+dove si associa ad ogni $\mu$-indirizzo, quindi ad ogni stato, una $\boldsymbol{\mu}$\textbf{-istruzione}: intendiamo una $\mu$-istruzione come un insieme di variabili di comando associate a quello stato (il $\boldsymbol{\mu}$\textbf{-codice}), una \textbf{variabile efficiente} $c_{eff}$ sulla base della quale si effettuano i $\mu$-salti, e due $\mu$-indirizzi, $T$ e $F$, che determinano il salto successivo sulla base del valore, rispettivamente vero o falso, della $c_{eff}$.
+
+A partire da una tabella del genere, possiamo sintetizzare la PC secondo due modalità:
+\begin{itemize}
+	\item \textbf{Modello basato sui} $\boldsymbol{\mu}$\textbf{-indirizzi:}
+		# mi sa non riesco ora
+	\item \textbf{Modello basato sulle} $\boldsymbol{\mu}$\textbf{-istruzioni:}
+\end{itemize}
+
+\subsubsection{Reintrodurre i salti a più vie}
+Nel caso di salti a più di due vie, si dovranno considerare più condizioni in cicli di clock differenti.
+# fai esempio
+Questo diventa poco efficiente quando i salti sono a un elevato numero di vie, in quanto per $n$ possibili $\mu$-salti si perdono $\sim n$ cicli di clock.
+
+Nella pratica, i processori sono spesso progettati per compiere salti a due vie, tranne che in due casi particolari:
+\begin{itemize}
+	\item All'\textbf{inizio} della fase di fetch, cioè quando si legge il \textbf{formato} dell'opcode, dove si dovrà saltare a un blocco $\mu$-codice diverso a seconda della posizione degli operandi # fai esempio assembler.
+		Si perderanno quindi $\sim f$ cicli per $f$ formati possibili delle istruzioni;
+	\item Alla \textbf{fine} della fase di fetch, cioè quando si determina il salto al blocco di $\mu$-codice che gestisce la \textbf{fase di esecuzione} dell'istruzione.
+		Si perderanno quindi $\sim i$ cicli per $i$ istruzioni possibili.
+\end{itemize}
+Una soluzione al problema dei salti a più vie e data quindi dal \textbf{Multiway Jump Register}.
+
+\subsubsection{Multiway Jump Register}
+L'MJR non è un gruppo punk americano ma un \textbf{registro operativo} destinato a contenere indirizzi di salto.
+Generiamo l'ingresso del MJR attraverso la parte operativa della sintesi, e lo utilizziamo nella parte di controllo.
+
+Per codificare la presenza del MJR, nella ROM della sintesi della parte di controllo dovremmo introdurre una nuova uscita, il $\boldsymbol{\mu}$\textbf{-tipo}.
+Il valore del $\mu$-tipo determina il tipo di salto che vorremo eseguire: $\mu$-tipo a 0 significherà salto standard a 2 vie, e $\mu$-tipo a 1 significherà salto basato sul MJR.
+
+# parla del b\_k di sovrascrittura del MJR
+
+\subsection{Sottoliste}
+Talvolta può convenire strutturare una descrizione di RSS con sottoliste simili a \textbf{sottoprogrammi}.
+Porzioni di $\mu$-programma diverse potranno quindi essere raggiunte da stati di partenza diversi, che riporteranno allo stato di partenza stesso al termine della loro esecuzione attraverso un processo simile a quello delle CALL e RET viste sull'assembly (# integra).
+Questo può essere implementato nella pratica, inserendo il $\mu$-indirizzo successivo all'esecuzione della sottolista nel MJR, cioè impostando $b_k$ a 0 per quello stato, e inserendo quindi il $\mu$-indirizzo dell'inizio della sottolista in STAR.
+A questo punto la rete di controllo "eseguirà" il $\mu$-codice ed effettuerà i $\mu$-salti specificati dalla sottolista fino al passo finale, che rimetterà MJR in STAR, e quindi riprenderà l'esecuzione dal $\mu$-indirizzo memorizzato prima della "chiamata" della sottolista.
+
+Due limitazioni di questo approccio sono che MJR diventa inutilizzabile durante l'esecuzione della sottolista, e sopratutto che un singolo MJR ci permette un solo livello di annidamento di sottoliste.
+Per avere più livelli avremo bisogno di una \textbf{pila di MJR}, che però non è trattata in questo corso.
+
+\subsection{Struttura del calcolatore}
+Siamo arrivati ora a a poter descrivere in Verilog un \textbf{sistema completo} di:
+\begin{itemize}
+	\item Processore;
+	\item Memoria;
+	\item Interfacce;
+	\item Dispositivi di I/O
+\end{itemize}
+collegati fra di loro attraverso una rete di interconnessione.
+
+All'interno del \textbf{sottosistema di ingresso/uscita} distinguiamo \textbf{interfacce} e \textbf{dispositivi}.
+Gli ultimi si occupano effettivamente di ottenere codifiche di dati dal mondo esterno, mentre le prime gestiscono i dispositivi in modo che questi possano colloquiare col processore.
+Le interfacce contengono un piccolo numero di \textbf{registri di interfaccia} su cui il processore può leggere o scrivere.
+
+La \textbf{memoria principale} sarà formata in larga parte da memoria RAM, e conterra in ogni istante le \textbf{istruzioni} e i \textbf{dati} che questo elabora.
+Una parte della memoria principale dovrà essere implementata attraverso memoria ROM, in quanto c'è da risolvere il problema dello stato di avvio del processore introducendo dati predefiniti che vengono puntati per primi dall'istruction pointer. (# credo)
+Il modello che andremo a studiare poi sarà dotato di memoria video, che conterrà le immagini visualizzate sullo schermo, e sarà anch'essa in diretta comunicazione col processore.
+
+Il \textbf{processore} eseguirà il ciclo \textbf{fetch-execute}, prelevando dala memoria principale \textbf{istruzioni operative} e \textbf{istruzioni di controllo}.
+Dovrà partire in una determinata configurazione dei registri, ottenuta collegando opportunamente piedini di \lstinline|/preset| e \lstinline|/preclear| alla linea di \lstinline|/reset|, in modo da inizializzare (come detto prima) l'instruction pointer a puntare ad una locazione di memoria nota che lanci un determinato programma in memoria, detto \textbf{bootstrapper}.
+
+Per quanto ci riguarda, il calcolatore sarà formato da una serie di RSS, e il processore potrà essere sintetizzato attraverso la separazione PO/PC.
+
+\subsubsection{Memoria}
+La nostra memoria sarà formata da uno spazio lineare di $2^{24}$ lozazioni di memoria da un byte, per un totale di 16 MB indirizzati su 24 bit (3 byte).
+Lo spazio di I/O sarà formato da uno spazio lineare di $2^{16}$ locazioni di memoria da un byte, per un totale di 64 B indirizzati su 16 bit (2 byte).
+
+\subsubsection{Processore}
+Il processore sarà dotato di 3 tipi di registri:
+\begin{itemize}
+	\item \textbf{Registri accumulatore:} AH e AL, da 8 bit ciascuno;
+	\item \textbf{Registro dei flag:} 8 bit con 4 significativi: CF (0), ZF (1), SF (2), OF (3);
+	\item \textbf{Registri puntatore:} da 24 bit (3 byte) ciascuno (devono contenere indirizzi di memoria), sono:
+		\begin{itemize}
+			\item \textbf{IP}: l'instruction pointer;
+			\item \textbf{SP}: lo stack pointer;
+			\item \textbf{DP}: il data pointer, che come vedremo contiene le locazioni degli operandi di istruzioni.
+		\end{itemize}
+\end{itemize}
+
+Come avevamo visto, non programmeremo il nostro processore attraverso il linguaggio macchina, ma con un linguaggio assembler che codifica le istruzioni macchina, nella forma già vista:
+\begin{lstlisting}	
+OPCODE source, destination
+\end{lstlisting}
+
+Questo linguaggio sarà simile a quello già studiato, cioè dei processori Intel x86.
+La differenza sarà che avremo come problema il dover effettivamente codificare ciò che scriviamo in assembler in istruzioni in linguaggio macchina da fornire al processore (adesso non stiamo solo \textit{programmando}, ma anche \textit{progettando} il processore).
+
+\subsubsection{Modalità di indirizzamento}
+Avevamo visto le seguenti modalità di indirizzamento per le istruzioni:
+\begin{itemize}
+	\item Di registro;
+	\item Immediato;
+	\item Di memoria;
+	\item Delle porte di I/O # riempi
+\end{itemize}
+
+# listone istruzioni
+
+\end{document}

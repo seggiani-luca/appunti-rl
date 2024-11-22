@@ -311,9 +311,9 @@ In altri casi permette di ricavare esplicitamente il valore ottenuto dall'indiri
 	\item \textbf{Formato:}
 		\begin{itemize}
 			\item \lstinline|OUT \%AL, indirizzo| (8 bit)
-			\item \lstinline|IN \%AX, indirizzo| (16 bit)
-			\item \lstinline|IN \%AX|, (\%DX) (8 bit) 
-			\item \lstinline|IN \%Al, (\%DX)| (16 bit)
+			\item \lstinline|OUT \%AX, indirizzo| (16 bit)
+			\item \lstinline|OUT \%AX|, (\%DX) (8 bit) 
+			\item \lstinline|OUT \%Al, (\%DX)| (16 bit)
 		\end{itemize}
 	\item \textbf{Azione:} copia il contenuto del registro sorgente (AL 8 bit, AX 16 bit) su un adeguato numero di porte consecutive.
 		L'indirizzo è specificato direttamente (per porte con indirizzo $<256$), o indirettamente usando il registro DX.
