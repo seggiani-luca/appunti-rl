@@ -360,14 +360,31 @@ Vediamo quindi i dettagli del ciclo fetch-execute.
 	\item Poi si passa alla fase di \textbf{fetch}, dove si prelevano istruzioni e operandi. In ordine:
 		\begin{itemize}
 			\item Il processore preleva un byte dalla memoria, all'indirizzo indicato in IP;
-			\item Incrementa IP, modulo $2^24$;
-			\item Controlla che il byte prelevato corrisponda appunto all'OPCODE di una delle istruzioni che conosce.
+			\item Incrementa IP, modulo $2^{24}$;
+			\item Controlla che il byte prelevato corrisponda all'OPCODE di una delle istruzioni che conosce.
 				In caso contrario, si va in stato di blocco;
 			\item Carica il byte prelevato in OPCODE;
 			\item Controlla il formato dell'OPCODE in modo da definire le modalità di indirizzamento.
-				A questo punto si ramifica, effettuando le letture necessarie in memoria come specificato qualche paragrafo fa. 
+				A questo punto si ramifica, effettuando le letture necessarie in memoria come specificato qualche paragrafo fa. Nello specifico, si dovrannno eseguire le seguenti operazioni:
+				\begin{itemize}
+					\item F2, F4, F5: operando sorgente da 8 bit in SOURCE
+						\begin{itemize}
+							\item F2: sorgente in memoria con indirizzamento indiretto: si fa accesso in memoria all'indirizzo contenuto in DP;
+							\item F4: sorgente immediato: si fa un accesso all'indirizzo contenuto in IP. Bisogna incrementare IP di 1;
+							\item F6: sorgente in mem. con indirizzamento diretto: si fanno due accessi in memoria, i 3 byte dell'indirizzo in IP e il byte all'indirizzo appena trovato. Bisogna incrementare IP di 3.
+						\end{itemize}
+				\item F4, F6, F7: indirizzo dell'operando destinatario da 24 bit in DEST\_ADDR
+				\begin{itemize}
+					\item F3: indirizzo destinatario in memoria: si copia l'indirizzo da DP;
+					\item F6, F7: indirizzo destinatario in memoria: si fa accesso in memoria ai 3 byte puntati da IP. Bisogna incrementare IP di 3; 
+				\end{itemize}
+			\item F0: non si fa nulla;
+			\item F1: gli operandi verranno raccolti in fase execute (per ora non si fa nulla).
+				\end{itemize}
+			\item Come ultima cosa, si guarda al contenuto di OPCODE per iniziare l'esecuzione dell'istruzione desiderata.
 		\end{itemize}
 	\item Dopo la fase di fetch, viene la fase \textbf{execute}, dove si eseguono effettivamente operazioni sugli operandi;
+
 	\item Nel caso di un errore in fase di fetch, o dell'incontro dell'istruzione HLT in fase execute, si dovrà andare in \textbf{stato di blocco}, cioè il processore dovrà smettere di rispondere agli ingressi e mantenere ferme le sue uscite.
 \end{itemize}
 
