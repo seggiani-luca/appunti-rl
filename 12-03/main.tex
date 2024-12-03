@@ -1,0 +1,350 @@
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, margin=8em]{geometry}
+
+% usa i pacchetti per la scrittura in italiano
+\usepackage[french,italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\frenchspacing 
+
+% usa i pacchetti per la formattazione matematica
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+
+% usa altri pacchetti
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{standalone}
+
+\usepackage{colortbl}
+
+\usepackage{xstring}
+\usepackage{karnaugh-map}
+
+% imposta il titolo
+\title{Appunti Reti Logiche}
+\author{Luca Seggiani}
+\date{2024}
+
+% imposta lo stile
+% usa helvetica
+\usepackage[scaled]{helvet}
+% usa palatino
+\usepackage{palatino}
+% usa un font monospazio guardabile
+\usepackage{lmodern}
+
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{lmtt}
+
+% circuiti
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+
+% testo cerchiato
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% disponi il titolo
+\makeatletter
+\renewcommand{\maketitle} {
+	\begin{center} 
+		\begin{minipage}[t]{.8\textwidth}
+			\textsf{\huge\bfseries \@title} 
+		\end{minipage}%
+		\begin{minipage}[t]{.2\textwidth}
+			\raggedleft \vspace{-1.65em}
+			\textsf{\small \@author} \vfill
+			\textsf{\small \@date}
+		\end{minipage}
+		\par
+	\end{center}
+
+	\thispagestyle{empty}
+	\pagestyle{fancy}
+}
+\makeatother
+
+% disponi teoremi
+\usepackage{tcolorbox}
+\newtcolorbox[auto counter, number within=section]{theorem}[2][]{%
+	colback=blue!10, 
+	colframe=blue!40!black, 
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries, 
+	title=Teorema~\thetcbcounter: #2, 
+	#1
+}
+
+% disponi definizioni
+\newtcolorbox[auto counter, number within=section]{definition}[2][]{%
+	colback=red!10,
+	colframe=red!40!black,
+	sharp corners=northwest,
+	fonttitle=\sffamily\bfseries,
+	title=Definizione~\thetcbcounter: #2,
+	#1
+}
+
+% disponi codice
+\usepackage{listings}
+\usepackage[table]{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+		backgroundcolor=\color{black!5}, 
+		commentstyle=\color{codegreen},
+		keywordstyle=\bfseries\color{magenta},
+		numberstyle=\sffamily\tiny\color{black!60},
+		stringstyle=\color{green!50!black},
+		basicstyle=\ttfamily\footnotesize,
+		breakatwhitespace=false,         
+		breaklines=true,                 
+		captionpos=b,                    
+		keepspaces=true,                 
+		numbers=left,                    
+		numbersep=5pt,                  
+		showspaces=false,                
+		showstringspaces=false,
+		showtabs=false,                  
+		tabsize=2
+}
+
+\lstdefinestyle{shellstyle}{
+		backgroundcolor=\color{black!5}, 
+		basicstyle=\ttfamily\footnotesize\color{black}, 
+		commentstyle=\color{black}, 
+		keywordstyle=\color{black},
+		numberstyle=\color{black!5},
+		stringstyle=\color{black}, 
+		showspaces=false,
+		showstringspaces=false, 
+		showtabs=false, 
+		tabsize=2, 
+		numbers=none, 
+		breaklines=true
+}
+
+
+\lstdefinelanguage{assembler}{ 
+  keywords={AAA, AAD, AAM, AAS, ADC, ADCB, ADCW, ADCL, ADD, ADDB, ADDW, ADDL, AND, ANDB, ANDW, ANDL,
+        ARPL, BOUND, BSF, BSFL, BSFW, BSR, BSRL, BSRW, BSWAP, BT, BTC, BTCB, BTCW, BTCL, BTR, 
+        BTRB, BTRW, BTRL, BTS, BTSB, BTSW, BTSL, CALL, CBW, CDQ, CLC, CLD, CLI, CLTS, CMC, CMP,
+        CMPB, CMPW, CMPL, CMPS, CMPSB, CMPSD, CMPSW, CMPXCHG, CMPXCHGB, CMPXCHGW, CMPXCHGL,
+        CMPXCHG8B, CPUID, CWDE, DAA, DAS, DEC, DECB, DECW, DECL, DIV, DIVB, DIVW, DIVL, ENTER,
+        HLT, IDIV, IDIVB, IDIVW, IDIVL, IMUL, IMULB, IMULW, IMULL, IN, INB, INW, INL, INC, INCB,
+        INCW, INCL, INS, INSB, INSD, INSW, INT, INT3, INTO, INVD, INVLPG, IRET, IRETD, JA, JAE,
+        JB, JBE, JC, JCXZ, JE, JECXZ, JG, JGE, JL, JLE, JMP, JNA, JNAE, JNB, JNBE, JNC, JNE, JNG,
+        JNGE, JNL, JNLE, JNO, JNP, JNS, JNZ, JO, JP, JPE, JPO, JS, JZ, LAHF, LAR, LCALL, LDS,
+        LEA, LEAVE, LES, LFS, LGDT, LGS, LIDT, LMSW, LOCK, LODSB, LODSD, LODSW, LOOP, LOOPE,
+        LOOPNE, LSL, LSS, LTR, MOV, MOVB, MOVW, MOVL, MOVSB, MOVSD, MOVSW, MOVSX, MOVSXB,
+        MOVSXW, MOVSXL, MOVZX, MOVZXB, MOVZXW, MOVZXL, MUL, MULB, MULW, MULL, NEG, NEGB, NEGW,
+        NEGL, NOP, NOT, NOTB, NOTW, NOTL, OR, ORB, ORW, ORL, OUT, OUTB, OUTW, OUTL, OUTSB, OUTSD,
+        OUTSW, POP, POPL, POPW, POPB, POPA, POPAD, POPF, POPFD, PUSH, PUSHL, PUSHW, PUSHB, PUSHA, 
+				PUSHAD, PUSHF, PUSHFD, RCL, RCLB, RCLW, MOVSL, MOVSB, MOVSW, STOSL, STOSB, STOSW, LODSB, LODSW,
+				LODSL, INSB, INSW, INSL, OUTSB, OUTSL, OUTSW
+        RCLL, RCR, RCRB, RCRW, RCRL, RDMSR, RDPMC, RDTSC, REP, REPE, REPNE, RET, ROL, ROLB, ROLW,
+        ROLL, ROR, RORB, RORW, RORL, SAHF, SAL, SALB, SALW, SALL, SAR, SARB, SARW, SARL, SBB,
+        SBBB, SBBW, SBBL, SCASB, SCASD, SCASW, SETA, SETAE, SETB, SETBE, SETC, SETE, SETG, SETGE,
+        SETL, SETLE, SETNA, SETNAE, SETNB, SETNBE, SETNC, SETNE, SETNG, SETNGE, SETNL, SETNLE,
+        SETNO, SETNP, SETNS, SETNZ, SETO, SETP, SETPE, SETPO, SETS, SETZ, SGDT, SHL, SHLB, SHLW,
+        SHLL, SHLD, SHR, SHRB, SHRW, SHRL, SHRD, SIDT, SLDT, SMSW, STC, STD, STI, STOSB, STOSD,
+        STOSW, STR, SUB, SUBB, SUBW, SUBL, TEST, TESTB, TESTW, TESTL, VERR, VERW, WAIT, WBINVD,
+        XADD, XADDB, XADDW, XADDL, XCHG, XCHGB, XCHGW, XCHGL, XLAT, XLATB, XOR, XORB, XORW, XORL},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{language=assembler, style=codestyle}
+
+% disponi sezioni
+\usepackage{titlesec}
+
+\titleformat{\section}
+	{\sffamily\Large\bfseries} 
+	{\thesection}{1em}{} 
+\titleformat{\subsection}
+	{\sffamily\large\bfseries}   
+	{\thesubsection}{1em}{} 
+\titleformat{\subsubsection}
+	{\sffamily\normalsize\bfseries} 
+	{\thesubsubsection}{1em}{}
+
+% tikz
+\usepackage{tikz}
+
+% float
+\usepackage{float}
+
+% grafici
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% disponi alberi
+\usepackage{forest}
+
+\forestset{
+	rectstyle/.style={
+		for tree={rectangle,draw,font=\large\sffamily}
+	},
+	roundstyle/.style={
+		for tree={circle,draw,font=\large}
+	}
+}
+
+% disponi algoritmi
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% disponi numeri di pagina
+\usepackage{fancyhdr}
+\fancyhf{} 
+\fancyfoot[L]{\sffamily{\thepage}}
+
+\makeatletter
+\fancyhead[L]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@title \ \@date}}} 
+\fancyhead[R]{\raisebox{1ex}[0pt][0pt]{\sffamily{\@author}}}
+\makeatother
+
+\begin{document}
+% sezione (data)
+\section{Lezione del 03-12-24}
+
+% stili pagina
+\thispagestyle{empty}
+\pagestyle{fancy}
+
+% testo
+\subsection{Interfacce parallele}
+\subsubsection{Interfacce di ingresso senza handshake}
+Iniziamo a vedere le interfacce parallele di \textbf{ingresso} senza handshake.
+Queste scambiano interi byte col processore, attraverso un solo registro.
+Non c'è quindi nessuna linea di indirizzo, l'intero registro va direttamente al processore su una linea dati.
+Abbiamo poi la linea di select \lstinline|/s| e la linea di I/O read \lstinline|/ior|.
+
+Il registro in uscita è forchettato da una tri-state in modo da mantenere ad alta impedenza l'uscita del registro RBR quando il processore non sta leggendo dall'interfaccia. 
+Inoltre, non vorremo nemmeno che il registro RBR si trovi a leggere dati quando il processore non sta leggendo.
+
+Possiamo quindi ricavare, dal select e l'I/O read attraverso una porta NOR, un segnale di enable sia per la porta tri state che per il registro: quando entrambi sono bassi, si legge dal lato dispositivo dell interfaccia all'interno del registro, e si restituisce l'uscita del registro al processore.
+
+Notiamo che l'aggiornamento dell'RBR avviene al \textit{fronte di salita} dell'enabler (quindi di \lstinline|/ior|), quindi una volta sola per ogni lettura.
+
+\subsubsection{Interfacce di uscita senza handshake}
+L'interfaccia parallela di \textbf{uscita} senza handshake è simile: si ha sempre un solo registro, TBR, che memorizza le linee dati in entrata qundo sono entrambi bassi il select e l'I/O write (\lstinline|/iow|), cosa ricavata attraverso un'altra porta NOR.
+
+Notiao che in questo caso TBR campiona sul \textit{fronte di discesa} dell'enabler (quindi di \lstinline|/iow|), anziché di salita.
+
+\subsubsection{Interfacce di ingresso/uscita senza handshake}
+Le intefacce di ingresso/uscita senza handshake si costruiscono unendo due interfacce, una di ingresso e una di uscita (e appunto dette \textbf{sottointerfacce} di ingresso e uscita), e selezionando l'interfaccia giusta attraverso un bit di indirizzo (\lstinline|a0|).
+Il select per la selezione viene generato da una semplice rete combinatoria che prende in ingresso il \lstinline|/s| globale e il bit di indirizzo, con tabella di verità:
+\begin{table}[h!]
+	\center 
+	\begin{tabular} { c  c | c  c }
+		\lstinline|/s| & \lstinline|/a0| & \lstinline|/si| & \lstinline|/so| \\ 
+		\hline 
+		1 & - & 1 & 1 \\ 
+		0 & 0 & 0 & 1 \\ 
+		0 & 1 & 1 & 0 
+	\end{tabular}
+\end{table}
+Dove \lstinline|/si| è il select della sottointerfaccia di ingresso, e \lstinline|/so| il select della sottointerfaccia di uscita.
+Come vediamo dall'esempio, solitamente si mette a indirizzo \textbf{pari} la porta di \textit{ingresso}, e a indirizzo \textbf{dispari} la porta di \textit{uscita}.
+
+Notiamo che un montaggio alternativo si ottiene ignorando il bit di indirizzo e accedendo direttamente alle due sottointerfacce con un unico select.
+A questo punto sarà compito del processore discriminare fra \lstinline|/ior| e \lstinline|/iow| per selezionare la sottointerfaccia desiderata.
+
+\subsubsection{Interfacce di ingresso con handshake}
+Ricordiamo la visione funzionale delle interfacce di ingresso con handshake: dovremo avere i registri RBR e RSR, da cui ricaviamo il flag FI lato processore, mentre lato dispositivo dovremo avere sia le linee di ingresso dati che le linee di handshake, che assumiamo essere in forma \lstinline|/dav| e \lstinline|rfd|.
+
+L'interfaccia si implementa quindi come una combinazione di una rete combinatoria, come avevamo visto per le interfacce senza handshake, per la generazione degli enable, e una rete sequenziale per la gestione degli handshake.
+
+Il processore potrà accedere in lettura sia al RBR che al RSR: questo si discrimina attraeverso un bit di indirizzo (\lstinline|a0|).
+Si ha quindi la rete combinatoria per la generazione degli enable, dove \lstinline|eb| è l'enable del buffer e \lstinline|es| è l'enable del registro di stato:
+\begin{table}[h!]
+	\center 
+	\begin{tabular} { c  c  c | c  c }
+		\lstinline|/s| & \lstinline|/ior| & \lstinline|/a0| & \lstinline|/es| & \lstinline|/eb| \\ 
+		\hline 
+		0 & 0 & 0 & 1 & 0 \\ 
+		0 & 0 & 1 & 0 & 1 \\ 
+		... & & & 0 & 0 
+	\end{tabular}
+\end{table}
+
+# sintesi rete sequenziale
+
+Notiamo che, nella sintesi, si ritarda il clock dell'interfaccia rispetto a quello del processore per evitare condizioni di \textit{corsa} all'interfaccia.
+
+\subsubsection{Interfacce di uscita con handhsake}
+L'interfaccia di uscita è realizzata in modo analogo: includiamo un registro TSR che contiene il flag FO lato processore, il registro TBR, e lato dispositivo le linee \lstinline|/dav| e \lstinline|rfd|, dove però è l'interfaccia, e non più il processore, a fare da produttore.
+
+La struttura interna sarà del tutto simile a l'interfaccia di ingresso, con una parte combinatoria che si occupa degli enable e una parte sequenziale che si occupa degli handshake.
+La parte combinatoria obbedirà alla tabella di verità:
+\begin{table}[h!]
+	\center 
+	\begin{tabular} { c  c  c  c | c  c }
+		\lstinline|/s| & \lstinline|/ior| & \lstinline|/iow| & \lstinline|/a0| & \lstinline|/es| & \lstinline|/eb| \\ 
+		\hline 
+		0 & 0 & 1 & 0 & 1 & 0 \\ 
+		0 & 1 & 0 & 1 & 0 & 1 \\ 
+		... & & & & 0 & 0 
+	\end{tabular}
+\end{table}
+
+Notiamo che compare comunque la linea di uscita in quanto vogliamo leggere lo stato del TSR.
+
+# sintesi parte sequenziale
+
+\subsubsection{Interfacce di ingresso/uscita con handshake}
+Possiamo combinare le interfacce con handhshake viste finora in un unica interfaccia di ingresso/uscita.
+Combineremo il registro di stato in un unico registro RTSR dotato dei flag FO e FI, e useremo un bit di indirizzo (\lstinline|a0|) per distinguere fra le porte di ingresso e uscita. 
+
+\subsection{Interfacce seriali}
+Le interfacce seriali trasmettono informazioni un bit a volta.
+Noi ne consideriamo una versione semplificata, l'interfaccia seriale start/stop.
+
+Dal punto di vista fisico, un interfaccia seriale trasporta informazioni su due linee:
+\begin{itemize}
+	\item La linea di \textbf{massa}, che funge da riferimento;
+	\item La linea \textbf{segnale}, che porta appunto il segnale riferito a massa.
+\end{itemize}
+
+Dal punto di vista logico, invece, a interessarci sarà solo la linea segnale.
+Questa trasporta informazioni \textit{half duplex}, cioè da un trasmettitore a un ricevitore (la comunicazione nelle due direzioni richiede quindi due linee).
+
+Ora, se il segnale è rappresentato da una sequenza di \textbf{marking} (1, linea in tensione) e \textbf{spacing} (0, linea a massa) trasmessi con un periodo $T$, il problema diventerà sincronizzare trasmettitore e ricevitore in modo che possano comunicare efficientemente. 
+
+Quello che ci interesserà stabilire sarà quindi il \textbf{tempo di bit} $T$ e la \textbf{trama} del segnale.
+Definiamo trama una sequenza di bit che rappresenta un frammento di comunicazione: iniziamo la trama con uno spacing (\textbf{bit di start}), e seguiamo poi con un numero che va da 5 a 8, stabilito in precedenza, di \textbf{bit utili} (solitamente LSB).
+Infine, trasmettiamo un marking per segnalare la fine della trama (\textbf{bit di stop}).
+
+I bit di start e di stop rappresentano un \textbf{overhead}: una trama di $n$ bit utili è lunga almeno $n+2$ per segnalare inizio e fine della trama.
+Avremo quindi che la velocità netta della linea è $\frac{n}{n+2}$, che è comunque più efficiente di usare un clock secondario o effettuare un handshake per ogni bit. # se vuoi riguarda
+
+Converrebbe quindi usare $n$ arbitrariamente lunghi: purtroppo questo è fattibile fino ad un certo limite superiore, in quanto i clock di trasmettitore e ricevitore saranno necessariamente leggermente differenti in frequenza, ergo sul lungo termine si andrebbe ad accumulare un'errore troppo grande.
+
+Infatti, l'impedenza dalla linea di trasmissione determinerà uno "smussamento" del segnale, motivo per cui preferiremo campionare ogni bit trasmesso nella posizione più centrale possibile rispetto alla sua forma d'onda.
+Questo significherà che, posto $T$ il periodo del clock del trasmettitore, e $T + \Delta T$ il periodo del clock del ricevitore, vorremo:
+$$
+n \cdot \Delta T \leq \frac{T}{2} \implies \frac{\Delta T}{T} \leq \frac{1}{2n}
+$$
+
+Uno standard di \textit{interoperabilità} per le trasmissioni seriali è l EIA-RS232C, che fissa lo 0 logico a tensioni da 3V a 25V, e l'1 logico a tensione negativa da -25V a -3V.
+
+\end{document}
