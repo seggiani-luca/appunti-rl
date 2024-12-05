@@ -223,42 +223,20 @@
 \makeatother
 
 \begin{document}
+% sezione (data)
+\section{Lezione del 05-12-24}
 
-\pagestyle{fancy}
+% stili pagina
 \thispagestyle{empty}
-\renewcommand{\thispagestyle}[1]{}
+\pagestyle{fancy}
 
-\maketitle
-\input{../09-24/main.tex}
-\input{../09-25/main.tex}
-\input{../09-26/main.tex}
-\input{../09-27/main.tex}
-\input{../10-01/main.tex}
-\input{../10-02/main.tex}
-\input{../10-03/main.tex}
-\input{../10-08/main.tex}
-\input{../10-09/main.tex}
-\input{../10-10/main.tex}
-\input{../10-11/main.tex}
-\input{../10-15/main.tex}
-\input{../10-17/main.tex}
-\input{../10-22/main.tex}
-\input{../10-23/main.tex}
-\input{../10-24/main.tex}
-\input{../10-29/main.tex}
-\input{../10-30/main.tex}
-\input{../11-05/main.tex}
-\input{../11-06/main.tex}
-\input{../11-07/main.tex}
-\input{../11-08/main.tex}
-\input{../11-12/main.tex}
-\input{../11-14/main.tex}
-\input{../11-19/main.tex}
-\input{../11-21/main.tex}
-\input{../11-22/main.tex}
-\input{../11-26/main.tex}
-\input{../11-27/main.tex}
-\input{../11-28/main.tex}
-\input{../12-03/main.tex}
-\input{../12-05/main.tex}
+% testo
+\subsection{Vista funzionale delle interfacce seriali}
+L'interfaccia seriale è effettivamente un'interfaccia di ingresso uscita con handshake, dove ingressi e uscite sono i bit \lstinline|txd| di trasmissione e \lstinline|rxd| di ricezione.
+In particolare, questi sono gestiti rispettivamente da due sottointerfacce dette \textbf{ricevitore} e \textbf{trasmettitore}, sincronizzati da un \textbf{generatore di segnali di sincronizzazione} e interfacciati con una sottointerfaccia di gestione attraverso handshake \lstinline|dav| - \lstinline|/rfd|.
+Nell'handshake lato sottointerfaccia di gestione, il \textbf{ricevitore} è \textit{produttore} e il \textbf{trasmettitore} è il \textit{ricevitore}, cioè il ricevitore \textit{restituisce} i dati ricevuti e il trasmettitore \textit{prende} i dati da trasmettere.
+Lato processore si hanno comunque 8 bit di uscita, cioè un byte, e il bit di indirizzo che discrimina fra porte di ingresso / uscita (cioè fra ricevitore e trasmettitore).
+
+# descrizione di entrambi
+
 \end{document}
