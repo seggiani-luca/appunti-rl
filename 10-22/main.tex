@@ -534,15 +534,15 @@ In questo caso, $c_{out}$ potrà essere prodotto con un solo livello di logica, 
 Allo stesso modo, potremo ridurre $s_i$ ad un solo XOR fra $x_i$ e $c_{in}$.
 Riportiamo una sintesi a tabella di verità e a porte logiche in Verilog:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/b2_halfadder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/halfadders/b2_halfadder.v}
 
 Analogamente, potremmo pensare di sintetizzare \textbf{incrementatori} (stavolta nel vero senso della parola, e non \textit{half adder}, con cui corrispondevano in base 2 (detto questo, si sono comunque chiamati impropriamente i moduli Verilog \lstinline|b3_halfadder| e \lstinline|b10_halfadder| per congruenza con le altre definizioni)) in base 3: 
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/b3_halfadder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/halfadders/b3_halfadder.v}
 
 e in base 10: 
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/b10_halfadder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/halfadders/b10_halfadder.v}
 
 Le sintesi SP (con anche gate XOR aggiunti a discrezione) si ricavano direttamente dagli statement \textbf{assignment} delle descrizioni riportate.
 

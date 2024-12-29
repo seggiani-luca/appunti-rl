@@ -179,7 +179,7 @@ Il corso di reti logiche tratta di:
 
 \subsubsection{Introduzione alle reti logiche}
 Si parla di reti \textit{logiche} in quanto si guarda all'hardware da una prospettiva funzionale, indipendente dalla sua tecnologia.
-Ad esempio, una porta NOR sarà implementata con determinati circuiti, ma tutto ciò che interessa a questo corso è come si comporta logicamente: $ y = 1 \Leftrightarrow A = B = 0 $.
+Ad esempio, una porta NOR sarà implementata con determinati circuiti, ma tutto ciò che interessa a questo corso è come si comporta logicamente: $A \ \text{NOR} \ B  = y$ significa $ y = 1 \Leftrightarrow (A == B) = 0 $.
 
 \subsection{Programmazione assembly}
 Il nome corretto del linguaggio sarebbe Assembly, ma noi lo chiameremo Assembler per ragioni storiche.
@@ -202,7 +202,7 @@ Mancano i costrutti a cui siamo abituati da i linguaggi di alto livello:
 
 Inoltre, l'assembler è strettamente legato all'hardware, ed è specifico per ogni processore.
 Noi vedremo l'assembler dei processori della famiglia Intel x86, che non è uguale all'assembler dei processori Arm Cortex, ecc...
-Questo rende il codice in assembler mai portatile.
+Questo rende il codice in assembler quasi mai portatile.
 Fatta questa precisazione, possiamo dire che i principi generali restano comunque validi fra famiglie di processori diverse.
 
 Esiste ancora oggi una nicchia di utilizzo del linguaggio assembler: quello dello sviluppo di sistemi embedded.
@@ -252,20 +252,24 @@ Un calcolatore è formato, in linea generale, da una rete di interconnessione (b
 \end{itemize}
 
 \subsection{Riassunto di rappresentazione dell'informazione}
-
+I calcolatori lavorano con i numeri, e un numero si \textbf{rappresenta} su una certa base $\beta$.
+Nel caso dei calcolatori questa è la base 2.
 Da qui in poi $x$ è il numero rappresentato e $X$ la sequenza di bit rappresentante.
 
 \subsubsection{Numeri naturali}
+Vediamo prima di tutto come rappresentare i naturali.
 
+\par\medskip
+\noindent
 \textbf{\textsf{Intervallo di rappresentabilità}} \\
 $n$ bit rappresentano $2^n$ naturali sull'intervallo $[0, 2^n- 1]$.
 
 \par\medskip
 \noindent
 \textbf{\textsf{Trasformazione diretta}} \\
-Per portare un'intero in rappresentazione binaria nel suo corrispondente in base 10, si sa che presi $n$ bit $b_{n-1}, b_{n-2}, ... , b_1, b_0$ della rappresentazione $X$, essi rappresentano il naturale $x$:
+Per portare un intero in rappresentazione binaria nel suo corrispondente in base 10, si sa che presi $n$ bit $b_{n-1}, b_{n-2}, ... , b_1, b_0$ della rappresentazione $X$, essi rappresentano il naturale $x$:
 $$
-x =  b_{n-1} \cdot 2^{n-1} + b_{n-2} \cdot 2^{n-2} + ... + b_1 \cdot 2 + b_0 = \sum_{i=0}^{n-1} b_n \cdot 2^i
+x =  b_{n-1} \cdot 2^{n-1} + b_{n-2} \cdot 2^{n-2} + ... + b_1 \cdot 2 + b_0 = \sum_{i=0}^{n-1} b_i \cdot 2^i
 $$
 
 Il bit più a sinistra è il Most Significant Bit (MSB), cioé $b_{n-1}$, quello più a destra il Least Significant Bit (LSD), cioè $b_0$.
@@ -273,38 +277,46 @@ Il bit più a sinistra è il Most Significant Bit (MSB), cioé $b_{n-1}$, quello
 \par\medskip
 \noindent
 \textbf{\textsf{Trasformazione inversa}} \\
-Per portare un'intero in base 10 nella sua rappresentazione binaria, si usa l'algoritmo DIV-MOD:
-
+Per portare un intero in base 10 nella sua rappresentazione binaria, si usa l'algoritmo DIV-MOD.
+Questo generalizza a qualsiasi base $\beta$ (per noi $\beta = 2$) come:
 \begin{algorithm}
 \caption{DIV-MOD}
 \begin{algorithmic} % The number indicates where to start line numbering
-    \STATE \textbf{Input:} $x$ in base 10
-    \STATE \textbf{Output:} $X$ rappresentazione in base 2
+    \STATE \textbf{Input:} $x$ in base arbitraria
+    \STATE \textbf{Output:} $X$ rappresentazione in base $\beta$
     
     % Body
     \STATE Inizializza $q \gets x$, $r \gets 0$, e $i \gets 0$ % Initialize variables
     \STATE Crea un'array vuota $R$ per i resti 
 
     \WHILE{$q \neq 0$}
-        \STATE $r \gets q \mod 2$ % Calculate remainder
+        \STATE $r \gets q \mod \beta$ % Calculate remainder
         \STATE Metti $r$ in $R[i]$ % Store the remainder
-        \STATE $q \gets q / 2$ % Update the quotient
+        \STATE $q \gets q / \beta$ % Update the quotient
         \STATE $i \gets i + 1$ % Increment index
     \ENDWHILE
     
-    \STATE Gli $R[n-1], R[n-2], ..., R[0]$ rimasti (quindi letti al contrario) sono le cifre di $X$.
+		\STATE Gli $R[n-1], R[n-2], ..., R[0]$ rimasti (quindi gli $R[i]$ letti al contrario) sono le cifre di $X$.
 \end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Numeri interi in complemento a due}
+\par\smallskip
 
+Notiamo come l'algoritmo permette di svolgere i calcoli \textit{nella base di partenza}, a differenza della trasformazione diretta, che si svolge \textit{nella base di arrivo}.
+
+\subsubsection{Numeri interi in complemento a due}
+Per rappresentare i numeri interi si usa, fra le altre, la rappresentazione in \textbf{complemento a due}.
+Tralasciamo le basi $\beta$ arbitrarie (dove sarebbe \textit{complemento a radice}), e soffermamoci sulla base due: dettagli sulle varie altre rappresentazioni sia per i naturali che per gli interi, in basi qualsiasi, verranno riportati in un secondo momento. 
+
+\par\medskip
+\noindent
 \textbf{\textsf{Intervallo di rappresentabilità}} \\
-$n$ bit rappresentano $2^n$ interi sull'intervallo $ [-2^{n-1}, 2^{n-1} - 1]$.
+$n$ bit rappresentano $2^n$ interi in complemento a 2 sull'intervallo $ [-2^{n-1}, 2^{n-1} - 1]$.
 
 \par\medskip
 \noindent
 \textbf{\textsf{Trasformazione diretta}} \\
-Per portare un intero $x$ in base 10 nella sua rappresentazione in complemento a due $X$ su $n$ bit, si decide alternativamente rispetto al segno di $x$ di rappresentare il naturale $N$ in $X$:
+Per portare un intero $x$ in una base qualsiasi nella sua rappresentazione in complemento a due $X$ su $n$ bit, si decide alternativamente rispetto al segno di $x$ di rappresentare il naturale $N$ in $X$:
 
 \[
 	N =
@@ -315,7 +327,7 @@ Per portare un intero $x$ in base 10 nella sua rappresentazione in complemento a
 	X = N_2
 \]
 
-dove si nota che nella seconda espressione $2^n + x$ equivale a $2^n - |x|$, dalla negatività di $x$.
+dove si nota che nella seconda espressione $2^n + x$ equivale a $2^n - |x|$, cioè bisogna ricordare che $x$ è negativo.
 
 \par\smallskip
 
@@ -339,11 +351,10 @@ Simbolicamente:
 \noindent
 \textbf{\textsf{Trasformazione inversa}}
 
-Per portare la rappresentazione in complemento a due $X$ su $n$ bit di un intero $x$ all'intero stesso, ci si comporta come per le rappresentazioni di naturali, ma prendendo il bit più significativo dagli $n$ bit $b_{n-1}, b_{n-2}, ... , b_1, b_0$ della rappresentazione $X$ con valenza negativa:
+Per portare la rappresentazione in complemento a due $X$ su $n$ bit di un intero $x$ all'intero stesso, ci si comporta come per le rappresentazioni di naturali, ma prendendo il bit più significativo dagli $n$ bit $b_{n-1}, b_{n-2}, ... , b_1, b_0$ della rappresentazione $X$ con segno negativo:
 $$
 x = -b_{n-1} \cdot 2^{n-1} + b_{n-2} \cdot 2^{n-2} + ... + b_1 \cdot 2 + b_0 = -b_{n-1} \cdot 2^{n-1} + \sum_{i=0}^{n-2} b_n \cdot 2^i
 $$
-
 
 \par\smallskip
 
@@ -384,7 +395,7 @@ Tale funzione prende il nome di \textit{diagramma a farfalla}:
 \end{tikzpicture}
 \end{center}
 
-da cui notiamo la relazione fra un'intero e il naturale che lo rappresenta in complemento a 2.
+da cui notiamo la relazione fra un intero e il naturale che lo rappresenta in complemento a 2.
 
 \subsubsection{Valori notevoli del complemento a 2}
 

@@ -755,7 +755,7 @@ Esistono le seguenti condizioni sui confronti fra naturali:
 		\hline 
 		JE & Jump if Equal, la condizione è soddisfatta se ZF contiene 1, cioè dopo CMP su due numeri uguali. \\
 		JNE & Jump if Not Equal, la condizione è soddisfatta se ZF contiene 0, cioè dopo CMP su due numeri non uguali. \\ 
-		JA & Jump if Above, la condizione è soddisfatta se CF contiene 0 e ZF contiene 1, cioè dopo CMP su un destinatario maggiore del sorgente. \\
+		JA & Jump if Above, la condizione è soddisfatta se CF contiene 0 e ZF contiene 0, cioè dopo CMP su un destinatario maggiore del sorgente. \\
 		JAE & Jump if Above or Equal, la condizione è soddisfatta se CF contiene 0, cioè dopo CMP su un destinatario maggiore o uguale del sorgente. \\ 
 		JB & Jump if Below, la condizione è soddisfatta se CF contiene 1, cioè dopo CMP su un destinatario minore del sorgente. \\
 		JBE & Jump if Below or Equal, la condizione è soddisfatta se CF contiene 1 o ZF contiene 1, cioè dopo CMP su un destinatario minore o uguale del sorgente. \\ 
@@ -796,10 +796,10 @@ Esistono le seguenti condizioni sui confronti fra interi:
 		\hline 
 		JE & Jump if Equal, la condizione è soddisfatta se ZF contiene 1, cioè dopo CMP su due numeri uguali. \\
 		JNE & Jump if Not Equal, la condizione è soddisfatta se ZF contiene 0, cioè dopo CMP su due numeri non uguali. \\ 
-		JG & Jump if Greater, la condizione è soddisfatta se ZF contiene 0 o se SF è uguale a OF, cioè dopo CMP su un destinatario maggiore del sorgente. \\
+		JG & Jump if Greater, la condizione è soddisfatta se ZF contiene 0 e se SF è uguale a OF, cioè dopo CMP su un destinatario maggiore del sorgente. \\
 		JGE & Jump if Greater or Equal, la condizione è soddisfatta se SF è uguale a OF, cioè dopo CMP su un destinatario maggiore o uguale del sorgente. \\ 
-		JB & Jump if Less, la condizione è soddisfatta se SF è diverso da OF, cioè dopo CMP su un destinatario minore del sorgente. \\
-		JBE & Jump if Less or Equal, la condizione è soddisfatta se ZF contiene 1 o se Sf è diverso da OF, cioè dopo CMP su un destinatario minore o uguale del sorgente. \\ 
+		JL & Jump if Less, la condizione è soddisfatta se SF è diverso da OF, cioè dopo CMP su un destinatario minore del sorgente. \\
+		JLE & Jump if Less or Equal, la condizione è soddisfatta se ZF contiene 1 o se Sf è diverso da OF, cioè dopo CMP su un destinatario minore o uguale del sorgente. \\ 
 	\end{tabular}
 \end{table}
 

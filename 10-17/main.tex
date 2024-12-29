@@ -228,7 +228,9 @@
 
 % testo
 \subsection{Rappresentazione dei numeri naturali}
-Noi rappresentiamo i numeri naturali attraverso una notazione posizionale, ovvero come:
+Riprendiamo l'argomento della rappresentazione dei numeri naturali (e in seguito anche degli interi) in modo da sintetizzare reti combinatorie che svolgano operazioni su tali insiemi numerici.
+
+Noi esseri umani rappresentiamo i numeri naturali attraverso una notazione posizionale, ovvero come:
 \begin{itemize}
 	\item Un numero $\beta \geq 2$, detto \textbf{base di rappresentazione}. Nel caso del sistema decimale, $\beta = 10$.
 	\item Un'insieme di $\beta$ simboli, detti \textbf{cifre}, a ciascuno dei quali è associato un numero naturale $\in [0, \beta - 1]$.
@@ -236,7 +238,7 @@ Noi rappresentiamo i numeri naturali attraverso una notazione posizionale, ovver
 \end{itemize}
 
 \subsubsection{Notazione posizionale}
-Dato un numero $A \in \mathbb{N}$, lo posso rappresentare in base $\beta$ attraverso una sequenza di cifre:
+Dato un numero $A \in \mathbb{N}$, lo possiamo rappresentare in base $\beta$ attraverso una sequenza di cifre:
 $$ A \equiv (a_{n-1}a_{n-2} ... a_1 a_0)_\beta, \quad 0 \leq a_i \leq \beta - 1, \quad 0 \leq i \leq n - 1 $$
 dove la legge di rappresentazione è:
 $$
@@ -247,53 +249,116 @@ Nella rappresentazione di un numero naturale, una cifra contribuisce a determina
 
 Normalmente usiamo il sistema decimale, con $\beta = 10$. Nell'informatica, ci interessiamo al sistema binario, con $\beta = 2$.
 
-\subsection{Teorema della divisione con resto}
-Vediamo come trovare la rappresentazione di un naturale $A$ in una base $\beta$, noto che questo è sempre possibile:
-\begin{theorem}{della divisone con resto}
-	Dato $x \in \mathbb{N}, \beta \in \mathbb{N}, \beta > 0$, esiste ed è unica la coppia di numeri $q,r$:
+\subsection{Teoremi della divisione con resto}
+Dimostriamo due teoremi che formulano effettivamente la divisione sugli insiemi dei naturali e degli interi, e che ci torneranno utili nella conversione fra basi diverse e in generale nell'aritmetica in base $\beta$. 
+\subsubsection{Numeri naturali}
+Nel caso naturale, il teorema è il seguente:
+\begin{theorem}{della divisone con resto sui numeri naturali}
+	Dato $x \in \mathbb{N}, \beta \in \mathbb{N}, \beta > 0$, esiste ed è unica la coppia di numeri $q,r$ con:
 	\begin{itemize}
 		\item $q \in \mathbb{N}$;
-		\item $r \in \mathbb{N}, \quad 0 \leq r < \beta$;
+		\item $r \in \mathbb{N}, \ 0 \leq r < \beta$;
 	\end{itemize}
 	tale che $x = q \cdot \beta + r$.
 \end{theorem}
-
-questo vale anche per gli interi $\in \mathbb{Z}$, scambiando i simboli $\mathbb{N}$ con $\mathbb{Z}$.
+$q$ prende il nome di \textbf{quoziente} e $r$ di \textbf{resto}.
 
 \par\medskip
 \noindent
 \textbf{\textsf{Dimostrazione}} \\
-Pensiamo di dividere $\mathbb{Z}$ in intervalli:
+Per avere una definizione effettiva di $q$ ed $r$ pensiamo di partizionare  $\mathbb{N}$ in intervalli:
 $$
-[n \cdot \beta, (n+1) \cdot \beta[, \quad n \in \mathbb{Z}
+[n \cdot \beta, (n+1) \cdot \beta[ \ , \quad n \in \mathbb{N}
 $$
-Si avrà che 
+Questi partiranno da $[0, \beta]$, e così via a coprire tutto $N$:
 $$
-\bigcup_{n \in \mathbb{Z}} [n \cdot \beta, (n+1) \cdot \beta[ \equiv \mathbb{Z}
+\bigcup_{n \in \mathbb{N}} [n \cdot \beta, (n+1) \cdpt \beta[ \ \equiv \mathbb{N}
 $$
-ergo $x$ farà parte del $q$-esimo intervallo di questa lista.
-Possiamo definire allora $r = x - q \cdot \beta$, e da come abbiamo preso gli intervalli, $0 \leq r < \beta$.
 
-Resta da dimostrare l'unicità dei $q,r$ trovati.
-Possiamo sostenere per assurdo che esistano due coppie $(q_1,r_1)$ e $(q_2,r_2)$ diverse tali che $ x = q_1 \cdot \beta + r_1 = q_2 \beta + r_2$, con le ipotesi $q_i \in \mathbb{Z}$ e $0 \leq r_i < \beta$.
+Potremo quindi usare queste partizioni per definire:
+$$ \forall x \in \mathbb{N}, \beta \in \mathbb{N}, \quad \exists ! \ q : x \in [ q \cdot \beta, (q+1) \cdot \beta [ \ , \quad \exists ! \ r \ : r = x - q \cdot \beta $$
+con le solite ipotesi $q \in \mathbb{Z}$ e $r \in \mathbb{Z}$ con $0 < r < \beta$.
 
-Varrà allora:
-$$ (q_1 - q_2) \cdot \beta = r_2 - r_1 $$
-e dall'ipotesi:
-$$ -\beta < (r_2 - r_1) < \beta \rightarrow -\beta < (q_1 - q_2) \cdot \beta < \beta $$
-Cioè:
-$$ -1 < (q_1 - q_2) < 1 $$
-che in $Z$ significa $q_1 - q_2 = 0$, che è contro l'ipotesi.
+Vogliamo dimostrare che (1) questo è sempre possibile e (2) $q$ e $r$ sono unici.
+\begin{enumerate}
+	\item Questo viene direttamente dal fatto che l'unione di tutte le partizioni dà $\mathbb{N}$ (come sopra), e per ogni partizione, visto che ciascuna di esse è di dimensione $\beta$, $r \in [0, \beta[$ basta a coprire tutti i naturali ivi compresi.
+	\item Assumiamo per assurdo che esistano due possibili rappresentazioni in quoziente e resto, cioè:
+		$$
+		\exists q_1, r_1 \implies x = q_1 \cdot \beta + r_1
+		$$
+		$$
+		\exists q_2, r_2 \implies x = q_2 \cdot \beta + r_2
+		$$
+		Sarà allora vero che:
+		$$
+		x = x \Rightarrow  q_1 \cdot \beta + r_1 = 	q_2 \cdot \beta + r_2, \quad (q_1 - q_2) \cdot \beta = r_2 - r_1 $$
+		e dall'ipotesi $0 < r < \beta$:
+		$$ -\beta < (r_2 - r_1) < \beta \Rightarrow -\beta < (q_1 - q_2) \cdot \beta < \beta $$
+		Cioè dividendo per $\beta$:
+		$$ -1 < (q_1 - q_2) < 1 $$
+		che in $\mathbb{N}$ significa $q_1 - q_2 = 0$, cioè necessariamente $q_1 = q_2$. 
+\end{enumerate}
+$\hfill\square$
 
-L'unicità del risultato è garantita da $0 \leq r \leq \beta - 1$. 
+\subsubsection{Numeri interi}
+Il teorema nel caso naturale non è valido così com'è nell'insieme dei numeri interi, in quanto esistono infinite coppie $q, r \in \mathbb{Z}$ tali per cui $x = q \cdot \beta + r$.
+Si decide di adottare una regola sui segni di $q$ ed $r$, in particolare la seguente:
+\begin{itemize}
+	\item $q$ è positivo se $x$ e $\beta$ sono concordi in segno, negativo altrimenti. Nel caso di $\beta \geq 0$, come sarà per le basi che prenderemo, questo significa che $q$ è concorde a $x$;
+	\item $r$ è sempre $\in [0,\beta[$, e inoltre è concorde a $x$. 
+\end{itemize}
 
-\subsubsection{Divisioni}
-Si ha che una divisione restituisce quoziente e resto:
+Queste restrizioni ci permetteranno di riformulare il teorema:
+\begin{theorem}{della divisone con resto sui numeri naturali}
+	Dato $x \in \mathbb{Z}, \beta \in \mathbb{Z}, \beta > 0$, esiste ed è unica la coppia di numeri $q,r$ con:
+	\begin{itemize}
+		\item $q \in \mathbb{Z}$, $
+			\begin{cases}
+				q \geq 0, \quad \text{se $x$ e $\beta$ concordi} \\
+				q < 0, \quad \text{altrimenti}
+			\end{cases}
+		$
+		\item $r \in \mathbb{N}, \ 0 \leq |r| < \beta$, $r$ concorde a $x$;
+		\item $|x| = |q| \cdot |\beta| + |r|$
+	\end{itemize}
+	tale che $x = q \cdot \beta + r$.
+\end{theorem}
+
+\par\medskip
+\noindent
+\textbf{\textsf{Dimostrazione}} \\
+La dimostrazione del teorema si basa sul mostrare, attraverso l'ausilio della funzione segno:
+$$
+s(x) = 
+	\begin{cases}
+			1, \quad x \geq 0 \\ 
+			-1, \quad x < 0
+	\end{cases}
+$$
+che il teorema con le condizioni riportate equivale al caso naturale già dimostrato.
+
+Si ha quindi che:
+$$
+x = q \cdot \beta + r \Rightarrow s(x) |x| = s(q) |q| \cdot s(\beta) |\beta| + s(r) |r|
+$$
+Dalle ipotesi, $s(q) = s(x) \cdot s(\beta)$ e $s(r) = s(x)$, e quindi:
+$$
+s(x) |x| = s(x) s(\beta) |q| \cdot s(\beta) |\beta| + s(x) |r|
+$$
+il quale, notando che $s(\beta) \cdot s(\beta) = 1$ e dividendo per $s(x)$, diventa:
+$$
+|x| = |q| \cdot |\beta| + |r|
+$$
+Ergo, se le ipotesi sono soddisfatte, il teorema si riduce al caso naturale, e inoltre proprio per le ipotesi la rappresentazione quoziente resto è unica.
+$\hfill\square$
+
+\subsubsection{Interpretazione come divisione}
+Notiamo che sia nel caso naturale che nel caso intero il teorema della divisione con resto ricalca la comune divisione naturale e intera con resto, cioè:
 $$
 q = \left\lfloor \frac{x}{\beta} \right\rfloor, \quad r = |x|_\beta, \quad x = q \cdot \beta + r = \left\lfloor \frac{x}{\beta} \right\rfloor \cdot \beta + |x|_\beta
 $$
 
-Se la divisione è tra naturali, anche $q$ è naturale, cioè $x \in \mathbb{N} \Rightarrow q \in \mathbb{N}$.
+Inoltre se la divisione è tra naturali, anche $q$ è naturale, cioè la divisione con resto è \textbf{chiusa} sui naturali: $x \in \mathbb{N} \Rightarrow q \in \mathbb{N}$.
 
 \subsubsection{Proprietà dell'operatore modulo}
 Abbiamo usato l'operatore modulo ($|x|_\beta$). Vediamone alcune proprietà, dato $\alpha \in \mathbb{N}^+$:
@@ -343,19 +408,20 @@ Possiamo usare il teorema della divisione con resto iterativamente per trovare l
 \caption{delle divisioni successive}
 \begin{algorithmic}
 	\STATE \textbf{Input:} un naturale $A$ e una base $\beta$ % input
-	\STATE \textbf{Output:} la rappresentazione di $A$ in base $\beta$ % output
+	\STATE \textbf{Output:} la rappresentazione di $A$ in base $\beta$ (in ordine inverso) % output
 	% body
-	\STATE$i \leftarrow 1$
+	\STATE$i \gets 1$
+	\STATE$q_0 \gets A$
 	\WHILE{$q_i \neq 0$}
-		\STATE $A = q_i \cdot \beta + \alpha_{i-1}$
-		\STATE $i \leftarrow i + 1$
+		\STATE $q_{i-1} \gets \alpha_{i-1} + \beta \cdot q_i$
+		\STATE $i \gets i + 1$
 	\ENDWHILE
 \end{algorithmic}
 \end{algorithm}
 
 Dimostriamo la correttezza dell'algoritmo: si ha che eseguendo i passaggi ricaviamo una forma:
 $$ 
-A = a_0 + \beta \cdot q_1 = a_0 + \beta \cdot (a_1 + \beta (a_2 + \beta \cdot (...)))
+A = a_0 + \beta \cdot q_1 = a_0 + \beta \cdot (a_1 + \beta (a_2 + \beta \cdot (...))) = a_0 + a_1 \cdot \beta + a_2 \cdot \beta^2 + ...
 $$
 e quindi:
 $$ 
@@ -363,6 +429,8 @@ A = \sum_{i=0}^{n-1} a_i \cdot \beta^i
 $$
 che è per definizione la rappresentazione di $A$ in base $\beta$.
 Inoltre, il teorema della divisione con resto garantisce che la $n$-upla di cifre trovata è \textbf{unica}.
+
+Questo algoritmo non è altro che la formalizzazione del DIV-MOD visto in precedenza.
 
 \subsubsection{Rappresentazione su un numero finito di cifre}
 Con $n$ cifre in base $\beta$, sappiamo che potremo formulare $\beta^n$ sequenze differenti quindi rappresentare al massimo il numero $\beta^n - 1$, cioè quello dove tutte le cifre hanno valore massimo, $\beta - 1$.

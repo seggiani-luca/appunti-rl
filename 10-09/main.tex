@@ -300,8 +300,26 @@ Generalizziamo quindi questa struttura a decoder da $N$ a $2^N$, applicando quan
 	\end{cases}
 \]
 
+Vediamo quindi le codifiche in Verilog di decoder a diversi valori di $N$.
+Si definisce innanzitutto il caso banale di $N = 1$, che finora non è stato trattato.
+Questo servirà a definire, in maniera gerarchica (ma come vedremo imperfetta), decoder più complessi:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/b1to2_decoder.v}
+
+Possiamo quindi definire il decoder da 2 a 4 visto prima:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/b2to4_decoder.v}
+
+un decoder da 3 a 8:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/b3to8_decoder.v}
+
+e infine, ad evidenziare quanto velocemente esplode il numero di termini (cioè esponenzialmente), un decoder da 4 a 16:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/b4to16_decoder.v}
+
 \subsubsection{Decoder con enabler}
-Il problema dei decoder come appena descritti è che non sono espandibili: non si possono costruire, come avevamo visto per i gli AND o gli OR, reti di più decoder combinati.
+Il problema dei decoder come appena descritti è che sono poco agili nell'espansione: non si possono costruire, come avevamo visto per i gli AND o gli OR, reti di più decoder combinati, a meno di non ridursi a ritrovare quelli che sono effettivamente i mintermini della tabella di verità (come si nota dagli esempi).
 Introduciamo per questo motivo il decoder con \textbf{enabler}:
 
 \begin{center}
@@ -354,6 +372,23 @@ e quindi:
 Adesso basta accorgersi che reti di decoder con $N > 2$ possono crearsi concatenando decoder a decoder, cioè usando un decoder con i bit più significativi in entrata per generare l'enabler di $N$ nuovi decoder, i quali ricevono i bit meno significativi in entrata. 
 
 Ad esempio, se vogliamo creare un decoder \texttt{4to16} a partire da decoder \texttt{2to4}, useremo 4 decoder, con gli stessi input ($x_0$ e $x_1$), abilitati da un quinto decoder con input $x_2$ e $x_3$.
+
+Vediamo un'esempio pratico, dato dalle implementazioni in Verilog degli stessi decoder visti prima, ma stavolta dotati di enabler (e posti in cascata, nelle sintesi gerarchiche, attraverso tali enabler).
+Si inizia col decoder 1 a 2:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/b1to2_enb_decoder.v}
+
+Possiamo quindi definire il decoder da 2 a 4:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/b2to4_enb_decoder.v}
+
+un decoder da 3 a 8:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/b3to8_enb_decoder.v}
+
+e infine, di cui notiamo la sintesi gerarchica molto più immediata rispetto al caso senza enabler, un decoder da 4 a 16:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/b4to16_enb_decoder.v}
 
 \subsection{Demultiplexer}
 Il demultiplexer è una rete con $N+1$ ingressi e $p = 2^N$ uscite:
@@ -418,6 +453,14 @@ di prima, e si moltiplica per $x$ per ottenere il comportamento desiderato:
 
 Con $x = e$ questo è un decoder con enabler $x$.
 
+Vediamo infatti l'implementazione in Verilog di un demultiplexer da 1 a 2:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/demuxers/b1to2_demuxer.v}
+
+e come se ne può ricavare uno da 1 a 4:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/demuxers/b1to4_demuxer.v}
+
 \subsection{Multiplexer}
 Il multiplexer è il duale del demultiplexer: una rete con $N + 2^N$ ingressi e $1$ uscita:
 
@@ -458,7 +501,7 @@ $$
 Abbiamo detto che il multiplexer è il duale del demultiplexer: se quest'ultimo prendeva un segnale $x$ e lo inviava al $j$-esimo output sulla base della codifica di $j$ ottenuta alle variabili di controllo, il multiplexer prende il $j$-esimo ingresso, secondo gli stessi canoni, e lo invia alla linea $x$ di uscita.
 
 Alla base della sintesi di un multiplexer sta un decoder: infatti, abbiamo che quest'ultimo seleziona uno solo (\textit{one-hot}) degli output, che possiamo moltiplicare (mettiamo una AND) per l'ingresso corrispondente.
-Visto che solo uno degli output in uscita dagli AND è attivo in un dato momento, possiamo ricombinare il segnale finare con un unico grande OR.
+Visto che solo uno degli output in uscita dagli AND è attivo in un dato momento, possiamo ricombinare il segnale finlle con un unico grande OR.
 
 Come prima, possiamo eliminare gli AND in cascata dal decoder connettendoli agli AND già contenuti in esso.
 
@@ -474,8 +517,16 @@ Otteniamo quindi la descrizione algebrica (si noti che adesso abbiamo fatto sint
 	\end{aligned}
 \]
 
-Notiamo che il multiplexer è una rete a 2 livelli di logica: il segnale passerà al massimo da un AND e un OR.
+Notiamo che il multiplexer è una rete a 2 livelli di logica: il segnale passerà al massimo da una AND e una OR.
 Le NOT sugli ingressi non si contano, in quanto in una rete fisica le variabili di comando proverranno da registri, che forniscono già una versione negata del loro output senza bisogno di ulteriori inversori.
+
+Vediamo quindi un'implementazione in Verilog di un multiplexer da 2 a 1:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/muxers/b2to1_muxer.v}
+
+e come se ne può ricavare uno da 4 a 1:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/muxers/b4to1_muxer.v}
 
 \subsubsection{Multiplexer come rete combinatoria universale}
 Dimostriamo il seguente teorema:

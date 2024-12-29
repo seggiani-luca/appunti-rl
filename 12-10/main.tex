@@ -223,43 +223,92 @@
 \makeatother
 
 \begin{document}
+% sezione (data)
+\section{Lezione del 10-12-24}
 
-\pagestyle{fancy}
+% stili pagina
 \thispagestyle{empty}
-\renewcommand{\thispagestyle}[1]{}
+\pagestyle{fancy}
 
-\maketitle
-\input{../09-24/main.tex}
-\input{../09-25/main.tex}
-\input{../09-26/main.tex}
-\input{../09-27/main.tex}
-\input{../10-01/main.tex}
-\input{../10-02/main.tex}
-\input{../10-03/main.tex}
-\input{../10-08/main.tex}
-\input{../10-09/main.tex}
-\input{../10-10/main.tex}
-\input{../10-11/main.tex}
-\input{../10-15/main.tex}
-\input{../10-17/main.tex}
-\input{../10-22/main.tex}
-\input{../10-23/main.tex}
-\input{../10-24/main.tex}
-\input{../10-29/main.tex}
-\input{../10-30/main.tex}
-\input{../11-05/main.tex}
-\input{../11-06/main.tex}
-\input{../11-07/main.tex}
-\input{../11-08/main.tex}
-\input{../11-12/main.tex}
-\input{../11-14/main.tex}
-\input{../11-19/main.tex}
-\input{../11-21/main.tex}
-\input{../11-22/main.tex}
-\input{../11-26/main.tex}
-\input{../11-27/main.tex}
-\input{../11-28/main.tex}
-\input{../12-03/main.tex}
-\input{../12-05/main.tex}
-\input{../12-10/main.tex}
+% testo
+\subsection{Conversione digitale/analogico e analogico/digitale}
+Finora abbiamo assunto che le interfacce lavorino solo e soltanto con segnali digitali.
+In verità nel mondo esterno al computer le grandezze variano su un una scala continua.
+Occoronno appositi convertitori, detti convertitori digitale/analogico e analogico/digitale.
+
+
+La grandezza analogica che consideriamo è un voltaggi appartenente alla scala FSR (Full Scale Range) $[5, 30] \mathrm{V}$.
+Questa verrà convertita in un intero $x$ rappresentato su $N$ bit con $N \in \{8, 16\}$.
+A seconda dell'interpolazione scelta, potremo distinguere fra:
+\begin{itemize}
+	\item \textbf{Conversione ubipolare:} $v \in [0, FSR]$, $x \in [0, 2^N -1]$;
+	\item \textbf{Conversione bipolare:} $v \in \left[ -\frac{FSR}{2}, \frac{FSR}{2} \right]$, $x \in \left[ -2^{N-1}, +2^{N-1} -1 \right]$
+\end{itemize}
+
+\subsubsection{Errori di conversione}
+Dato $K = \frac{FSR}{2^N}$, nel caso ideale vorremmo $v = Kx$.
+In realtà, avremo che $|v - Kx| \leq \varepsilon$, con un $\varepsilon$ dovuto a errori di conversione:
+\begin{itemize}
+	\item \textbf{Errore di non linearità};
+	\item \textbf{Errore di quantizzazione}. # oggi è allegro
+\end{itemize}
+
+\subsubsection{Tempi di risposta}
+I convertitori D/A sono praticamente "combinatori", e quindi estrememente veloci (pochi nanosecondi).
+I convertitori A/D, di contro, hanno tempi di risposta variabili in base alle architetture.
+Noi vedremo i convertitori ad \textbf{approssimazioni successive} (\textbf{SAR}), che hanno tempi di risposta di qualche centinaio di nanosecondi.
+
+\subsubsection{Convertitori bipolari}
+I convertitori bipolari lavorano con rappresentazioni degli interi in traslazione (detta appunto anche \textit{binaria bipolare}).
+Il numero intero $x$ viene quindi rappresentato dal naturale $X = x + 2^{N-1}$.
+In ogni caso, per riportare in complemento a 2 basterà complementare il MSB.
+
+
+\subsection{Convertitore D/A}
+Un convertitore D/A può essere realizzato come segue:
+
+# circuito
+
+# descrizione
+
+\par\smallskip
+
+Anche se non si considerano resistori e amplificatori operazionali come componenti combinatori, il circuito è effettivamente "combinatorio" nel senso che ha tempi di risposta estremamente veloci.
+Il problema è però quello delle transizioni multiple dello stato di uscita: questo si risolve attraverso un filtro \textit{passa-basso} in uscita.
+
+\subsubsection{Interfaccia per la conversione D/A}
+Vediamo un'interfaccia parallela per l'operazione di un convertitore D/A.
+Sul lato di uscita non si avranno handshake (sola uscita) ma il convertitore D/A stesso.
+
+# rete
+
+\subsection{Convertitore A/D}
+Descriviamo un particolare tipo di convertitori A/D detto convertitore ad \textbf{approssimazioni successive}:
+
+# circuito
+
+# descrizione
+
+Il cuore di un convertitore di questo tipo è una rete sequenziale detta \textbf{SAR} (Successive Approximation Register).
+L'uscita del SAR viene fatta passare attraverso un convertitore D/A dello stesso tipo dell'A/D, e confrontata attraverso un \textbf{comparatore} con l'ingresso corrente in modo da migliorare la previsione, in quella che è effettivamente una \textbf{ricerca logaritmica} (o \textit{binaria} o \textit{dicotomica}).
+In particolare, ad ogni iterazione della ricerca si ricava il valore di un singolo bit, per cui $n$ bit richiedono $n$ iterazioni.
+Lato processore, il SAR dovrà implementare inoltre un handshake \lstinline|soc|/\lstinline|eoc|.
+
+Una descrizione in verilog della SAR potrebbe essere:
+
+# descrizione verilog corsini
+
+Il problema di questa descrizione, supper questa sia perfettamente chiara, è che abbiamo bisogno di un nuovo stato per ogni iterazione di aggiornamento di RBR.
+Una soluzione alternativa potrebbe essere allora:
+
+# descrizione verilog stea
+
+dove si introduce un registro COUNT e una rete combinatoria per il calcolo di RBR.
+
+\subsubsection{Interfaccia per la conversione A/D}
+Vediamo un'interfaccia parallela per l'operazione di un convertitore A/D.
+Lato processore si implementerà un handshake \lstinline|soc|/\lstinline|eoc|.
+
+# rivedi
+
 \end{document}

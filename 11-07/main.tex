@@ -358,10 +358,10 @@ L'uscita dell'incrementatore (chiamiamola $a$) andrà messa in \lstinline|OUTR| 
 Notiamo che non abbiamo mai l'uscita $1, 1$ su $a, e_u$, in quanto uno degli ingressi del sommatore che forma l'incrementatore è "fissato" a 0.
 Possiamo quindi dare la sintesi in Verilog:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/b2_counter.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/up_counters/b2_up_counter.v}
 sfruttando la definizione già data di incrementatore (cioè un \textit{half adder}).
 
-\subsubection{Contatore a una cifra in base 3}
+\subsubsection{Contatore a una cifra in base 3}
 Con procedimenti simili a quelli dell'esempio precedente si può ricavare un contatore a una cifra in base $\beta = 3$.
 In questo caso la tabella di verità dell'incrementatore sarà:
 \begin{table}[H]
@@ -381,7 +381,7 @@ In questo caso la tabella di verità dell'incrementatore sarà:
 \end{table}
 
 e la sintesi sarà:
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/b3_counter.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/up_counters/b3_up_counter.v}
 sfruttando la definizione già data di incrementatore in base 3.
 
 \subsubection{Contatore a una cifra in base 10}
@@ -419,7 +419,7 @@ In questo caso la tabella di verità dell'incrementatore sarà:
 \end{table}
 
 e la sintesi sarà:
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/b10_counter.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/up_counters/b10_up_counter.v}
 sfruttando la definizione già data di incrementatore in base 10.
 
 \subsubsection{Scomposizione in moduli di contatori}
@@ -428,14 +428,14 @@ In questo caso il registro è dato dalla combinazione di $n$ registri, uno per o
 All'attivarsi del riporto di uno dei contatori, il successivo nella catena si attiva, e così via in un processo del tutto identico al propagarsi delle somme nei sommatori a più cifre.
 Si riportano le descrizioni in Verilog di sommatori a quattro cifre, in base $\beta = 2$:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/n4_b2_counter.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/up_counters/n4_b2_up_counter.v}
 
 in base $\beta = 3$:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/n4_b3_counter.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/up_counters/n4_b3_up_counter.v}
 
 e infine in base $\beta = 10$:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/n4_b10_counter.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-07/up_counters/n4_b10_up_counter.v}
 
 \end{document}

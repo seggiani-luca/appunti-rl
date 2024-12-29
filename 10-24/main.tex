@@ -237,10 +237,10 @@ per i numeri naturali.
 
 Nel sistema decimale, usiamo solutamente la rappresentazione \textbf{modulo e segno}, cioè usiamo un segno prefisso ($+$ o $-$), e poi indichiamo il modulo come un naturale.
 
-In base 2, invece, decidiamo di sfruttare la seguente proprietà: preso un insieme di $\beta^n$ numeri interi, posso sempre trovare una legge biunivoca che gli fa corrispondere un insieme di $\beta^n$ numeri naturali.
+In base 2, invece, decidiamo di sfruttare la seguente proprietà: preso un insieme di $\beta^n$ numeri interi, si puà sempre trovare una legge biunivoca che gli fa corrispondere un insieme di $\beta^n$ numeri naturali.
 
-Definisco quindi una legge $L: \mathbb{Z} \rightarrow \mathbb{N}$, e chiamo $A$ un numero naturale (che indicheremo in Maiuscolo da qui in avanti) e $a$ un numero intero (che indicheremo in minuscolo da qui in avanti).
-Si ha quindi che:
+Definiamo quindi una legge $L: \mathbb{Z} \rightarrow \mathbb{N}$, e chiamiamo $A$ un numero naturale (che indicheremo in Maiuscolo da qui in avanti) e $a$ un numero intero (che indicheremo in minuscolo da qui in avanti).
+Si ha che:
 $$
 A = L(a) \Leftrightarrow a = L^{-1}(A)
 $$
@@ -248,8 +248,8 @@ e cioè:
 $$ 
 a \leftrightarrow^L A \equiv (a_{n-1}a_{n-2}...a_1a_0)_\beta
 $$
-cioè con la stessa sequenza di cifre indichiamo sia un naturale che il corrispondente intero.
-Notiamo che la $a$ minuscola qui significa \textit{cifra}, che è indifferentemente di $A$ o di $a$ (numeri naturali e interi).
+che significa che con la stessa sequenza di cifre indichiamo sia un naturale che il corrispondente intero.
+Notiamo che la $a$ minuscola qui significa \textit{cifra}, che è indifferentemente di $A$ o $a$ (numeri naturali e interi).
 
 Scegliendo leggi $L$ valide possiamo otttenere dei significativi vantaggi implementativi: ad esempio potremmo definire una legge che permette di usare la stessa circuiteria per le operazioni aritmetiche sia sui naturali che sugli interi.
 
@@ -302,8 +302,25 @@ Su un grafico dove le ordinate rappresentano $A$ e le ascisse $a$, abbiamo la ma
 \end{tikzpicture}
 \end{center}
 
-\subsubsection{Complemento alla radice}
-Definiamo la legge, che abbiamo solitamente chiamato \textbf{complemento a 2}:
+\subsubsection{Modulo e segno}
+Possiamo sempre usare la legge di rappresentazione in modulo e segno, cioè $(s, M) \leftrightarrow a$:
+\[
+	s=
+	\begin{cases}
+		0, \quad a \geq 0 \\ 
+		1, \quad a < 0
+	\end{cases} 
+\]
+$$
+M = \mathrm{abs}(a)
+$$
+Notiamo che noi intendiamo, per modulo e segno, una rappresentazione deve $n$ bit rappresentano il modulo, e l'$n$-esimo bit rappresenta il segno, per un totale di $n+1$ bit.
+Non stiamo quindi mettendo in relazione intervalli di naturali con intervalli di interi, ma intervalli di naturali complementati da un bit in più di segno, con intervalli di interi.
+Abbiamo quindi che questo tipo di rappresentazione non ricade nella categoria definita prima.
+Ricordiamo comunque che viene applicata per rappresentare il segno dei numeri reali reali in virgola mobile secondo lo standard IEEE 754.
+
+\subsection{Complemento alla radice}
+Definiamo la legge, che abbiamo solitamente chiamato \textbf{complemento a 2} nel caso $\beta = 2$, e che prende il nome di \textbf{complemento alla radice} nel caso $\beta$ arbitrario:
 \[
 		L(a) = A =	
 	\begin{cases}
@@ -313,9 +330,9 @@ Definiamo la legge, che abbiamo solitamente chiamato \textbf{complemento a 2}:
 \]
 
 Con questa legge perdiamo la \textbf{monotoneità}.
-Ciò nonostante, è la legge usata di norma dal processore.
+Ciò nonostante, è la legge usata di norma dal processore, in quanto comporta semplificazioni significative alla circuiteria predisposta all'aritmetica del calcolatore (in particolare permette di usare la stessa circuiteria per somme e sottrazioni naturali e intere).
 
-Ricordiamo che graficamente si può rendere con il cosiddetto diagramma a farfalla:
+Ricordiamo che graficamente si può rendere la legge di rappresentazione con il cosiddetto \textit{diagramma a farfalla}:
 \begin{center}
 	\begin{tikzpicture} [scale=0.9]
     \begin{axis}[
@@ -337,25 +354,8 @@ Ricordiamo che graficamente si può rendere con il cosiddetto diagramma a farfal
 \end{tikzpicture}
 \end{center}
 
-\subsubsection{Modulo e segno}
-Possiamo sempre usare la legge di rappresentazione in modulo e segno, cioè $(s, M) \leftrightarrow a$:
-\[
-	s=
-	\begin{cases}
-		0, \quad a \geq 0 \\ 
-		1, \quad a < 0
-	\end{cases} 
-\]
-$$
-M = \mathrm{abs}(a)
-$$
-Notiamo che noi intendiamo, per modulo e segno, una rappresentazione deve $n$ bit rappresentano il modulo, e l'$n$-esimo bit rappresenta il segno, per un totale di $n+1$ bit.
-Non stiamo quindi mettendo in relazione intervalli di naturali con intervalli di interi, ma intervalli di naturali complementati da un bit in più di segno, con intervalli di interi.
-Abbiamo quindi che questo tipo di rappresentazione non ricade nella categoria definita prima.
-Ricordiamo comunque che viene applicata per rappresentare il segno dei numeri reali reali in virgola mobile secondo lo standard IEEE 754.
-
 \subsubsection{Determinazione del segno}
-Posso determinare il segno di un numero intero $a$ dalle cifre della sua rappresentazione $A$:
+Possiamo determinare il segno di un numero intero $a$ dalle cifre della sua rappresentazione $A$:
 \[
 	\begin{cases}
 		a \geq 0 \Leftrightarrow 0 \leq A < \frac{\beta^n}{2} \\	
@@ -380,15 +380,14 @@ Quindi, per capire se la rappresentazione $A$ è un numero naturale maggiore o m
 	\end{cases}
 \]
 
-Questo ci permette di riscrivere $L$ nella forma più elegante:
-\[
-		L(a) = A =	
-	\begin{cases}
-		a, \quad \quad \quad  a_{n-1} < \frac{\beta}{2} \\ 
-		\beta^n + a, \quad a_{n-1} \geq \frac{\beta}{2}
-	\end{cases}
-\]
-
+% Questo ci permette di riscrivere $L$ nella forma più elegante:
+% \[
+% 		L(a) = A =	
+% 	\begin{cases}
+% 		a, \quad \quad \quad  a_{n-1} < \frac{\beta}{2} \\ 
+% 		\beta^n + a, \quad a_{n-1} \geq \frac{\beta}{2}
+% 	\end{cases}
+% \]
 
 \subsubsection{Legge inversa del CR}
 Possiamo ottenere per sostituzione la legge inversa della legge di rappresentazione CR:
@@ -415,7 +414,7 @@ Che possiamo riscrivere nel modo più elegante:
 \]
 usando quanto detto sulla MSD e quanto conoscevamo sui complementi (ancora, è sostanzialmente un complemento a 2).
 
-In particolare, il cambio delle disequazioni viene fatto note le propietà sul MSD.
+In particolare, il cambio delle disequazioni viene fatto note le propietà sulla MSD.
 La trasformazione $A - \beta^n = -\left( \overline{A} + 1 \right)$ si ricava invece dalla proprietà fondamentale:
 $$
 A + \overline{A} = \beta^n - 1
