@@ -248,11 +248,11 @@ Si può dimostrare il seguente risultato:
 Questo significa che, se ho una legge combinatoria $z = f(x_{N-1}, ..., X_0)$, posso dire:
 \[
 	\begin{aligned}
-		z = f(0, ..., 0,  0) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{X_1} \cdot \overline{X_0}	+ \\
-		f(0, ..., 0, 1) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{X_1} \cdot X_0	+\\
+		z = f(0, ..., 0,  0) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot \overline{x_0}	+ \\
+		f(0, ..., 0, 1) \cdot \overline{x_{N-1}} \cdot \overline{x_{N-2}} \cdot ... \cdot \overline{x_1} \cdot x_0	+\\
 		... + \\
-		f(1, ..., 1, 0) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot X_1 \cdot \overline{X_0}	+\\
-		f(1, ..., 1, 1) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot X_1 \cdot X_0	\\
+		f(1, ..., 1, 0) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot \overline{x_0} +\\
+		f(1, ..., 1, 1) \cdot x_{N-1} \cdot x_{N-2} \cdot ... \cdot x_1 \cdot x_0	\\
 	\end{aligned}
 \]
 che equivale a quanto avevamo visto con la sintesi di reti combinatorie a $N$ ingressi con multiplexer a $N$ variabili di comando.
@@ -301,7 +301,7 @@ alla lista dei mintermini.
 
 Ripetiamo questo passaggio $N - 1$ volte per la dimensione $N$ dei termini, riducendo ogni volta la dimensione degli implicanti di 1.
 Si ricava una forma SP, detta \textbf{lista di implicanti}.
-	\item \textbf{Rimuovere i duplicati} dalla lista dei duplicanti, applicando l'altra regola:
+	\item \textbf{Rimuovere i duplicati} dalla lista degli implicanti, applicando un'altra regola:
 $$
 \alpha x + \alpha = \alpha 
 $$

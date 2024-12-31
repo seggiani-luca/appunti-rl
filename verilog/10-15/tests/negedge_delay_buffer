@@ -1,0 +1,58 @@
+#! /usr/bin/vvp
+:ivl_version "12.0 (stable)" "(v12_0-dirty)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "/usr/lib/ivl/system.vpi";
+:vpi_module "/usr/lib/ivl/vhdl_sys.vpi";
+:vpi_module "/usr/lib/ivl/vhdl_textio.vpi";
+:vpi_module "/usr/lib/ivl/v2005_math.vpi";
+:vpi_module "/usr/lib/ivl/va_math.vpi";
+S_0x5ee94a132500 .scope module, "testbench" "testbench" 2 1;
+ .timescale 0 0;
+v0x5ee94a17bed0_0 .var "t_x", 0 0;
+v0x5ee94a17bf70_0 .net "t_z", 0 0, v0x5ee94a17bdb0_0;  1 drivers
+S_0x5ee94a132690 .scope module, "d_buf" "negedge_delay_buffer" 2 5, 3 3 0, S_0x5ee94a132500;
+ .timescale 0 0;
+    .port_info 0 /INPUT 1 "x";
+    .port_info 1 /OUTPUT 1 "z";
+v0x5ee94a16bd20_0 .net "x", 0 0, v0x5ee94a17bed0_0;  1 drivers
+v0x5ee94a17bdb0_0 .var "z", 0 0;
+E_0x5ee94a16c4d0 .event negedge, v0x5ee94a16bd20_0;
+E_0x5ee94a16c6a0 .event posedge, v0x5ee94a16bd20_0;
+    .scope S_0x5ee94a132690;
+T_0 ;
+    %wait E_0x5ee94a16c6a0;
+    %load/vec4 v0x5ee94a16bd20_0;
+    %assign/vec4 v0x5ee94a17bdb0_0, 0;
+    %jmp T_0;
+    .thread T_0;
+    .scope S_0x5ee94a132690;
+T_1 ;
+    %wait E_0x5ee94a16c4d0;
+    %delay 5, 0;
+    %load/vec4 v0x5ee94a16bd20_0;
+    %assign/vec4 v0x5ee94a17bdb0_0, 0;
+    %jmp T_1;
+    .thread T_1;
+    .scope S_0x5ee94a132500;
+T_2 ;
+    %vpi_call 2 10 "$dumpfile", "negedge_delay_buffer_waveform.vcd" {0 0 0};
+    %vpi_call 2 11 "$dumpvars" {0 0 0};
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5ee94a17bed0_0, 0, 1;
+    %delay 10, 0;
+    %pushi/vec4 1, 0, 1;
+    %store/vec4 v0x5ee94a17bed0_0, 0, 1;
+    %delay 20, 0;
+    %pushi/vec4 0, 0, 1;
+    %store/vec4 v0x5ee94a17bed0_0, 0, 1;
+    %delay 10, 0;
+    %vpi_call 2 25 "$finish" {0 0 0};
+    %end;
+    .thread T_2;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "tests/negedge_delay_buffer_bench.v";
+    "delay_buffers/negedge_delay_buffer.v";

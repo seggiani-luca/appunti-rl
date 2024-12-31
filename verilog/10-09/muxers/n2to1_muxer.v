@@ -5,14 +5,8 @@ module b2to1_muxer(x1_x0, b0, z0);
 	input b0;
 	output z0;
 
-	assign z0 = ({x1_x0, b0} == 'B000) ? 'B0: 
-							({x1_x0, b0} == 'B001) ? 'B0: 
-							({x1_x0, b0} == 'B010) ? 'B1: 
-							({x1_x0, b0} == 'B011) ? 'B0: 
-							({x1_x0, b0} == 'B100) ? 'B0: 
-							({x1_x0, b0} == 'B101) ? 'B1: 
-							({x1_x0, b0} == 'B110) ? 'B1: 
-						/*({x1_x0, b0} == 'B111)?*/'B1; 
+	assign z0 = (b0 == 'B0) ? x1_x0[0]:
+						/*(b0 == 'B1)?*/x1_x0[1];
 endmodule
 
 // implementazione a porte logiche
@@ -21,7 +15,7 @@ module b2to1_muxer_p(x1_x0, b0, z0);
 	input b0;
 	output z0;
 
-	assign z0 = x1_x0[1] & b0 | x1_x0[0] & ~b0;
+	assign z0 = b0 & x1_x0[1] | ~b0 & x1_x0[0];
 endmodule
 
 // implementazione via decoder 

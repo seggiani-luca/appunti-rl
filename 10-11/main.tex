@@ -494,8 +494,20 @@ Quando si disegnano mappe di Karnaugh con elementi indeterminati, questi si inte
 		Restano B e D essenziali, ed E a questo punto eliminabile, in quanto è già compreso in questi.
 \end{itemize}
 
-La sintesi completa dela rete è allora:
+La sintesi completa dell'uscita delle rete è allora:
 $$ z_E = x_1 \overline{x_0} + \overline{x_2}\overline{x_0} $$
+
+Possiamo ripetere questa procedura per ogni uscita della rete, andando quindi a sintetizzare completamente il decodificatore BCD.
+Ad esempio, attraverso il pacchetto software Logisim-Evolution si è generato: 
+\par\smallskip
+\noindent
+$z_A =  \overline{x_2}  \cdot  \overline{x_0} +x_1+x_2 \cdot x_0+x_3$\\
+$z_B =  \overline{x_2} + \overline{x_1}  \cdot  \overline{x_0} +x_1 \cdot x_0+x_3$\\
+$z_C =  \overline{x_1} +x_0+x_2+x_3$\\
+$z_D =  \overline{x_2}  \cdot  \overline{x_0} + \overline{x_2}  \cdot x_1+x_2 \cdot  \overline{x_1}  \cdot x_0+x_1 \cdot  \overline{x_0} +x_3$\\
+$z_E =  \overline{x_2}  \cdot  \overline{x_0} +x_1 \cdot  \overline{x_0} $\\
+$z_F =  \overline{x_1}  \cdot  \overline{x_0} +x_2 \cdot  \overline{x_1} +x_2 \cdot  \overline{x_0} +x_3$\\
+$z_G =  \overline{x_2}  \cdot x_1+x_2 \cdot  \overline{x_1} +x_3+x_1 \cdot  \overline{x_0} $
 
 \subsection{Sintesi in forma PS}
 Abbiamo usato finora la forma SP (somma di prodotti).

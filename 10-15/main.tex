@@ -540,6 +540,10 @@ La tabella di verità corrispondente sarà:
 Notiamo che il valore Hi-Z (alta impedenza) non è un valore logico: ciò che esce da una porta in stato Hi-Z viene interpretato come un filo staccato dal resto della rete.
 Ogni porta logica gestisce poi questa situazione secondo le sue specifiche di realizzazione, restando comunque attaccata sia a Vcc che a massa, e quindi non in uno stato HiZ.
 
+In Verilog, possiamo modellizzare una porta tristate come:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/tristate/tristate.v}
+
 \subsubsection{Multiplexer decodificati}
 Un componente realizzato attraverso le porte tri-state è il multiplexer decodificato:
 
@@ -571,6 +575,23 @@ Un componente realizzato attraverso le porte tri-state è il multiplexer decodif
 
 Questo componente offre alta indipendeza a tutte le variabili $x_i$ in ingresso tranne una, quella all'indice $j$, selezionata attraverso una variabile di comando $b_j$.
 
+In Verilog, possiamo realizzare un multiplexer decodificato sfruttando la definizione già data di decodificatore.
+Vediamo quindi multiplexer decodificati da 2 a 1:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/tristate/n2to1_decoded_muxer.v}
+
+da 4 a 1:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/tristate/n4to1_decoded_muxer.v}
+
+da 8 a 1:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/tristate/n8to1_decoded_muxer.v}
+
+e infine da 16 a 1:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/tristate/n16to1_decoded_muxer.v}
+
 \subsubsection{Linea di ingresso/uscita}
 Si usano le porte tri-state per permettere a componenti di comunicare su linee di ingresso/uscita, ad esempio con la memoria.
 In questo caso, si biforca la linea, ammettendo la linea in entrata così com'è, e mettendo una porta tri-state nella linea in uscita.
@@ -600,6 +621,10 @@ Così, quando il componente $S$ vuole comunicare con l'esterno, imposta l'enable
 
 Se il componente $S$ comunica con un altro componente $T$, questi dovranno impostare alternativamente i loro enabler $b_S$ e $b_T$ a 1 e 0, scambiandosi messaggi sulla linea $d$.
 
+Una struttura di questo tipo, detta anche \textit{"forchetta"}, può essere realizzata in Verilog come segue:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/tristate/tristate_fork.v}
+
 \subsection{Circuiti di ritardo e formatori di impulso}
 A volte bisogna trattare di \textbf{segnali}.
 In questo caso si usano gli elementi neutri $\Delta$ (realizzati spesso con numeri pari di invertitori), che sappiamo porre un \textbf{ritardo simmetrico} agli ingressi, dove simmetrico significa identico sulle transizioni $0 \rightarrow 1$ e $1 \rightarrow 0$.
@@ -607,7 +632,7 @@ In questo caso si usano gli elementi neutri $\Delta$ (realizzati spesso con nume
 Potrebbe essere utile avere circuiti con ritardi \textbf{asimmetrici}, cioè variabili sulle transizioni $0 \rightarrow 1$ e $1 \rightarrow 0$.
 Indichiamo questi componenti come $\Delta^+$.
 
-\subsubsection{Circuito di ritardo sul fronte di discesa}
+\subsubsection{Circuito di ritardo sul fronte di salita}
 Collegando un neutro $\Delta$ assieme al segnale stesso ad una porta AND, si ottiene un'andamento del tipo:
 
 \begin{center}
@@ -662,7 +687,16 @@ Collegando un neutro $\Delta$ assieme al segnale stesso ad una porta AND, si ott
 Nello specifico, transizionando da $1 \rightarrow 0$, si ha che il primo ingresso che va a 0 porta a 0 l'uscita. C'è un ritardo piccolo da parte della porta AND.
 Quando invece si tranziziona da $0 \rightarrow 1$, si ha che il secondo ingresso che va a 1 (quello che passa da $\Delta$) porta a 1 l'uscita. C'è un ritardo grande da parte del $\Delta$ e della porta AND.
 
-\subsubsection{Circuito di ritardo sul fronte di salita}
+La sintesi in Verilog di un circuito di questo tipo è la seguente:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/delay_buffers/posedge_delay_buffer.v}
+
+\lstset{language=verilog, style=codestyle}
+
+Si nota che questa descrizione (e le seguenti) sono state realizzate in due modi: il primo prevede l'uso di blocchi \lstinline|always| con statement bloccanti o non bloccanti, mentre il secondo usa la "sintesi a porte logiche" presentata sopra.
+Entrambe le descrizioni, però, hanno scopo dimostrativo in quanto gli statement di ritardo (\lstinline|#5|) hanno valenza solo durante la simulazione della rete e non in fase di sintesi. 
+
+\subsubsection{Circuito di ritardo sul fronte di discesa}
 Allo stesso modo, collegando un neutro $\Delta$ assieme al segnale stesso ad una porta OR, si ottiene un'andamento del tipo:
 
 \begin{center}
@@ -716,6 +750,10 @@ Allo stesso modo, collegando un neutro $\Delta$ assieme al segnale stesso ad una
 
 Nello specifico, transizionando da $0 \rightarrow 1$, si ha che il primo ingresso che va a 1 porta a 1 l'uscita. C'è un ritardo piccolo da parte della porta OR.
 Quando invece si tranziziona da $1 \rightarrow 0$, si ha che il secondo ingresso che va a 0 (quello che passa da $\Delta$) porta a 0 l'uscita. C'è un ritardo grande da parte del $\Delta$ e della porta OR.
+
+La sintesi in Verilog di un circuito di questo tipo è la seguente:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/delay_buffers/negedge_delay_buffer.v}
 
 \subsubsection{Formatore di impulso sul fronte di salita}
 I formatori di impulso sono reti combinatorie che generano in uscita un \textbf{impulso} di durata nota.
@@ -780,6 +818,10 @@ Dopo il ritardo $\Delta$, NOT torna a 0, e quindi l'uscita della AND va a 0.
 Si ha quindi un'impulso di durata del ritardo $\Delta$.
 Transizionando da $1 \rightarrow 0$, invece, si ha che il segnale "ancora" istantaneamente l'uscita della AND a zero, ergo non si hanno altri artefatti.
 
+La sintesi in Verilog di un circuito di questo tipo è la seguente:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/impulse_generators/posedge_impulse_generator.v}
+
 \subsubsection{Formatore di impulso sul fronte di discesa}
 Si crea un formatore di impulso sul fronte di discesa collegando la negazione di un $\Delta$ e il segnale stesso ad una porta NOR, cioé:
 
@@ -839,5 +881,9 @@ Nello specifico, transizionando da $0 \rightarrow 1$, si ha che il segnale va a 
 Dopo il ritardo $\Delta$, l'uscita della NOT torna a 0, così che quando si stacca il segnale, per una durata $\Delta$ entrambe le linee in entrata alla NOR vanno a 0, e quindi questa va a 1.
 Dopo il ritardo $\Delta$, NOT torna a 0, e quindi l'uscita della AND va a 0.
 Si ha quindi, ancora una volta, un'impulso di durata del ritardo $\Delta$.
+
+La sintesi in Verilog di un circuito di questo tipo è la seguente:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-15/impulse_generators/negedge_impulse_generator.v}
 
 \end{document}

@@ -42,5 +42,5 @@ module b3to8_enb_decoder_g(x2_x0, e, z7_z0);
 	
   b2to4_decoder b2to4_1 (x2_x0[1:0], enb[1], z7_z0[7:4]);
   b2to4_decoder b2to4_2 (x2_x0[1:0], enb[0], z7_z0[3:0]);
-  b1to2_decoder b1to2_c (x2_x0[2], enb);
+  b1to2_decoder b1to2_c (x2_x0[2], e, enb);
 endmodule

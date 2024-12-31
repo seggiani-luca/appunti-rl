@@ -22,7 +22,7 @@ module testbench();
 		t_reset_ = 0;
 		t_ei = 0;
 
-		#10 
+		#10; 
 
 		t_reset_ = 1;
 		t_ei = 1;

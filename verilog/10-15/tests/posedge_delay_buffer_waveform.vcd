@@ -1,0 +1,45 @@
+$date
+	Sun Dec 29 23:15:36 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module posedge_delay_buffer_x $end
+$var wire 1 ! x $end
+$var reg 1 " z $end
+$upscope $end
+$scope module testbench $end
+$var wire 1 # t_z $end
+$var reg 1 $ t_x $end
+$scope module d_buf $end
+$var wire 1 $ x $end
+$var wire 1 # z $end
+$var reg 1 % y $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+0%
+0$
+0#
+x"
+z!
+$end
+#10
+1$
+#15
+1#
+1%
+#30
+0#
+0$
+#35
+0%
+#40

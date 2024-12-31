@@ -164,7 +164,7 @@
   morestring=[b]"
 }
 
-\lstset{language=assembler, style=codestyle}
+\lstset{language=verilog, style=codestyle}
 
 % disponi sezioni
 \usepackage{titlesec}
@@ -230,7 +230,7 @@
 \subsection{Operazioni a costo nullo}
 \subsubsection{Moltiplicazioni e divisioni per potenze di base}
 Moltiplicare e dividere per potenze della base $\beta$ significa semplicemente aggiungere o togliere zeri, ergo si tratta di operazioni a \textbf{costo nullo}.
-Se le operazioni sono a costo nullo, è molto probabile che le reti che le implementano sono \textbf{prive di logica}.
+Se le operazioni sono a costo nullo, è molto probabile che le reti che le implementano siano \textbf{prive di logica}.
 
 \begin{itemize}
 	\item \textbf{Moltiplicazione:} effettivamente, la rete che implementa una moltiplicazione per $\beta$ sposta gli input $x_{n - 1}, ..., x_0$ "su", attraverso una mappa:
@@ -404,7 +404,7 @@ secondo la mappa:
 		\node at(0,2.5) {$z_{n-k-1}$};
 
 		\draw[->] (0.5,0) -- (2.5,0);
-		\draw[->] (0.5,0.5) -- (2.5,0.5);
+		\draw[->] (0.5,1) -- (2.5,1);
 		\draw[->] (0.5,1.5) -- (2.5,1.5);
 		\draw[->] (0.75,2.5) -- (2.5,2.5);
 
@@ -415,7 +415,7 @@ secondo la mappa:
         node[midway,left=10pt]{$z$};
 		
 		\node at(3,0) {$y_0$};
-		\node at(3,0.5) {$..$};
+		\node at(3,0.5) {$...$};
 		\node at(3,1) {$y_{k-1}$};
 		\node at(3,1.5) {$y_k$};
 		\node at(3,2) {$...$};
@@ -487,7 +487,7 @@ dove la cifra $n+1$ è compresa in $Z_{n+1} \in [0, 1]$, cioè rappresenta il ri
 
 \par\smallskip
 
-Possiamo quindi affermare con sicurezza che la sommma fra due naturali espressi in base $\beta$ su $n$ cifre più un'eventuale riporto entrante $C_{in}$ produce un naturale che è sempre rappresentabile su $n+1$ cifre in base $\beta$, delle quali la $n+1$-esima cifra è il riporto uscente, e può valere soltanto $0$ o $1$.
+Possiamo quindi affermare con sicurezza che la somma fra due naturali espressi in base $\beta$ su $n$ cifre più un'eventuale riporto entrante $C_{in}$ produce un naturale che è sempre rappresentabile su $n+1$ cifre in base $\beta$, delle quali la $n+1$-esima cifra è il riporto uscente, e può valere soltanto $0$ o $1$.
 
 Quello che vogliamo è un circuito sommatore in base $\beta$ a $n$ cifre che prenda le cifre di due naturali $X$ e $Y$ su $n$ cifre e un riporto entrante $C_{in}$ (un bit), e restituisca un'altro naturale $Z$, sempre su $n$ cifre e un riporto uscente $C_{out}$ (sempre un bit). 
 
@@ -527,6 +527,14 @@ Potremmo adesso applicare Karnaugh, ma notiamo che $s_i$ vale 1 quando la somma 
 Allo stesso modo, il $c_{out}$ non sarà altro che un circuito SP standard, che prende gli AND di ogni coppia di ingressi e li passa attraverso un OR.
 Abbiamo che il full adder è una rete a 2 livelli di logica.
 
+Si ha allora l'implementazione in Verilog del full adder in base 2:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/adders/b2_adder.v}
+
+A questo punto si potranno concatenare, ad esempio, 4 full adder per creare un adder a più bit:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/adders/n4_b2_adder.v}
+
 \subsubsection{Incrementatore}
 Abbiamo che in assembler potevamo distinguere fra le operazioni \lstinline|ADD $1, %al| e \lstinline|INC %al|.
 Possiamo fare l'assunzione che almeno uno degli ingressi di un full adder sia sempre zero per realizzare un \textbf{half adder} o \textit{incrementatore}: ad esempio, prendiamo $y_i = 0$. 
@@ -544,7 +552,7 @@ e in base 10:
 
 \lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/halfadders/b10_halfadder.v}
 
-Le sintesi SP (con anche gate XOR aggiunti a discrezione) si ricavano direttamente dagli statement \textbf{assignment} delle descrizioni riportate.
+Le sintesi SP (con anche gate XOR aggiunti a discrezione) si ricavano direttamente dagli statement \lstinline|assign| delle descrizioni riportate.
 
 \subsubsection{Parallelizzazione della somma}
 Facciamo delle considerazioni sulle prestazioni: se in un full adder ogni input arriva in tempo $t$, dopo 2 livelli di logica il $c_{in}$ del prossimo full adder arriverà a $t + 2$.
@@ -555,7 +563,31 @@ Questo ci dice che la somma è si \textbf{scomponibile}, ma non \textbf{parallel
 In verità, negli anni, sono state sviluppate architetture che implementano il \textbf{carry lookahead}, cioè implementano su due livelli di logica, con 5 ingressi, un "precalcolo" del carry a qualche $t + 4$, cioè ogni due full adder (i 5 ingressi sono il primo carry e i 2 + 2 ingressi dei 2 full adder).
 Questo pressapoco raddoppia la velocità di calcolo delle somme su $n$ cifre, passando quindi da $t + 2n$ a $\approx t + n$.
 
-Riassumendo, quindi, gli incrementatori risultavano più veloci dei full adder per ottimizzazioni di questo tipo e in quanto implementavano tutto su un solo ivello di logica.
+Possiamo ricavare le formule di precalcolo prendendo l'implementazione di un adder data prima.
+Avevamo che il bit di riporto di un full adder che calcolava $x + y$ era dato da:
+$$
+C_i = G_i + P_i C_{in}
+$$
+dove $G_i = x_i \cdot y_i$ e $P_i = x_i \oplus y_i$ vengono detti \textbf{generazione} e \textbf{propagazione} di carry alla cifra $i$. Intuitivamente, infatti, questi rappresentano se un riporto viene \textit{generato} o \textit{propagato} alla cifra $i$.
+
+Avremo allora le formule estese, facendo le dovute sostituzioni:
+$$
+C_0 = G_0 + P_0 \cdot C_{in}
+$$
+$$
+C_1 = G_1 + P_1 \cdot G_0 + P_1 \cdot P_0 \cdot C_{in}
+$$
+$$
+C_2 = G_2 + P_2 \cdot G_1 + P_2 \cdot P_1 \cdot G_0 + P_2 \cdot P_1 \cdot P_0 \cdot C_{in}
+$$
+$$
+C_3 = G_3 + P_3 \cdot G_2 + P_3 \cdot P_2 \cdot G_1 + P_3 \cdot P_2 \cdot P_1 \cdot G_0 + P_3 \cdot P_2 \cdot P_1 \cdot P_0 \cdot C_{in}
+$$
+
+Questi riporti verranno propagati ai corrispettivi full adder, che non dovranno più aspettare la propagazione sul lato sinistro da parte dei full adder precedenti.
+Un esempio di un adder a 4 bit dotato di CLA implementato in Verilog è il seguente:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/adders/n4_b2_cla_adder.v}
 
 \subsection{Sottrazione}
 L'algoritmo di sottrazione consiste nell'applicare un'algoritmo analogo alla somma ma con prestiti al contrario, cioè nel:

@@ -304,19 +304,19 @@ Vediamo quindi le codifiche in Verilog di decoder a diversi valori di $N$.
 Si definisce innanzitutto il caso banale di $N = 1$, che finora non è stato trattato.
 Questo servirà a definire, in maniera gerarchica (ma come vedremo imperfetta), decoder più complessi:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/b1to2_decoder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/n1to2_decoder.v}
 
 Possiamo quindi definire il decoder da 2 a 4 visto prima:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/b2to4_decoder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/n2to4_decoder.v}
 
 un decoder da 3 a 8:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/b3to8_decoder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/n3to8_decoder.v}
 
 e infine, ad evidenziare quanto velocemente esplode il numero di termini (cioè esponenzialmente), un decoder da 4 a 16:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/b4to16_decoder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/decoders/n4to16_decoder.v}
 
 \subsubsection{Decoder con enabler}
 Il problema dei decoder come appena descritti è che sono poco agili nell'espansione: non si possono costruire, come avevamo visto per i gli AND o gli OR, reti di più decoder combinati, a meno di non ridursi a ritrovare quelli che sono effettivamente i mintermini della tabella di verità (come si nota dagli esempi).
@@ -376,19 +376,19 @@ Ad esempio, se vogliamo creare un decoder \texttt{4to16} a partire da decoder \t
 Vediamo un'esempio pratico, dato dalle implementazioni in Verilog degli stessi decoder visti prima, ma stavolta dotati di enabler (e posti in cascata, nelle sintesi gerarchiche, attraverso tali enabler).
 Si inizia col decoder 1 a 2:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/b1to2_enb_decoder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/n1to2_enb_decoder.v}
 
 Possiamo quindi definire il decoder da 2 a 4:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/b2to4_enb_decoder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/n2to4_enb_decoder.v}
 
 un decoder da 3 a 8:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/b3to8_enb_decoder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/n3to8_enb_decoder.v}
 
 e infine, di cui notiamo la sintesi gerarchica molto più immediata rispetto al caso senza enabler, un decoder da 4 a 16:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/b4to16_enb_decoder.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/enb_decoders/n4to16_enb_decoder.v}
 
 \subsection{Demultiplexer}
 Il demultiplexer è una rete con $N+1$ ingressi e $p = 2^N$ uscite:
@@ -455,11 +455,19 @@ Con $x = e$ questo è un decoder con enabler $x$.
 
 Vediamo infatti l'implementazione in Verilog di un demultiplexer da 1 a 2:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/demuxers/b1to2_demuxer.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/demuxers/n1to2_demuxer.v}
 
 e come se ne può ricavare uno da 1 a 4:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/demuxers/b1to4_demuxer.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/demuxers/n1to4_demuxer.v}
+
+da 1 a 8:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/demuxers/n1to8_demuxer.v}
+
+e infine da 1 a 16:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/demuxers/n1to16_demuxer.v}
 
 \subsection{Multiplexer}
 Il multiplexer è il duale del demultiplexer: una rete con $N + 2^N$ ingressi e $1$ uscita:
@@ -522,11 +530,19 @@ Le NOT sugli ingressi non si contano, in quanto in una rete fisica le variabili 
 
 Vediamo quindi un'implementazione in Verilog di un multiplexer da 2 a 1:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/muxers/b2to1_muxer.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/muxers/n2to1_muxer.v}
 
 e come se ne può ricavare uno da 4 a 1:
 
-\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/muxers/b4to1_muxer.v}
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/muxers/n4to1_muxer.v}
+
+da 8 a 1:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/muxers/n8to1_muxer.v}
+
+e infine da 16 a 1:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-09/muxers/n16to1_muxer.v}
 
 \subsubsection{Multiplexer come rete combinatoria universale}
 Dimostriamo il seguente teorema:

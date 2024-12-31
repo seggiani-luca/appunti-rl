@@ -277,7 +277,7 @@ $$
 
 Potremo quindi usare queste partizioni per definire:
 $$ \forall x \in \mathbb{N}, \beta \in \mathbb{N}, \quad \exists ! \ q : x \in [ q \cdot \beta, (q+1) \cdot \beta [ \ , \quad \exists ! \ r \ : r = x - q \cdot \beta $$
-con le solite ipotesi $q \in \mathbb{Z}$ e $r \in \mathbb{Z}$ con $0 < r < \beta$.
+con le solite ipotesi $q \in \mathbb{N}$ e $r \in \mathbb{N}$ con $0 < r < \beta$.
 
 Vogliamo dimostrare che (1) questo è sempre possibile e (2) $q$ e $r$ sono unici.
 \begin{enumerate}
@@ -468,7 +468,10 @@ $\beta - 1 -\alpha_i$ è una cifra in base $\beta$ in quanto compresa fra $0$ e 
 Quindi, $\overline{A} = (\overline{a_{n-1}} \overline{a_{n-2}} ... \overline{a_{1}} \overline{a_{0}})_\beta$.
 
 Questo significa che basta saper fare il complemento di una singola cifra per fare il complemento di un numero.
-In base 2, questo significa usare una porta not.
+In base 2, questo significa usare una porta NOT:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-17/complementers/b2_complementer.v}
+
 In altre basi diventà più complicato, ad esempio in base 10 con codifica BCD avrò un circuito con 4 ingressi e 4 uscite, con tabella di verità:
 
 \begin{table}[H]
@@ -504,5 +507,9 @@ che dopo una sintesi dà:
 		z_0 = \overline{x_0}
 	\end{cases}
 \]
+
+e il seguente codice Verilog:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-17/complementers/b10_complementer.v}
 
 \end{document}
