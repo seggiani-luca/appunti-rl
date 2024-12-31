@@ -531,7 +531,7 @@ Si ha allora l'implementazione in Verilog del full adder in base 2:
 
 \lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/adders/b2_adder.v}
 
-A questo punto si potranno concatenare, ad esempio, 4 full adder per creare un adder a più bit:
+A questo punto si potranno concatenare, ad esempio, 4 full adder per creare un adder a 4 bit:
 
 \lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/adders/n4_b2_adder.v}
 
@@ -566,23 +566,26 @@ Questo pressapoco raddoppia la velocità di calcolo delle somme su $n$ cifre, pa
 Possiamo ricavare le formule di precalcolo prendendo l'implementazione di un adder data prima.
 Avevamo che il bit di riporto di un full adder che calcolava $x + y$ era dato da:
 $$
-C_i = G_i + P_i C_{in}
+C_i = G_i + P_i \cdot C_{in}
 $$
 dove $G_i = x_i \cdot y_i$ e $P_i = x_i \oplus y_i$ vengono detti \textbf{generazione} e \textbf{propagazione} di carry alla cifra $i$. Intuitivamente, infatti, questi rappresentano se un riporto viene \textit{generato} o \textit{propagato} alla cifra $i$.
 
-Avremo allora le formule estese, facendo le dovute sostituzioni:
-$$
+Avremo allora le formule estese, facendo le dovute sostituzioni: \\
+\noindent
+$
 C_0 = G_0 + P_0 \cdot C_{in}
-$$
-$$
+$ \\ 
+$
 C_1 = G_1 + P_1 \cdot G_0 + P_1 \cdot P_0 \cdot C_{in}
-$$
-$$
+$ \\ 
+$
 C_2 = G_2 + P_2 \cdot G_1 + P_2 \cdot P_1 \cdot G_0 + P_2 \cdot P_1 \cdot P_0 \cdot C_{in}
-$$
-$$
+$ \\ 
+$
 C_3 = G_3 + P_3 \cdot G_2 + P_3 \cdot P_2 \cdot G_1 + P_3 \cdot P_2 \cdot P_1 \cdot G_0 + P_3 \cdot P_2 \cdot P_1 \cdot P_0 \cdot C_{in}
-$$
+$
+
+\par\smallskip
 
 Questi riporti verranno propagati ai corrispettivi full adder, che non dovranno più aspettare la propagazione sul lato sinistro da parte dei full adder precedenti.
 Un esempio di un adder a 4 bit dotato di CLA implementato in Verilog è il seguente:
@@ -592,7 +595,7 @@ Un esempio di un adder a 4 bit dotato di CLA implementato in Verilog è il segue
 \subsection{Sottrazione}
 L'algoritmo di sottrazione consiste nell'applicare un'algoritmo analogo alla somma ma con prestiti al contrario, cioè nel:
 \begin{enumerate}
-	\item Sotrarre le coppie di cifre di pari posizione, singolarmente, dalla LSD alla MSD;
+	\item Sottrarre le coppie di cifre di pari posizione, singolarmente, dalla LSD alla MSD;
 	\item Se la somma di cifre non è rappresentabile su una singola cifra, generare un \textbf{prestito} (\textit{borrow}) per la coppia di cifre successive.
 \end{enumerate}
 
@@ -643,11 +646,25 @@ $$
 dove la differenza fra $X$ e $Y$ meno un prestito entrante, se naturale, può essere ottenuta se sommo $X$ ad $\overline{Y}$, più un'eventuale riporto entrante ottenuto complementando il prestito entrante.
 Se a questo punto il riporto uscente di $\overline{b_{out}}$ vale 1, si ha che la differenza è un naturale pari a $D$, altrimenti non è rappresentabile.
 
+Vediamo quindi come implementare in Verilog un sottrattore a una cifra, racchiudendo semplicemente un adder a una cifra fra due NOT ai prestiti e un complementatore al secondo ingresso:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/subtractors/b2_subtractor.v}
+
+A questo punto avremo più possibilità per l'implementazione di un sottrattore a più cifre.
+Potremo collegare più sottrattori a una cifra come quello riportato sopra fra di loro, oppure, più efficientemente, sfruttare un adder a 4 cifre (che ci permetterà ad esempio di non riscrivere le formule di precalcolo dei carry se si volesse usare un meccanismo di CLA).
+Un esempio in Verilog di entrambi i casi è il seguente:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/subtractors/n4_b2_subtractor.v}
+
 \subsubsection{Comparazione di numeri naturali}
 Dati due \textbf{naturali} $X$ e $Y$, si possono usare i sottrattori per comparare i loro valori, cioè per ottenere $x < Y$.
 Per fare ciò, si calcola $X - Y$ e si guarda il prestito uscente: se $b_{out} = 1$, allora $X<Y$, altrimenti viceversa.
 
 Per controllare l'uguaglianza, invece, si prende $b_{out}$ e $D$: se $b_{out} = 1$ (differenza rappresentabile) e $D=0$, allora $X = Y$, altrimenti viceversa.
+
+Vediamo un implementazione in Verilog, dove si calcolano i flag \lstinline|flag_eq|, \lstinline|flag_lr| (minoranza) e \lstinline|flag_gr| (maggioranza):
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/subtractors/n4_b2_comparator.v}
 
 \subsection{Moltiplicazione}
 Dati $X$ e $C$ naturali in base $\beta$ su $n$ cifre, cioè $X,C \in [0, \beta^n - 1]$, e $Y$ naturale in base $\beta$ su $m$ cifre, cioè $Y \in [0, \beta^m - 1]$, vogliamo calcolare:
@@ -709,10 +726,21 @@ L'ingresso $C_{in}$ del full adder varrà 0, mentre l'uscita $C_{out}$ verrà co
 Abbiamo che in base 2 un multiplexer a due ingressi, con uno di questi negato, è effettivamente una porta AND fra l'ingresso non nullo e la variabile di controllo.
 Sostituiamo quindi il multiplexer con un AND a $n$ fra $X$ e $y_i$.
 
+Vediamo allora l'implementazione in Verilog del modulo moltiplicatore con addizionatore in base 2, con ingressi a 4 bit:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/multipliers/n4by1_b2_multiplier.v}
+
+Si potrebbe pensare di implementare tale modulo, anziché con la struttura a multiplexer presentata, attraverso singoli moltiplicatori a una cifra concatenati fra di loro (attraverso altri multiplexer, sommatori o logica simile).
+Si ha però che una struttura del genere diventa velocemente più complessa di usare risultati intermedi a un numero prefissato (da $n/2$, $n/4$ e cosi via) di bit.
+
+Combiniamo quindi 4 circuiti moltiplicatori con addizionatori per creare un moltiplicatore completo fra due numeri a 4 bit, con un ingresso di riporto a 4 bit:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-22/multipliers/n4by4_b2_multiplier.v}
+
 \subsubsection{Richiamo all'assembler}
 Avevamo visto che in assembler la moltiplicazione aveva un solo operando esplicito, mentre l'altro era implicito su AL, AX o EAX.
 Il risultato veniva poi concatenato in AX, DX\_AX o EDX\_EAX.
-Questo rispetta la logica vista finora:partendo da fattori su $n$ e $m$ bit, con $n = m$, si arriva ad un risultato rappresentabile su $n + m = 2n$ bit, cioè $8 + 8 = 16$ bit (AL $\rightarrow$ AX), $16 + 16 = 32$ bit (AX $\rightarrow$ DX\_AX) e $16 + 16 = 32$ bit (EAX $\rightarrow$ EDX\_EAX)
+Questo rispetta la logica vista finora: partendo da fattori su $n$ e $m$ bit, con $n = m$, si arriva ad un risultato rappresentabile su $n + m = 2n$ bit, cioè $8 + 8 = 16$ bit (AL $\rightarrow$ AX), $16 + 16 = 32$ bit (AX $\rightarrow$ DX\_AX) e $16 + 16 = 32$ bit (EAX $\rightarrow$ EDX\_EAX).
 
 \subsubsection{Convertitori di base}
 Vediamo come realizzare un convertitore da 2 cifre, $x_1$ e $x_0$ in codifica BCD, alla codifica binaria.

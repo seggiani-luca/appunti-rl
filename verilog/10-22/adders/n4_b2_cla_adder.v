@@ -1,6 +1,6 @@
 // un adder CLA a 4 cifre in base 2 che calcola @x3_x0 + @y3_y0, 
 // mettendo il risultato in @s3_s0 e il riporto in @cout
-module n4_b2_adder(x3_x0, y3_y0, cin, s3_s0, cout);
+module n4_b2_cla_adder(x3_x0, y3_y0, cin, s3_s0, cout);
 	input[3:0] x3_x0, y3_y0;
 	input cin;	
 	output[3:0] s3_s0;
@@ -47,16 +47,20 @@ module n4_b2_cla(x3_x0, y3_y0, cin, carry);
 	assign gen = x3_x0 & y3_y0;
 	assign pro = x3_x0 ^ y3_y0;
 
-	assign carry[0] = gen[0] | pro[0] & cin;
-	assign carry[1] = gen[1] | pro[1] & gen[0] 
-													 | pro[1] & pro[0] & cin;
-	assign carry[2] = gen[2] | pro[2] & gen[1] |
-													 | pro[2] & pro[1] & gen[0] 
-													 | pro[2] & pro[0] & cin;
-	assign carry[3] = gen[3] | pro[3] & gen[2] 
-													 | pro[3] & pro[2] & gen[1]
-													 | pro[3] & pro[2] & pro[1] & gen[0] 
-													 | pro[3] & pro[2] & pro[0] & cin; 
+	assign carry[0] = gen[0] 
+									| pro[0] & cin;
+	assign carry[1] = gen[1] 
+									|	pro[1] & gen[0] 
+									| pro[1] & pro[0] & cin;
+	assign carry[2] = gen[2] 
+									| pro[2] & gen[1] 
+									|	pro[2] & pro[1] & gen[0] | pro[2] & pro[1]
+																											& pro[0] & cin;
+	assign carry[3] = gen[3] 
+									| pro[3] & gen[2] 
+									| pro[3] & pro[2] & gen[1] 
+									|	pro[3] & pro[2] & pro[1] & gen[0] | pro[3]
+																		& pro[2] & pro[1] & pro[0] & cin; 
 endmodule
 
 // implementazione alternativa dell'adder (non abbiamo piu' bisogno 
@@ -65,5 +69,5 @@ module b2_adder(x, y, cin, s);
 	input x, y, cin;
 	output s;
 
-	assign s = x ^ y ^ cin;
+	assign s = (x ^ y) ^ cin;
 endmodule

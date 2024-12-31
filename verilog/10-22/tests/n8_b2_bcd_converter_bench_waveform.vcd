@@ -1,0 +1,326 @@
+$date
+	Tue Dec 31 20:05:27 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench $end
+$var wire 4 ! t_c3_c0 [3:0] $end
+$var wire 4 " t_b3_b0 [3:0] $end
+$var wire 4 # t_a3_a0 [3:0] $end
+$var reg 1 $ t_clock $end
+$var reg 1 % t_reset_ $end
+$var reg 8 & t_x7_x0 [7:0] $end
+$scope module conv $end
+$var wire 1 $ clock $end
+$var wire 1 % reset_ $end
+$var wire 8 ' x7_x0 [7:0] $end
+$var wire 20 ( s19_s0_add3 [19:0] $end
+$var wire 4 ) c3_c0 [3:0] $end
+$var wire 4 * b3_b0 [3:0] $end
+$var wire 4 + a3_a0 [3:0] $end
+$var parameter 32 , s0 $end
+$var parameter 32 - s1 $end
+$var parameter 32 . s2 $end
+$var parameter 32 / s3 $end
+$var reg 3 0 COUNT [2:0] $end
+$var reg 2 1 STAR [1:0] $end
+$var reg 20 2 s19_s0 [19:0] $end
+$scope module d3_1 $end
+$var wire 4 3 x3_x0 [3:0] $end
+$var wire 4 4 z3_z0 [3:0] $end
+$upscope $end
+$scope module d3_2 $end
+$var wire 4 5 x3_x0 [3:0] $end
+$var wire 4 6 z3_z0 [3:0] $end
+$upscope $end
+$scope module d3_3 $end
+$var wire 4 7 x3_x0 [3:0] $end
+$var wire 4 8 z3_z0 [3:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b11 /
+b10 .
+b1 -
+b0 ,
+$end
+#0
+$dumpvars
+bx 8
+bx 7
+bx 6
+bx 5
+bx 4
+bx 3
+bx 2
+bx 1
+bx 0
+bx +
+bx *
+bx )
+bx (
+bx '
+bx &
+0%
+0$
+bx #
+bx "
+bx !
+$end
+#1
+b0 1
+#5
+1$
+#10
+0$
+b1101001 &
+b1101001 '
+#11
+1%
+#15
+1$
+#18
+b0 4
+b0 6
+b0 8
+b0 3
+b0 5
+b0 7
+b1101001 (
+b0 #
+b0 +
+b0 "
+b0 *
+b0 !
+b0 )
+b1 1
+b111 0
+b1101001 2
+#20
+0$
+#25
+1$
+#28
+b10 1
+#30
+0$
+#35
+1$
+#38
+b11010010 (
+b110 0
+b1 1
+b11010010 2
+#40
+0$
+#45
+1$
+#48
+b10 1
+#50
+0$
+#55
+1$
+#58
+b1 8
+b1 7
+b110100100 (
+b1 !
+b1 )
+b101 0
+b1 1
+b110100100 2
+#60
+0$
+#65
+1$
+#68
+b10 1
+#70
+0$
+#75
+1$
+#78
+b11 8
+b11 7
+b1101001000 (
+b11 !
+b11 )
+b100 0
+b1 1
+b1101001000 2
+#80
+0$
+#85
+1$
+#88
+b10 1
+#90
+0$
+#95
+1$
+#98
+b1001 8
+b110 7
+b100110010000 (
+b110 !
+b110 )
+b11 0
+b1 1
+b11010010000 2
+#100
+0$
+#105
+1$
+#108
+b110010010000 (
+b1100 8
+b1001 7
+b1001 !
+b1001 )
+b10 1
+b100110010000 2
+#110
+0$
+#115
+1$
+#118
+b1 6
+b11 8
+b1 5
+b11 7
+b1001100100000 (
+b1 "
+b1 *
+b11 !
+b11 )
+b10 0
+b1 1
+b1001100100000 2
+#120
+0$
+#125
+1$
+#128
+b10 1
+#130
+0$
+#135
+1$
+#138
+b10 6
+b1001 8
+b10 5
+b110 7
+b10100101000000 (
+b10 "
+b10 *
+b110 !
+b110 )
+b1 0
+b1 1
+b10011001000000 2
+#140
+0$
+#145
+1$
+#148
+b10110001000000 (
+b1100 8
+b1001 7
+b1001 !
+b1001 )
+b10 1
+b10100101000000 2
+#150
+0$
+#155
+1$
+#158
+b1000 6
+b10 8
+b101 5
+b10 7
+b1000001010000000 (
+b101 "
+b101 *
+b10 !
+b10 )
+b0 0
+b1 1
+b101001010000000 2
+#160
+0$
+#165
+1$
+#168
+b1011001010000000 (
+b1011 6
+b1000 5
+b1000 "
+b1000 *
+b10 1
+b1000001010000000 2
+#170
+0$
+#175
+1$
+#178
+b1 4
+b0 6
+b1000 8
+b1 3
+b0 5
+b101 7
+b10000100000000000 (
+b1 #
+b1 +
+b0 "
+b0 *
+b101 !
+b101 )
+b111 0
+b11 1
+b10000010100000000 2
+#180
+0$
+#185
+1$
+#190
+0$
+#195
+1$
+#200
+0$
+#205
+1$
+#210
+0$
+#215
+1$
+#220
+0$
+#225
+1$
+#230
+0$
+#235
+1$
+#240
+0$
+#245
+1$
+#250
+0$
+#255
+1$
+#260
+0$
+#261
