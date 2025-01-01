@@ -249,7 +249,7 @@ $$
 
 L'ipotesi potrebbe sembrare limitante, ma visto che si può ricavare $n$ che soddisfi la disuguaglianza, possiamo eseguire qualsiasi divisione poste \textbf{estensioni} del dividendo e \textbf{riserve} di cifre (cioè più delle strettamente necessarie) per il quoziente.
 
-Nel caso il numero di cifre $n$, $m$ sia dato dal problema, cioè quando si lavora su \textbf{campi finiti}, l'ipotesi è restrittiva.
+Solo nel caso il numero di cifre $n$, $m$ sia dato dal problema, cioè quando si lavora su \textbf{campi finiti}, l'ipotesi è restrittiva.
 
 L'obiettivo è quello di progettare circuiti che eseguano questa divisione su campi di dimensioni prestabilite: dovremmo ricordare questa proprietà nello sviluppo e del circuito (e noteremo ha un significato specifico), e quando andiamo ad utilizzarlo, cioè quando si scrivono istruzioni assembly che ordinano divisioni fra numeri su registri di dimensione diversa.
 
@@ -330,6 +330,13 @@ cioè discriminiamo fra $X$ e $X-Y$ sulla base di quanto restituito dal comparat
 
 A questo punto si ha che $b_{out}$ rappresenta $Q$, mentre l'uscita del multiplexer è $R$.
 
+Vediamo quindi l'implementazione del singolo modulo divisore:
 
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-23/dividers/n3by2_b2_divider.v}
 
+e come questi si possono combinare a formare un modulo divisore completo a con dividendo a 4 e divisore a 2 cifre binarie:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-23/dividers/n4by4_b2_divider.v}
+
+dove si nota che il modulo \lstinline|n3_b2_subtractor| è un sottrattore a 3 cifre realizzato analogamente a quanto mostrato alla lezione precedente (in ogni caso, un'implementazione è reperibile nella cartella \lstinline|/verilog| della repository contenente gli appunti).
 \end{document}
