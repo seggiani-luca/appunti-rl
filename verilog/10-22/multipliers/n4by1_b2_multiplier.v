@@ -1,6 +1,6 @@
 // un moltiplicatore a 4 * 1 cifre che calcola @x3_x0 * @y + @c3_c0
 // e lo mette in @p4_p0
-module n4by1_multiplier(x3_x0, y, c3_c0, p4_p0);
+module n4by1_b2_multiplier(x3_x0, y, c3_c0, p4_p0);
 	input[3:0] x3_x0, c3_c0;
 	input y;
 	output[4:0] p4_p0;

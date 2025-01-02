@@ -251,6 +251,14 @@ $$
 Chiamiamo il circuito che riconosce la non riducibilità \textbf{circuito di overflow}.
 In base 2, si ha rispetto alle cifre che $a_{n-1} < \frac{\beta}{2}$ vale se $a_{n-1} = 0$, e viceversa $a_{n-1} \geq \frac{\beta}{2}$ vale se $a_{n-1} = 1$, cioè un numero non è rappresentabile su $n-1$ bit se le sue due cifre più significative sono uguali. In questo modo il circuito si traduce in un confronto fra le due cifre più significative $a_n$ e $a_{n-1}$, che si fa con uno XOR.
 
+In Verilog, questo si traduce come:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-29/field_reducers/b2_field_reducer.v}
+
+Per completezza, vediamo il circuito equivalente per la base 10 in codifica BCD, realizzato con un comparatore a 4 cifre binarie:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-29/field_reducers/b10_field_reducer.v}
+
 \subsubsection{Moltiplicazione di interi per potenza della base}
 Vediamo come si realizza un moltiplicatore per $b = \beta \cdot a$, dato $A = \left(a{n-1} a_{n-2} ... a_0 \right)$ rappresentante $a$ su $n$ cifre, $B$ rappresentante $b$ su $n+1$ cifre.
 
@@ -344,6 +352,10 @@ Possiamo quindi ricavare il flag \lstinline|ow| confrontando il $C^{n}_{out}$ co
 Si ha quindi che la stessa circuiteria esegue somme sia fra interi che fra naturali.
 In assembly, avevamo visto che la ADD esegue le stesse operazioni, ed è compito del programmatore controllare i flag di carry o di overflow a seconda di ciò che era andato a sommare (interi $\rightarrow$ overflow, naturali $\rightarrow$ carry).
 
+Possiamo quindi aggiornare l'implementazione Verilog del sommatore a 4 cifre binarie per tenere conto di un flag di overflow, come segue:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-29/adders_i/n4_b2_adder_i.v}
+
 \subsection{Sottrazione di interi}
 La sottrazione fra interi è analoga alla somma: abbiamo sempre due $A$ e $B$ in base $\beta$ su $n$ cifre, e vogliamo trovare $D$ sempre su $n$ cifre tale per cui fra $a$, $b$ e $d$ rappresentati vale $a - b = d$.
 Si ha, prendendo il complemento a radice:
@@ -361,13 +373,23 @@ $$
 $$
 cioè si ha che sull'$n+1$-esimo bit la differenza è uguale prendendo le estensioni degli ingressi su $n+1$ bit, ergo la rappresentabilità è data dalla riducibilità del risultato su $n$ bit, e quindi come prima dallo XOR sugli ultimi due prestiti.
 
+In Verilog, posso aggiornare il sottrattore a 4 cifre binarie come segue:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-29/subtractors_i/n4_b2_subtractor_i.v}
+
 \subsection{Comparazione di numeri interi}
 Notiamo che c'è una differenza fra la comparazione fra interi e quella fra naturali.
 Per quanto riguarda l'uguaglianza $a = b$, abbiamo effettivamente la stessa cosa dei naturali.
 
 Invece, per la minoranza $a < b$, non possiamo più controllare i prestiti uscenti.
 Dobbiamo quindi guardare il segno del risultato della sottrazione, che deve quindi poter essere svolta: si estende su $n+1$ cifre e si controlla la $n$ esima cifra del risultato: questa varrà da $\mathrm{sgn}(a-b)$, e quindi da flag di minoranza per $a < b$.
-Se non si fosse esteso su $n+1$ cifre, non avremmo potuto essere sicuro di non aver scartato eventuali valori negativi (negli intervalli di non rappresentabilità).
+Se non si fosse esteso su $n+1$ cifre, non avremmo potuto essere sicuri di non aver scartato eventuali valori negativi (negli intervalli di non rappresentabilità).
+
+Possiamo quindi definire un comparatore per interi in Verilog:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-29/subtractors_i/n4_b2_integer_comparator.v}
+
+notando che il modulo \lstinline|n5_b2_subtractor| non è altro che un sottrattore a 5 cifre binarie, che come sempre è implementato nel codice Verilog annesso alla lezione (directory \lstinline|/verilog|).
 
 \subsection{Moltiplicazione e divisione di interi}
 Moltiplicazioni e divisioni di interi riescono più facili se prima si converte in rappresentazione modulo e segno: i moduli si moltiplicano o dividono come naturali, e il segno viene determinato dai segni degli operandi attraverso la comune algebra alternante ($+ \cdot + = +$, $+ \cdot - = -$, $- \cdot - = +$).
@@ -408,12 +430,16 @@ $$
 Occorre stare attenti fra la funzione segno e il valore del bit di segno, in quanto vale, come per la convenzione solita sul bit di segno:
 \[
 	\begin{cases}			
-\mathrm{sgn}(a) = 1 \Rightarrow \mathtt{ow} = 0 \\
-\mathrm{sgn}(a) = -1 \Rightarrow \mathtt{ow} = 1
+\mathrm{sgn}(a) = 1 \Rightarrow \mathtt{sgn} = 0 \\
+\mathrm{sgn}(a) = -1 \Rightarrow \mathtt{sgn} = 1
 	\end{cases}
 \]
 
-\par\medskip 
+In Verilog questa rete si presenta come la duale del \lstinline|n4_c2_ms_converter|, e si usa il modulo negatore sintetizzato prima:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-24/c2_ms_converters/n4_ms_c2_converter.v}
+
+\par\medskip
 
 Riassumiamo brevemente come si svolge la conversione fra complemento a radice e rappresentazione modulo e segno.
 Abbiamo sostanzialmente che, salvo il caso della conversione da MS a CR dove si può incappare in non rappresentabilità, la conversione da CR a MS e viceversa si fa sempre con un multiplexer che distingue fra la rappresentazione $A$ presa così com'è e il suo complemento calcolato con inversione incremento. 
@@ -455,6 +481,12 @@ cioè quanto avevamo detto sulla rappresentazione modulo e segno per i prodotti.
 
 Si ha quindi che il moltiplicatore fra interi si realizza convertendo gli ingressi da CR a MS, mandando i valori assoluti ad un moltiplicatore per naturali, e ricavando il segno del successivo convertitore da MS a CR (che ci darà il risultato) da uno XOR fra i segni degli MS in ingresso.
 L'overflow non è considerato in quanto non potra mai verificarsi (da sopra).
+
+In Verilog, quindi, usiamo le definizioni date precedentemente di convertitori fra modulo e segno e complemento a 2:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-29/integer_multipliers/n4by4_b2_integer_multiplier.v}
+
+Il modulo \lstinline|n8_ms_c2_converter|, in particolare, è un convertitore da modulo e segno a complemento a 2 su 8 cifre binarie (si è data, nella cartella \lstinline|/verilog|, sia un implementazione a 4 che a 8 cifre).
 
 \subsubsection{Divisione}
 Vogliamo calcolare, dati due naturali $A$ e $B$ rappresentanti gli interi $a$ e $b$ su $n$ e $m$ cifre, il quoziente $Q$ e il resto $R$, rispettivamente su $n$ e $m$ cifre, tali che:
@@ -502,5 +534,9 @@ $$
 
 Questa condizione non basta, in quanto non si è ancora assicurato che l'intero in uscita sia rappresentabile su $n$ cifre.
 Si prende quindi anche il flag di overflow \lstinline|ow|, ricavato dalla conversione finale da MS a CR, e si mette a OR con il flag \lstinline|no_div| che abbiamo ricavato dal circuito divisore.
+
+Tutto questo si traduce nell'ultima rete puramente combinatoria che vedremo, ovvero:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-29/integer_dividers/n4by2_b2_integer_divider.v}
 
 \end{document}

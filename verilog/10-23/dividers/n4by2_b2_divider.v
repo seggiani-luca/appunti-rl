@@ -1,7 +1,7 @@
-// un divisore a 4 cifre che calcola @x3_x0 / @y1_y0, mette il
+// un divisore a 4 / 2 cifre che calcola @x3_x0 / @y1_y0, mette il
 // quoziente in @q1_q0 e il resto in @r1_r0. no_div rappresenta la
 // non fattibilita'
-module n4by4_b2_divider(x3_x0, y1_y0, q1_q0, r1_r0, no_div);
+module n4by2_b2_divider(x3_x0, y1_y0, q1_q0, r1_r0, no_div);
 	input[3:0] x3_x0;
 	input[1:0] y1_y0;
 	output[1:0] q1_q0;
@@ -15,12 +15,12 @@ module n4by4_b2_divider(x3_x0, y1_y0, q1_q0, r1_r0, no_div);
 		.no_div(no_div)
 	);
 
-	n3by2_divider div_1 (
+	n3by2_b2_divider div_0 (
 		.x2_x0(x3_x0[3:1]), .y1_y0(y1_y0),
 		.q(q1_q0[1]), .r1_r0(res)
 	);
 
-	n3by2_divider div_2 (
+	n3by2_b2_divider div_1 (
 		.x2_x0({res, x3_x0[0]}), .y1_y0(y1_y0),
 		.q(q1_q0[0]), .r1_r0(r1_r0)
 	);

@@ -465,11 +465,13 @@ Possiamo quindi interpretare il complemento a radice come una rappresentazione m
 Occorre fare attenzione in quanto questo è vero solo nel caso $a$ sia \textbf{rappresentabile}, cioè se rispetta: $ -\frac{\beta^n}{2} \leq a < \frac{\beta^n}{2} - 1 $. 
 In caso contrario, come è chiaro dal grafico, si potrebbero avere le stesse rappresentazioni per interi diversi fra di loro (cioè essenzialmente un overflow).
 
-\subsection{Operazioni su interi in CR}
+\par\medskip 
+
+Vediamo quindi come sintetizzare reti che lavorano sui numeri interi.
 Vogliamo progettare circuiti che lavorano sulle rappresentazioni, come avevamo fatto per i naturali.
 Ricordiamo che la rappresentazione vale per un naturale $A$ o un intero $a$ a seconda di quanto deciso dal programmatore, e nient'altro.
 
-\subsubsection{Valore assoluto}
+\subsection{Valore assoluto}
 Vogliamo trovare il valore assoluto di un numero intero $B = \mathrm{abs}(a)$, con: 
 $$ a \in \left[ -\frac{\beta^n}{2}, \frac{\beta^n}{2} - 1 \right] \Rightarrow B \in \left[0, \frac{\beta^n}{2}\right]
 $$
@@ -498,6 +500,10 @@ La variabile di comando sara datà dal $b_{out}$ di un comparatore fra $a_{n-1}$
 In base 2 questo è notevolmente più semplice: avrò che basta prendere $a_{n-1}$ come variabile di comando.
 Si potrà quindi complementare con uno XOR fra le cifre di A e $a_{n-1}$, e usare $a_{n-1}$ anche come ingresso di un incrementatore, con le cifre di $A$ all'altro ingresso.
 
+Vediamo quindi entrambe le implementazioni in base 2, dove il comparatore si è ridotto a un controllo sulla LSD:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-24/integer_utils/n4_c2_abs.v}
+
 \subsection{Conversione da CR a MS}
 Vediamo come convertire un numero in CR nella rappresentazione modulo e segno.
 Prima di tutto notiamo una discrepanza nell'intervallo di rappresentabilità:
@@ -513,6 +519,10 @@ $$
 	\end{cases}
 $$
 dove si è riportato il valore di $a_{n-1}$ in base $\beta = 2$.
+
+In Verilog, quindi, si usa il modulo valore assoluto sintetizzato prima:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-24/c2_ms_converters/n4_c2_ms_converter.v}
 
 \subsection{Calcolo dell'opposto}
 Vediamo come trovare l'opposto di un numero in CR, quindi dato $A \leftrightarrow a$, $B \leftrightarrow b$ tale che $ b = -a$.
@@ -534,6 +544,9 @@ Nel caso precedente, avevamo usato lo XOR in quanto volevamo che la negazione fo
 In questo caso vogliamo negare sempre, quindi basta una porta NOT.
 
 L'\lstinline|ow| viene invece impostato sulla base di un AND fra le cifre più significative $a_{n-1}$ del numero non negato e $b_{n-1}$ del numero negato.
+In Verilog:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-24/integer_utils/n4_c2_negator.v}
 
 \subsubsection{Richiamo all'assembly}
 Si ricorda che in assembly avevamo l'istruzione \lstinline|NEG|, che interpretava una sequenza di bit come un numero intero, e ne calcolava l'opposto se possibile, impostando il flag OF altrimenti.
@@ -606,5 +619,13 @@ Più propriamente, se avevamo dato la rappresentazione $|a|_{\beta^n}$ per $A$, 
 da cui si nota ancora meglio che il lato per interi positivi resta tale, mentre il lato negativo trasla in alto (in rosso si ha $|a|_{\beta^n}$, e in blu $|a|_{\beta^{n+1}}$).
 
 Dal punto di vista della base 2, questo tipo di estensore può essere realizzato semplicemente replicando la $n-1$-esima cifra.
+
+In Verilog, si ha:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-24/field_extensors/b2_field_extensor.v}
+
+Possiamo vedere anche l'implementazione per la base 10 in codifica BCD:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/10-24/field_extensors/b10_field_extensor.v}
 
 \end{document}
