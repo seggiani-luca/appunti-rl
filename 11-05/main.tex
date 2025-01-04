@@ -262,6 +262,10 @@ Quello che vogliamo fare è portare $d$ e $c$ in $s$ e $r$, attraverso la tabell
 Questo si sintetizza in $s = c \cdot d$ e $r = c \cdot \overline{d}$.
 Si ha che le porte AND che rappresentano le congiunzioni in questa rete combinatoria possono collassare con le porte AND che formavano la rete combinatoria del latch SR che permetteva preset e preclear.
 
+In Verilog, l'implementazione è la seguente (trascurando le linee di reset, una versione che le contiene è comunque definita nella directory \lstinline|/verilog|):
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-05/d_latches/d_latch.v}
+
 \subsubsection{Pilotaggio del D-Latch}
 Nel pilotaggio del D-latch, dobbiamo assicurarci che $d$ sia costante a cavallo della transizione di $c$ da 1 a 0, in quanto potremmo finire per memorizzare dati ignoti (l'ultima cosa che il D-latch ha "visto" prima del reset di $c$).
 I tempi per cui $d$ deve essere costante, rispettivamente \textbf{prima} e \textbf{dopo} della transizione di $c$, si dicono $T_{setup}$ e $T_{hold}$, e sono dati di progetto.
@@ -290,6 +294,10 @@ $$
 $$
 Questo significa che $q$ si adegua al valore campionato di $d$ soltanto \textit{dopo} che la rete ha smesso di essere sensibile a $d$.
 È questa proprietà a rendere il D flip-flop una rete non trasparente.
+
+In Verilog, possiamo rendere una rete di questo tipo attraverso l'operatore \lstinline|posedge|:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-05/d_flip_flops/d_flip_flop.v}
 
 \subsubsection{Pilotaggio del D flip-flop}
 Innanzitutto, a cavallo del fronte di salita di $p$ l'ingresso $d$ deve rimanere costante, ergo si hanno gli stessi $_{setup}$ e $T_{hold}$ del D-latch.
@@ -326,7 +334,7 @@ Nella pratica, infine, si ha che la sintesi reale di un D flip-flop è fatta a p
 Esistono due tipi principali di memoria:
 \begin{itemize}
 	\item \textbf{S-RAM}, costituite da matrici di D latch;
-	\item \textbf{D-RAM}, realizzate in modo diverso, che per adesso ingnoreremo. 
+	\item \textbf{D-RAM}, realizzate in modo diverso (capacitori che bisognano di refresh periodico), che per adesso ingnoreremo. 
 \end{itemize}
 
 Una riga di D latch rappresenta quindi una \textbf{locazione di memoria}, che può essere \textbf{letta} o \textbf{scritta} con apposite operazioni, strettamente \textbf{non simultanee}.
@@ -352,6 +360,12 @@ Il comportamento che vogliamo dalla SRAM è il seguente:
 	\end{tabular}
 \end{table}
 
+In Verilog generativo, potremo quindi sintetizzare una semplice SRAM basata su D-Latch come segue:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-05/static_rams/nNbyM_sram.v}
+
+Ad esempio, una SRAM con locazioni da 4 bit e indirizzi su 24 bit (che fa $2^{23} = 2^3 \times 2^{20} = 8 \mathrm{M}$, cioè 8M nibble) si sintetizzerebbe impostando i parametri \lstinline|N=4| e \lstinline|M=23|. 
+
 \subsubsection{Temporizzazione delle RAM statiche}
 Facciamo innanzitutto la divisione lettura/scrittura:
 \begin{itemize}
@@ -371,11 +385,20 @@ prendiamo in considerazione due banchi di memoria da $8 \text{M} \times 4$ bit, 
 	\item Per quanto riguarda gli \textbf{indirizzi di lettura}, basta inviare l'indirizzo ad entrambi i banchi, da cui preleveremo la parte \textit{alta} e \textit{bassa} della locazione;
 	\item Per quanto riguarda gli \textbf{ingressi/uscite di dati}, avremo che la combinazione delle linee sui due banchi, da 4 bit ciascuna, formano un singolo byte da 8 bit, ergo la locazione di memoria completa.
 \end{itemize}
+
+Cioè in Verilog, ad esempio  per creare un banco da 16 $\times$ 8 bit a partire da due da 16 $\times$ 4 bit:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-05/static_rams/parallel_sram.v}
+
 	\item \textbf{Montaggio in serie:}  
 prendiamo in considerazione due banchi di memoria da $8 \text{M} \times 8$ bit, e vediamo come collegarli per formare un singolo banco di memoria da $16 \text{M} \times 8$ bit, quindi raddoppiamdo il numero di locazioni.
 \begin{itemize}
 	\item Per quanto riguarda gli \textbf{indirizzi di lettura}, discrimina dal MSB dell'indirizzo se selezionare dal primo o dal secondo banco, che faranno quindi da parte \textit{alta} e \textit{bassa} dello spazio di memoria indirizzabile. Facciamo questo attraverso l'ingresso di select \lstinline|/s|, che useremo per determinare altri due segnali di select \lstinline|/sl| e \lstinline|sh| (\textit{select low} e \textit{select high}), che a loro volta ci permettono di discriminare sulla base del MSD quale banco andiamo a selezionare (effettivamente rendere attivo); 
 	\item Per quanto riguarda gli \textbf{ingressi/uscite di dati}, avremo che il banco attivo in un dato momento determina completamente le uscite. Potremmo pensare di dover inserire porte tri-state in uscita ai singoli banchi di memoria sulla linea di ingresso/uscita, ma questo non è necessario: le \lstinline|sl| e \lstinline|sh| sono mutualmente esclusive, e quindi non si verificherà mai il caso in cui le linee di uscita di entrambi i banchi sono in conduzione contemporaneamente.
 \end{itemize}
+
+Cioè in Verilog, ad esempio  per creare un banco da 32 $\times$ 4 bit a partire da due da 16 $\times$ 4 bit:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-05/static_rams/series_sram.v}
 \end{itemize}
 \end{document}

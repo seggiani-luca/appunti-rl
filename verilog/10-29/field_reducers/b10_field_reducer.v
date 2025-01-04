@@ -1,5 +1,5 @@
 // un riduttore di campo per interi in codifica BCD con LSD @a3_x0, 
-// @b3_b0, che mette in @ow la fattibilità (attiva bassa) della 
+// @b3_b0, che mette in @ow la fattibilita' (attiva bassa) della 
 // riduzione
 module b10_field_reducer(a3_a0, b3_b0, ow);
 	input[3:0] a3_a0, b3_b0;

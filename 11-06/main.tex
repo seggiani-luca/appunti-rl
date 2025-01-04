@@ -260,7 +260,7 @@ Possiamo individuare delle categorie per queste reti:
 \begin{itemize}
 	\item Le \textbf{OTPROM} (\textit{One Time Programmable ROM}) vengono realizzate attraverso questa tecnologia, è la loro progammazione risulta quindi \textbf{distruttiva} (una volta programmato un bit non si può più rimuovere).
 	\item  Una tecnologia più sofisticata è rappresentata dalle \textbf{EPROM} (\textit{Erasable programmable ROM}).
-Queste vengono realizzate attraverso tranistor a field-effect.
+Queste vengono realizzate attraverso transistor a effetto campo.
 La scrittura della EPROM può essere ripetuta sottoponendola a una luce ultravioletta, e quindi cancellando tutti i dati, per poi riscrivene altri.
 
 Di una EPROM ci interessano:
@@ -269,7 +269,7 @@ Di una EPROM ci interessano:
 	\item \textbf{Data retention:} il periodo per cui si può fare affidamento sui dati contenuti in una EPROM (solitamente dai 10 ai 100 anni).
 \end{itemize}
 	\item Infine, le \textbf{EEPROM} (\textit{Electrically Erasable Programmable ROM}) permettono la riprogrammazione direttamente attraverso segnali elettrici, sul chip già montato nello spazio di memoria.
-		Potremmo pensare che EEPROM e RAM sono effettivamente equivalente.
+		Potremmo pensare che EEPROM e RAM sono effettivamente equivalenti fra di loro.
 		Ci sono invece alcune differenze, che sono:
 		\begin{itemize}
 			\item L'EEPROM è persistente, mentre la RAM è volatile;
@@ -299,6 +299,8 @@ module b2_counter(eu, q, ei, clock, reset_);
 endmodule
 \end{lstlisting}
 
+\lstset{language=verilog}
+
 Si parte con la dichiarazione di un modulo \lstinline|b2_counter|, dove la sintassi "ad argomenti" indica le variabili che potremo usare come input o come output.
 Definiamo poi input e output esplicitamente, notando che si può usare (e anzi è consigliata) una separazione logica delle variabili su più righe.
 La parola chhiave \lstinline|reg| definisce poi un registro.
@@ -309,7 +311,7 @@ Abbiamo fatto 3 assegnamenti nelle ultime 3 istruzioni dell'esempio precedente, 
 Vediamo nel dettaglio tutte gli assegnamenti possibili e le loro differenze:
 \begin{itemize}
 	\item \textbf{Assegnamenti procedurali:} vengono dichiarati con \lstinline|initial| (per riferirsi a stati iniziali), o con \lstinline|always| (per riferirsi a stati qualsiasi durante la simulazione).
-	In blocchi \lstinline|always|, si può specificare una condizione con il carattere \lstinline|@|, fra cui ad esempio il \lstinline|posedge| che ci permette di ricavare il positive edge di un segnale (il clock nell'esempio precedente).
+	In blocchi \lstinline|always|, si può specificare una condizione con il carattere \lstinline|@|, fra cui ad esempio il \lstinline|posedge| che ci permette di ricavare il fronte di salita di un segnale (il clock nell'esempio precedente).
 	All'interno di assegnamenti procedurali abbiamo a disposizione più operatori:
 	\begin{itemize}
 		\item \textbf{Assegnamenti bloccanti} (=): vengono eseguiti strettamente nell'ordine in cui vengono incontrati (cosa a noi solitamente indesiderata, in quanto vogliamo modellizzare le inaccuratezze delle temporizzazioni, che non sono mai simultanee e non hanno, se non specificato, un ordine preciso);

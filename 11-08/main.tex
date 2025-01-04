@@ -240,6 +240,19 @@ Un registro multifunzionale è una rete che, all'arrivo del clock, memorizza nel
 
 L'implementazione effettiva del registro è data da un multiplexer da $0$ a $K-1$ reti combinatorie, dove $W$ è la variabile di comando, la cui uscita viene inviata a un certo registro (che spedisce poi la sua uscita in retroazione alle reti combinatorie funzionali, e cosi via).
 
+In Verilog, un'implementazione di esempio (non funzionante in quanto non completamente specificata) può essere la seguente:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-08/multifunction_registers/n4_multifunction_register.v}
+
+Fra le casisistiche di utilizzo dei registri multifunzionali c'è quella dei \textbf{registri di shift}, cioè registri che sulla base di una variabile di comando memorizzano la prossima variabile in ingresso, o spostano la variabile immagazzinata verso destra o sinistra (implementando effettivamente le \lstinline|SHR| e \lstinline|SHL| dell'assembler).
+Vediamo entrambe le casistiche in Verilog, prima lo shift a destra:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-08/multifunction_registers/n4_rshift_register.v}
+
+e poi il (perlopiù analogo) shift a sinistra:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-08/multifunction_registers/n4_lshift_register.v}
+
 \subsection{Modello di reti sequenziali sincronizzate}
 Definiamo tre modelli per le RSS (che abbiamo già introdotto parlando delle regole di pilotaggio):
 
@@ -303,12 +316,13 @@ Un modo di vedere questa rete è come un registro multifunzionale ad un bit, con
 	\end{tabular}
 \end{table}
 
-# quando puoi fai un ripassone
-
 Vediamone la sintesi: visto che conosciamo soltanto la sintesi di reti combinatorie attraverso le mappe di Karnaugh, basterà sintetizzare le due reti combinatorie, dalla definizione di rete di Moore. \textbf{RCA} e \textbf{RCB} che implementano le funzioni $A$ e $B$.
 Il registro STAR conterrà a questo punto lo stato interno, che nel caso del flip-flop JK ridurrà RCB a un cortocircuito per ogni uscita del registro.
 
-Per la sintesi di RCA, invece, dovremo consultare la tabella di flusso:
-# riportala e applica Karnaugh
+In Verilog, l'implementazione dopo la sintesi come rete di Moore risulterà la seguente:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-08/jk_flip_flops/jk_flip_flop.v}
+
+Si nota inoltre che i moduli con definizioni di circuiti di reset (che finora abbiamo relegato al blocco \lstinline|initial| si trovano nella cartella \lstinline|/verilog|, assieme al resto del codice).
 
 \end{document}

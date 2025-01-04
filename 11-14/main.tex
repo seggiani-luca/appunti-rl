@@ -228,16 +228,26 @@
 
 % testo
 \subsection{Riconoscitore di sequenze}
-Vediamo come sintetizzare un circuito \textbf{riconoscitore di sequenze}, sia come rete di Moore che come rete di Mealy:
+Un \textbf{riconoscitore di sequenze} è una rete sequenziale sincronizzata a $N$ ingressi ed un uscita.
+Questa rete si evolve secondo la legge seguente: se si presenta, in sequenza, una sequenza di stati di ingresso voluta, l'uscita vale 1, 0 altrimenti.
+
+Ogni stato di ingresso deve essere presentato prima del prossimo ciclo di clock, e per $n$ stati di ingresso avremo bisogno di $n$ cicli di clock per leggerli tutti.
+Inoltre, se un valore permane per più di un ciclo di clock, si considera questa una ripetizione (e quindi un eventuale errore nel codice).
+
+Si ha, di base, che il riconoscitore di sequenze è una \textbf{rete con memoria}: deve ricordare ad ogni stato di ingresso la sequenza degli stati di ingresso \textbf{corretti} e \textbf{consecutivi} visti finora, cioè $K + 1$ stati (compreso lo stato finale con l'uscita a 1) per sequenze di $K$ stati (almeno se sintetizzata come rete di Moore).
+
+Vediamo quindi come sintetizzare tale circuito, sia come rete di Moore che come rete di Mealy:
 
 \subsubsection{Sintesi in rete di Moore}
-# fallo
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-14/sequence_detectors/moore_sequence_detector.v}
 
 \subsubsection{Sintesi in rete di Mealy}
-# fallo
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/11-14/sequence_detectors/mealy_sequence_detector.v}
 
 \subsection{Confronto fra Moore e Mealy}
-Abbiamo che le reti di Moore hanno leggi $B$ meno flessibili delle reti di Mealy, e quindi in una rete di Mealy si hanno meno stati interni che in una rete di Moore.
+Notiamo come, nell'esempio, la rete di Mealy risparmia su uno stato, in quanto può leggere direttamente gli ingressi e impostare l'uscita a 1 quando rileva la sequenza giusta nel penultimo stato.
+
+Abbiamo in generale, infatti, che le reti di Moore hanno leggi $B$ meno flessibili delle reti di Mealy, e quindi in una rete di Mealy si hanno meno stati interni che in una rete di Moore.
 Si potrebbe quindi pensare che una rete di Mealy può esprimere funzioni che una rete di Moore non può rappresentare.
 Questo è falso, in quanto si può dimostrare che Moore e Mealy hanno la \textbf{stessa potenza descrittiva}: per una rete di Moore, si può ricavare l'equivalente di Mealy, e viceversa.
 
@@ -248,25 +258,24 @@ Di contro, fra due reti di Moore incontreremo sempre un registro, ergo non avrmo
 
 \subsection{Modello di Mealy ritardato}
 Creiamo una cosiddetta rete di \textbf{Mealy ritardato} prendendo una rete di Mealy e introducendo un ulteriore registro, \textbf{OUTR}, in uscita.
-Le uscite, come nelle reti di Moore, non sono più trasparenti e variano all'arrivo del clock dopo un tempo $T_{prop}$.
+Questo risolve il problema della trasparenza delle reti di Mealy: le uscite, come nelle reti di Moore, non sono più trasparenti e variano all'arrivo del clock dopo un tempo $T_{prop}$.
 
-# rimetti in ordine da Mealy
-
-\subsubsection{Temporizzazione del modello di Mealy ritardato}
-# riporta
+In una RSS di Mealy ritardato si hanno quindi i seguenti vincoli di pilotaggio, che vediamo corrispondono in pratica con quelli di una rete di Moore (tranne l'ultimo che non risente di una rete di conversione dagli stati interni, in quanto l'uscita si ricava direttamente da un registro):
+\[
+	\begin{cases}
+		T \geq T_{hold} + T_{a\_monte} + T_{RC} + T_{setup} \\ 
+		T \geq T_{prop} + T_{RC} + T_{setup} \\ 
+		T \geq T_{prop} + T_{a\_valle}
+	\end{cases}
+\]
 
 \subsection{Assegnamenti procedurali}
-# leggi max chiedi foto simone
-
 In Verilog possiamo descrivere il comportamento di una rete di Mealy attraverso i cosiddetti \textbf{assegnamenti procedurali}.
 Notiamo la temporizzazione di una forma del tipo:
 \begin{lstlisting}[language=verilog, style=codestyle]	
 s0: begin STAR<=S1; OUTR<=STAR; end
 \end{lstlisting}
 Le istruzioni contenute nel blocco \lstinline|begin| (...) \lstinline|end| accadono \textbf{contemporaneamente}, e il fatto che STAR sia a sinistra nel primo assegnamento e OUTR sia sinistra nel secondo indica che questi avvengono \textit{dopo il clock}, cioè \textit{prima del clock} si legge il valore (S1 o STAR nell'esempio) e soltanto dopo si scrive effettivamente sul registro.
-
-# finisci slide
-
 
 \subsection{Reti sequenziali complesse}
 I modelli concettuali che abbiamo visto finora (Moore, Mealy e Mealy ritardato) riescono a sintetizzare solo reti molto semplici.

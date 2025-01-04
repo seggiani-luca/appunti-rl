@@ -1,5 +1,5 @@
 // un negatore a 4 cifre in complemento a 2 @x3_x0 che mette il
-// risultato in @z3_z0. ow è il flag di overflow
+// risultato in @z3_z0. ow e' il flag di overflow
 module n4_c2_negator(x3_x0, z3_z0, ow);
 	input[3:0] x3_x0;	
 	output[3:0] z3_z0;

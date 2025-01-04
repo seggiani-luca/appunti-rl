@@ -227,17 +227,6 @@
 \pagestyle{fancy}
 
 % testo
-\subsection{Riconoscitore di sequenze}
-Un riconoscitore di sequenze è una rete sequenziale sincronizzata a $N$ ingressi ed un uscita.
-Questa rete si evolve secondo la legge seguente: se si presenta, in sequenza, una sequenza di stati di ingresso voluta, l'uscita vale 1, 0 altrimenti.
-
-Ogni stato di ingresso deve essere presentato prima del prossimo ciclo di clock, e per $n$ stati di ingresso avremo bisogno di $n$ cicli di clock per leggerli tutti.
-Inoltre, se un valore permane per più di un ciclo di clock, si considera questa una ripetizione.
-
-Si ha che qesta è una \textbf{rete con memoria}: deve ricordare ad ogni stato di ingresso la sequenza degli stati di ingresso \textbf{corretti} e \textbf{consecutivi} visti finora, cioè $K + 1$ stati (compreso lo stato finale con l'uscita a 1) per sequenze di $K$ stati.
-
-# la sintesi è un esercizio per casa
-
 \subsection{Modello di Mealy}
 Nel modello di Moore avevamo detto che l'uscità è funzione soltanto dello stato interno precedente: $B : S \rightarrow Z$.
 Nelle reti di mealy, la legge $B$ è più generale, e dipende anche dagli ingressi: $B : X \times S \rightarrow Z$.
@@ -253,7 +242,7 @@ Possiamo quindi riformuare le diseguaglianze di temporizzazione come:
 	\end{cases}
 \]
 
-dove i tempi di attraversamento da ingresso a registro, da registro a registro e da registro a uscita sono sostituiti dal tempo di attraversamento di RC # come mai?
+dove i tempi di attraversamento da ingresso a registro, da registro a registro e da registro a uscita sono sostituiti dal tempo di attraversamento di RC.
 
 Notiamo che al variare dell'ingresso, una rete di Mealy può produrre una nuova uscita \textit{prima dell'aggiornamento del clock}.
 Questo rende le reti di Mealy \textbf{non trasparenti}: gli ingressi sono connessi direttamente alle uscite (in senso logico), ergo cicli di retroazione possono creare oscillazioni incontrollate.
