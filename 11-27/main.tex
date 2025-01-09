@@ -279,7 +279,7 @@ Inoltre, dobbiamo ricordarci di operare sui registri IOR e IOW anzichè MR e MW.
 \subsubsection{Lettura}
 Scriviamo quindi un $\mu$-programma per la lettura nello spazio di I/O dove teniamo conto di dover abbassare IOR \textbf{dopo} che gli indirizzi sono stabili, in maniera simile alla lettura:
 \begin{lstlisting}[language=verilog, style=codestyle]	
-io_r0: begin A23_A0 <= address; DIR <= 0; STAR <= io_r1; end
+io_r0: begin A23_A0 <= {H'00, offset}; DIR <= 0; STAR <= io_r1; end
 io_r1: begin IOR <= 0; STAR <= io_r2; end
 io_r2: begin STAR <= io_r3; end
 io_r3: begin cpu_register <= d7_d0; IOR <= 1; ...; end
@@ -288,15 +288,13 @@ io_r3: begin cpu_register <= d7_d0; IOR <= 1; ...; end
 \subsubsection{Scrittura}
 Ridefiniamo quindi il $\mu$-programma di scrittura:
 \begin{lstlisting}[language=verilog, style=codestyle]	
-io_w0: begin A23_A0 <= address; D7_D0 <= new_byte; DIR <= 1; STAR <= io_w1; end
+io_w0: begin A23_A0 <= {H'00, offset}; D7_D0 <= new_byte; DIR <= 1; STAR <= io_w1; end
 io_w1: begin IOW <= 0; STAR <= io_w2; end
 io_w2: begin IOW <= 1; STAR <= io_w3; end
 io_w3: begin DIR <= 0; ...; end
 \end{lstlisting}
 
 Notiamo che, in questo caso, la scrittura si fa sul fronte di discesa anziché di salita, e quindi l'assegnamento di \lstinline|D7_D0| al nuovo byte va fatto esclusivamente in W0, e non in W1 com'era possibile nella scrittura nello spazio di memoria. 
-
-# metti gli address giusti, qui sarebbe 'H00 + offset
 
 \subsection{Accessi multipli in memoria}
 Il processore potrebbe fare accessi non solo ad un byte, ma 2 byte (per operandi su 16 bit) o 3 byte (per indirizzi).
@@ -305,8 +303,8 @@ Occasionalmente dovremo leggere anche 4 byte, ma questo non è considerato nel c
 Per fare letture su locazioni multiple, si usano $\mu$-sottoprogrammi di lettura/scrittura modulari.
 Utilizzeremo:
 \begin{itemize}
-	\item Il registro \textbf{MJR} per contenere il $\mu$-indirizzo di ritorno;
-	\item Il registro \textbf{NUMLOC} come contatore del numero di byte da leggere/scrivere;
+	\item Il registro MJR per contenere il $\mu$-indirizzo di ritorno;
+	\item Il registro NUMLOC come contatore del numero di byte da leggere/scrivere;
 	\item Il registro A23\_A0 per contenere l'indirizzo del primo byte da leggere/scrivere;
 	\item I registri APP0, ..., APP3 per contenere i byte letti/da scrivere.
 \end{itemize}
@@ -342,8 +340,6 @@ read3: begin APP3 <= d7_d0; A23_A0 <= A23_A0 + 1; STAR <= read4; end
 read4: begin MR <= 1; STAR <= MJR; end
 \end{lstlisting}
 
-# non sono sicuro, comunque commentali
-
 \subsubsection{Scrittura}
 Vediamo il $\mu$-programma principale di scrittura:
 \begin{lstlisting}[language=verilog, style=codestyle]	
@@ -368,13 +364,22 @@ writeM: begin D7_D0 <= APP0; DIR <= 3; NUMLOC <= 1; STAR <= write0; end
 writeL: begin D7_D0 <= APP0; DIR <= 4; NUMLOC <= 1; STAR <= write0; end
 
 write0: begin MW <= 0; STAR <= write1; end;
-write1: begin MW <= 1; STAR <= ( NUMLOC == 1) ? write11 : write2; end
+
+write1: begin MW <= 1; STAR <= ( NUMLOC == 1 ) ? write11 : write2; end
+write2: begin D7_D0 = APP1; A23_A0 <= A23_A0 + 1; NUMLOC <= NUMLOC + 1; STAR <= write3; end
+write3: begin MW <= 0; STAR <= write4; end
+
+write4: begin MW <= 1; STAR <= ( NUMLOC == 1 ) ? write11 : write5; end
+write5: begin D7_D0 = APP2; A23_A0 <= A23_A0 + 1; NUMLOC <= NUMLOC + 1; STAR <= write6; end
+write6: begin MW <= 0; STAR <= write7; end
+
+write7: begin MW <= 1; STAR <= ( NUMLOC == 1 ) ? write11 : write7; end
+write8: begin D7_D0 = APP3; A23_A0 <= A23_A0 + 1; NUMLOC <= NUMLOC + 1; STAR <= write8; end
+write9: begin MW <= 0; STAR <= write9; end
+
+write10: begin MW <= 1; STAR <= write11; end
+
+write11: begin DIR <= 0; STAR <= MJR; end
 \end{lstlisting}
-# finisci qua sopra
-
-\subsection{Descrizione in Verilog del processore}
-Iniziamo quindi a definire il nostro processore col linguaggio Verilog.
-# qui per l'amor di cristo riscrivi per benino e metti nella cartella /verilog che così è drammatico
-
 
 \end{document}

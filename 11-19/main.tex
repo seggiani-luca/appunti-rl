@@ -231,7 +231,7 @@
 \pagestyle{fancy}
 
 % testo
-\subsubsection{Microprogrammazione}
+\subsubsection{Introduzione alla microprogrammazione}
 Avevamo visto il concetto basilare di \textbf{rete sequenziale sincronizzata complessa}.
 La sintesi di reti di questo tipo prende il nome di \textbf{microprogrammazione}. 
 Bisogna notare che la parola \textit{programmazione} qui è piuttosto fuorviante: l'idea è comunque quella di dare \textbf{descrizioni} di hardware.
@@ -247,14 +247,12 @@ Si possono ommettere le $\mu$-istruzioni relative a \textit{registri operativi},
 Per quanto riguarda il registro STAR, invece, l'omissione del $\mu$-salto implicherebbe un salto incondizionato (altrimenti avremmo \lstinline|STAR<=STAR|, che porterebbe a un \textbf{deadlock}).
 Nella pratica, non ometteremo mai l'aggiornamento di STAR, in quanto porta facilmente a errori, o comunque a codice poco chiaro.
 
-\subsubsection{Temporizzazione di reti complesse}
+\subsection{Temporizzazione di reti complesse}
 Le temporizzazioni di una rete complessa sono le stesse delle rety di Mealy ritardato: i percorsi sono gli stessi ($T_{in\_to\_reg}$, ecc...) e preleviamo le uscite direttamente dai registri.
 
-\subsection{Handshake e temporizzazione delle uscite}
+\subsubsection{Handshake e temporizzazione delle uscite}
 Solitamente le reti sequenziali sincronizzate comunicano con altre reti sequenziali sincronizzate, idealmente con cicli di clock mutualmente sincronizzati (così da doverci preoccupare solo dei tempi di lettura e scrittura $T_{a\_monte}$ e $T_{a\_valle}$).
 Nel caso le reti che consideriamo siano invece mutuamente asincrone fra di loro, cioè abbiano clock discordi che non si allineano mai (necessariamente), dovremmo adottare soluzioni diverse. 
-
-\par\smallskip
 
 Poniamo una situazione di esempio: una rete, detta \textbf{produttore}, mette su una linea un numero rappresentato su 8 bit.
 Chiamiamo questa linea \textit{linea di trasmissione}.
@@ -262,26 +260,53 @@ Un altra rete, detta \textbf{consumatore}, riceve questo numero e tiene la sua u
 Visto che le due reti vedono solamente i rispettivi input e output, come facciamo in modo che il produttore sappia quando il consumatore ha letto il numero con successo, e viceversa che il consumatore sappia quando c'è un nuovo numero da leggere?
 Il problema si risolve introducendo \textbf{linee di handshake} (dall'inglese per \textit{stretta di mano}).
 
-Doteremo quindi il produttore di una linea di uscita \lstinline|/dav| (\textit{data valid}), e il consumatore di una linea di uscita \lstinline|/rfd| (\textit{ready for data}).
+\subsection{Handshake /dav-rfd}
+
+L'handshake che andiamo ad implementare viene detto \textbf{handshake /dav-rfd}.
+Doteremo quindi il produttore di una linea di uscita \lstinline|/dav| (\textit{data valid}), e il consumatore di una linea di uscita \lstinline|rfd| (\textit{ready for data}).
 La linea \lstinline|/dav| segnala che ci sono nuovi dati sulla linea di uscita del produttore, mentre la linea \lstinline|/rdf| segnala che il consumatore ha letto ciò che era sulla linea di trasmissione ed è pronto a ricevere nuovi dati.
 Entrambe le variabili sono attive basse.
 
 Facciamo una nota sulla circuiteria di \textbf{reset}: la linea \lstinline|/reset| sarà infatti presente e comune alle due reti.
-A \lstinline|/reset| bassa, quindi, possiamo mettere \lstinline|/dav| e \lstinline|/rfd| a 1 (per segnalare che linea di trasmissione non è pronta e il consumatore non è pronto a leggerla).
+A \lstinline|/reset| bassa, quindi, possiamo mettere \lstinline|/dav| e \lstinline|rfd| a 1 (per segnalare che linea di trasmissione non è pronta e il consumatore non è pronto a leggerla).
 
-In seguito, vorremo effettuare una trasmissione vera e propria di dati.
+Viste su un grafico, i valori logici delle variabili \lstinline|/dav| e \lstinline|rfd| nel corso di un handshake valido si evolvono come segue:
+
+\begin{center}
+	\begin{tikzpicture}
+		\begin{axis}[
+				xmin=4, xmax=9,
+				ymin=-1, ymax=18,
+				grid=major,
+				domain=4:9,
+				xtick={},
+				ytick={},
+				xticklabels={},
+				yticklabels={},
+				samples=100,
+				legend pos=north west, % Position of the legend
+				width=15cm,
+				height=7cm
+		]
+		% Blue plot with legend entry
+		\addplot[blue, thick] {12 - 5 * (x >= 5) * (x <=  7)}; 
+		\addlegendentry{/dav} % Legend entry for the blue plot
+		
+		% Red plot with legend entry
+		\addplot[red, thick] {5 - 5 * (x >= 6) * (x <=  8)};
+		\addlegendentry{rfd} % Legend entry for the red plot
+		\end{axis}
+	\end{tikzpicture}
+\end{center}
+
+A seguito dell'handshake, vorremo effettuare una trasmissione vera e propria di dati.
 Innanzitutto, il produttore metterà un numero sulla linea di trasmissione.
 In seguito, metterà \lstinline|/dav| bassa per segnalare che i dati sulla linea di trasmissione sono pronti.
-A questo punto, il consumatore dovrà rilevare il \lstinline|/dav|, leggere i dati sulla linea di trasmissione e mettere il suo \lstinline|/rfd| basso.
+A questo punto, il consumatore dovrà rilevare il \lstinline|/dav|, leggere i dati sulla linea di trasmissione e mettere il suo \lstinline|rfd| basso.
 Questo segnalerà, per la rete produttore, che il consumatore \textbf{ha letto}
  i dati con successo ed è pronto ad un nuovo ciclo di trasmissione.
 Da qui in in poi, il consumatore non potrà più aspettarsi che i dati sulla linea di trasmissione siano validi: in qualsiasi momento il produttore potrebbe aggiornarli e rialzare \lstinline|/dav| (o viceversa, rialzare \lstinline|/dav| e poi scrivere sulla linea, ciò che importa è che il consumatore non ha più nulla da leggere fino a un nuovo ciclo di abbassamento del \lstinline|/dav|).
-Quando \lstinline|/dav| si alza, quindi, anche il consumatore riporterà il suo \lstinline|/rfd| alto, e ci troveremo nella situazione di partenza (cioè \lstinline|/dav| e \lstinline|/rfd| alti).
-Dobbiamo stare attenti al fatto che \lstinline|/rfd| torna alto \textbf{dopo} che lo fa \lstinline|/dav|: altrimenti il produttore potrebbe perdersi la doppia transizione di \lstinline|/rfd|, e finiremmo in uno stato di deadlock.
+Quando \lstinline|/dav| si alza, quindi, anche il consumatore riporterà il suo \lstinline|rfd| alto, e ci troveremo nella situazione di partenza (cioè \lstinline|/dav| e \lstinline|rfd| alti).
+Dobbiamo stare attenti al fatto che \lstinline|rfd| torna alto \textbf{dopo} che lo fa \lstinline|/dav|: altrimenti il produttore potrebbe perdersi la doppia transizione di \lstinline|rfd|, e finiremmo in uno stato di deadlock.
 Possiamo riassumere quest'ultima affermazione come segue: una corretta sincronizzazione delle reti avviene \textbf{solamente} se si \textbf{alternano} le transizioni delle linee di handshake (a ogni aggiornamento del produttore segue un aggiornamento del consumatore, e così via, senza che nessuno faccia doppi aggiornamenti "di testa propria").
-
-Veniamo quindi all'implementazione pratica della rete consumatore.
-Vogliamo che questa mantenga un uscita bassa per un numero di cicli fornito sulla linea di trasmissione.
-Questo si realizza con un \textbf{contatore}.
-
 \end{document}

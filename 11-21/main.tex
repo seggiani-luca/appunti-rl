@@ -244,8 +244,37 @@ A questo punto il produttore metterà \lstinline|eoc| a 0: questo signnifica che
 Una volta rilevato \lstinline|eoc| a 0, il consumatore dovrà rimettere \lstinline|soc| a 0, per rispettare l'alternanza dei segnali di handshake.
 Al rialzarsi di \lstinline|eoc|, quindi, il nuovo dato sarà pronto e potremo leggerlo dalla linea di trasmissione, \lstinline|soc| sarà a 0 da prima e ci troveremo quindi nuovamente nella situazione di riposo.
 
+Viste su un grafico, le variabili \lstinline|soc| e \lstinline|eoc| assumono, durante un ciclo di handshake valido, i seguenti valori: 
+
+\begin{center}
+	\begin{tikzpicture}
+		\begin{axis}[
+				xmin=4, xmax=9,
+				ymin=-1, ymax=18,
+				grid=major,
+				domain=4:9,
+				xtick={},
+				ytick={},
+				xticklabels={},
+				yticklabels={},
+				samples=100,
+				legend pos=north west, % Position of the legend
+				width=15cm,
+				height=7cm
+		]
+		% Blue plot with legend entry
+		\addplot[blue, thick] {7 + 5 * (x >= 5) * (x <=  7)}; 
+		\addlegendentry{soc} % Legend entry for the blue plot
+		
+		% Red plot with legend entry
+		\addplot[red, thick] {5 - 5 * (x >= 6) * (x <=  8)};
+		\addlegendentry{eoc} % Legend entry for the red plot
+		\end{axis}
+	\end{tikzpicture}
+\end{center}
+
 \subsection{Sintesi di RSS complesse}
-Finora abbiamo visto (# se uno ce le mettesse) descrizioni scritte attraverso il \textbf{linguaggio di trasferimento fra registri} del Verilog.
+Finora abbiamo visto descrizioni scritte attraverso il \textbf{linguaggio di trasferimento fra registri} del Verilog.
 Adesso dobbiamo vedere di come \textit{sintetizzare} effettivamente una rete complessa, attraverso \textbf{circuiti elementari} noti.
 Notiamo che non parleremo di \textit{sintesi ottime}, in quanto questo non è un problema che adesso ci poniamo.
 
@@ -265,7 +294,7 @@ La rete combinatoria di condizionamento prende come ingressi le variabili di ing
 Notiamo che la parte operativi rappresenta effettivamente una rete di Mealy, in quanto alcune uscite escono da registi (regisri multifunzionali), e altre vengono direttamente da reti combinatorie connesse agli ingressi (variabili di condizionamento).
 
 La \textbf{parte di controllo} si occupa invece di gestire, sostanzialmente, il registro STAR.
-Prende in ingresso le variabili di condizionamento appena generate, e restituisce in uscita le variabili di comando dei multiplexer (#credo) della parte operativa.
+Prende in ingresso le variabili di condizionamento appena generate, e restituisce in uscita le variabili di comando dei multiplexer della parte operativa.
 Questo si può implementare effettivamente come un RSS di Moore, dove le uscite dei registri rappresentano le variabili di comando stesse.
 
 Notiamo quindi di aver ricondotto l'RSS a due reti sequenziali, una di Moore e una di Mealy, in retroazione fra di loro.

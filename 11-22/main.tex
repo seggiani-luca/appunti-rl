@@ -253,21 +253,23 @@ In particolare, associata una codifica ad ogni stato del registro STAR, e chiama
 
 dove si associa ad ogni $\mu$-indirizzo, quindi ad ogni stato, una $\boldsymbol{\mu}$\textbf{-istruzione}: intendiamo una $\mu$-istruzione come un insieme di variabili di comando associate a quello stato (il $\boldsymbol{\mu}$\textbf{-codice}), una \textbf{variabile efficiente} $c_{eff}$ sulla base della quale si effettuano i $\mu$-salti, e due $\mu$-indirizzi, $T$ e $F$, che determinano il salto successivo sulla base del valore, rispettivamente vero o falso, della $c_{eff}$.
 
-A partire da una tabella del genere, possiamo sintetizzare la PC secondo due modalità:
+A partire da una tabella del genere, detta \textbf{microprogramma}, possiamo sintetizzare la PC secondo due modalità:
 \begin{itemize}
 	\item \textbf{Modello basato sui} $\boldsymbol{\mu}$\textbf{-indirizzi:}
-		# mi sa non riesco ora
+		Si memorizza il microprogramma in una memoria ROM. A questo punto, dall'uscita del registro di stato STAR si possono ricavare le linee di indirizzo per suddetta ROM: due multiplexer, uno governato da $c_{eff}$ per la scelta della variabile di condizionamento efficace, e uno governato da quest'ultima per la scelta del prossimo stato interno. La rete così realizzata si comporterà analogamente ad una sua equivalente realizzata in sintesi parte di controllo / parte operativa, ma sarà più semplice da realizzare (di contro, sarà probabilmente meno efficiente in termini di costo o velocità).
+		
 	\item \textbf{Modello basato sulle} $\boldsymbol{\mu}$\textbf{-istruzioni:}
+		Introdotta una ROM il registro STAR potrà, anziché rappresentare codifiche di stati, contenere l'intera microistruzione corrispondente ad un dato stato. Formalmente, questo significa che ogni microistruzione sarà codifica del suo stato di appartenenza. La differenza pratica sarà però la maggior velocità nelle temporizzazioni, ammesso un registro STAR significativamente più grande rispetto al modello basato su $\mu$-indirizzi. Infatti, con la ROM collegata in cascata alla rete combinatoria operativa, si dovranno estendere le temporizzazioni per permettere letture in ROM. Al contrario, usando il modello a $\mu$-istruzioni, la ROM sarà in cascata alla rete di condizionamento, solitamente più semplice, e si potrà aumentare la frequenza di clock. 
 \end{itemize}
 
 \subsubsection{Reintrodurre i salti a più vie}
 Nel caso di salti a più di due vie, si dovranno considerare più condizioni in cicli di clock differenti.
-# fai esempio
 Questo diventa poco efficiente quando i salti sono a un elevato numero di vie, in quanto per $n$ possibili $\mu$-salti si perdono $\sim n$ cicli di clock.
+Un opzione alternativa potrebbe essere quella di realizzare ROM che prevedono salti a più vie: questo però comporterebbe un esplosione di dimensioni della stessa (e del registro STAR, già di per sè grande, nel caso si usi il modello basato su $\mu$-istruzioni).
 
 Nella pratica, i processori sono spesso progettati per compiere salti a due vie, tranne che in due casi particolari:
 \begin{itemize}
-	\item All'\textbf{inizio} della fase di fetch, cioè quando si legge il \textbf{formato} dell'opcode, dove si dovrà saltare a un blocco $\mu$-codice diverso a seconda della posizione degli operandi # fai esempio assembler.
+	\item All'\textbf{inizio} della fase di fetch, cioè quando si legge il \textbf{formato} dell'opcode, dove si dovrà saltare a un blocco $\mu$-codice diverso a seconda della posizione degli operandi.
 		Si perderanno quindi $\sim f$ cicli per $f$ formati possibili delle istruzioni;
 	\item Alla \textbf{fine} della fase di fetch, cioè quando si determina il salto al blocco di $\mu$-codice che gestisce la \textbf{fase di esecuzione} dell'istruzione.
 		Si perderanno quindi $\sim i$ cicli per $i$ istruzioni possibili.
@@ -275,22 +277,20 @@ Nella pratica, i processori sono spesso progettati per compiere salti a due vie,
 Una soluzione al problema dei salti a più vie e data quindi dal \textbf{Multiway Jump Register}.
 
 \subsubsection{Multiway Jump Register}
-L'MJR non è un gruppo punk americano ma un \textbf{registro operativo} destinato a contenere indirizzi di salto.
-Generiamo l'ingresso del MJR attraverso la parte operativa della sintesi, e lo utilizziamo nella parte di controllo.
-
-Per codificare la presenza del MJR, nella ROM della sintesi della parte di controllo dovremmo introdurre una nuova uscita, il $\boldsymbol{\mu}$\textbf{-tipo}.
-Il valore del $\mu$-tipo determina il tipo di salto che vorremo eseguire: $\mu$-tipo a 0 significherà salto standard a 2 vie, e $\mu$-tipo a 1 significherà salto basato sul MJR.
-
-# parla del b\_k di sovrascrittura del MJR
+L'MJR non è un gruppo punk ma un \textbf{registro operativo} destinato a contenere indirizzi di salto.
+Generiamo l'ingresso del MJR attraverso la parte operativa della sintesi, e lo utilizziamo nella parte di controllo come indirizzo di arrivo di particolari istruzioni, caratterizzate da un valore introdotto appositamente, il $\boldsymbol{\mu}$\textbf{-tipo}, a valore 1.
+A questo punto basterà introdurre un nuovo multiplexer, che distingue fra l'indirizzo di arrivo normalmente calcolato attraverso la variabile di condizionamento efficente, e qualsiasi sia il contenuto di MJR.
+Per codificare la presenza del MJR, nella ROM della sintesi della parte di controllo dovremmo quindi introdurre una nuova uscita dedicata al $\mu$-tipo della $\mu$-istruzione.
+Il valore del $\mu$-tipo determinerà allora il tipo di salto che vorremo eseguire: $\mu$-tipo a 0 significherà salto standard a 2 vie, e $\mu$-tipo a 1 significherà salto basato sul MJR.
 
 \subsection{Sottoliste}
 Talvolta può convenire strutturare una descrizione di RSS con sottoliste simili a \textbf{sottoprogrammi}.
-Porzioni di $\mu$-programma diverse potranno quindi essere raggiunte da stati di partenza diversi, che riporteranno allo stato di partenza stesso al termine della loro esecuzione attraverso un processo simile a quello delle CALL e RET viste sull'assembly (# integra).
-Questo può essere implementato nella pratica, inserendo il $\mu$-indirizzo successivo all'esecuzione della sottolista nel MJR, cioè impostando $b_k$ a 0 per quello stato, e inserendo quindi il $\mu$-indirizzo dell'inizio della sottolista in STAR.
+Porzioni di $\mu$-programma diverse potranno quindi essere raggiunte da stati di partenza diversi, che riporteranno allo stato di partenza stesso al termine della loro esecuzione attraverso un processo simile a quello delle CALL e RET viste sull'assembly.
+Questo può essere implementato nella pratica, inserendo il $\mu$-indirizzo successivo all'esecuzione della sottolista nel MJR, e inserendo quindi il $\mu$-indirizzo dell'inizio della sottolista in STAR.
 A questo punto la rete di controllo "eseguirà" il $\mu$-codice ed effettuerà i $\mu$-salti specificati dalla sottolista fino al passo finale, che rimetterà MJR in STAR, e quindi riprenderà l'esecuzione dal $\mu$-indirizzo memorizzato prima della "chiamata" della sottolista.
 
-Due limitazioni di questo approccio sono che MJR diventa inutilizzabile durante l'esecuzione della sottolista, e sopratutto che un singolo MJR ci permette un solo livello di annidamento di sottoliste.
-Per avere più livelli avremo bisogno di una \textbf{pila di MJR}, che però non è trattata in questo corso.
+Due limitazioni di questo approccio sono che MJR diventa inutilizzabile durante l'esecuzione della sottolista, e inoltre che un singolo MJR ci permette un solo livello di annidamento di sottoliste.
+Per avere più livelli di annidamento avremo bisogno di una \textbf{pila di MJR}, che però non è trattata in questo corso.
 
 \subsection{Struttura del calcolatore}
 Siamo arrivati ora a a poter descrivere in Verilog un \textbf{sistema completo} di:
@@ -307,7 +307,7 @@ Gli ultimi si occupano effettivamente di ottenere codifiche di dati dal mondo es
 Le interfacce contengono un piccolo numero di \textbf{registri di interfaccia} su cui il processore può leggere o scrivere.
 
 La \textbf{memoria principale} sarà formata in larga parte da memoria RAM, e conterra in ogni istante le \textbf{istruzioni} e i \textbf{dati} che questo elabora.
-Una parte della memoria principale dovrà essere implementata attraverso memoria ROM, in quanto c'è da risolvere il problema dello stato di avvio del processore introducendo dati predefiniti che vengono puntati per primi dall'istruction pointer. (# credo)
+Una parte della memoria principale dovrà essere implementata attraverso memoria ROM, in quanto c'è da risolvere il problema dello stato di avvio del processore introducendo dati predefiniti che vengono puntati per primi dall'istruction pointer.
 Il modello che andremo a studiare poi sarà dotato di memoria video, che conterrà le immagini visualizzate sullo schermo, e sarà anch'essa in diretta comunicazione col processore.
 
 Il \textbf{processore} eseguirà il ciclo \textbf{fetch-execute}, prelevando dala memoria principale \textbf{istruzioni operative} e \textbf{istruzioni di controllo}.
@@ -339,16 +339,5 @@ OPCODE source, destination
 
 Questo linguaggio sarà simile a quello già studiato, cioè dei processori Intel x86.
 La differenza sarà che avremo come problema il dover effettivamente codificare ciò che scriviamo in assembler in istruzioni in linguaggio macchina da fornire al processore (adesso non stiamo solo \textit{programmando}, ma anche \textit{progettando} il processore).
-
-\subsubsection{Modalità di indirizzamento}
-Avevamo visto le seguenti modalità di indirizzamento per le istruzioni:
-\begin{itemize}
-	\item Di registro;
-	\item Immediato;
-	\item Di memoria;
-	\item Delle porte di I/O # riempi
-\end{itemize}
-
-# listone istruzioni
 
 \end{document}

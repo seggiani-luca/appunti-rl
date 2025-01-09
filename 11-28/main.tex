@@ -233,8 +233,10 @@
 % testo
 \subsection{Descrizione in Verilog del ciclo fetch/execute}
 \subsubsection{Fase di fetch} 
+Abbiamo visto quali erano i formati di indirizzamento degli operandi delle istruzioni, e le sottoliste per le letture e scritture in memoria. 
+Possiamo quindi descrivere in Verilog la fase di fetch del processore:
 
-# tutto verilog
+# verilog
 
 Alla fine della fase di fetch saremo riusciti con successo a mettere:
 \begin{itemize}
@@ -247,13 +249,13 @@ Alla fine della fase di fetch saremo riusciti con successo a mettere:
 \subsubsection{Fase di esecuzion}
 Nella fase di esecuzione, avremo quindi tutti gli operandi già inizializzati, e dovremo solo farli passare attraverso apposite reti combinatorie.
 
-# altro verilog
+# verilog
 
 \subsubsection{Formato F1}
 Abbiamo visto come un'eccezione tra le istruzioni è rappresentata da quele in formato F1, in quanto il "fetch" effettivo dei loro operandi sorgenti e destinatari va fatto in fase di esecuzione.
 Queste, ricordiamo, sono le istruzioni di I/O (operandi su indirizzi a 16 bit) e MOV sui registri da 24 bit.
 
-# indovina? altro verilog
+# verilog
 
 \subsection{Interfacce}
 Veniamo adesso alla descrizione di interfacce che completano il calcolatore, cioè gli permettono di comunicare col mondo esterno.

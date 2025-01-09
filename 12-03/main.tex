@@ -247,8 +247,10 @@ Notiamo che l'aggiornamento dell'RBR avviene al \textit{fronte di salita} dell'e
 
 \subsubsection{Interfacce di uscita senza handshake}
 L'interfaccia parallela di \textbf{uscita} senza handshake è simile: si ha sempre un solo registro, TBR, che memorizza le linee dati in entrata qundo sono entrambi bassi il select e l'I/O write (\lstinline|/iow|), cosa ricavata attraverso un'altra porta NOR.
+Notiamo che in questo caso TBR campiona sul \textit{fronte di discesa} dell'enabler (quindi di \lstinline|/iow|), anziché di salita.
 
-Notiao che in questo caso TBR campiona sul \textit{fronte di discesa} dell'enabler (quindi di \lstinline|/iow|), anziché di salita.
+Vediamo la descrizione Verilog:
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-03/parallel_interfaces/parallel_in.v}
 
 \subsubsection{Interfacce di ingresso/uscita senza handshake}
 Le intefacce di ingresso/uscita senza handshake si costruiscono unendo due interfacce, una di ingresso e una di uscita (e appunto dette \textbf{sottointerfacce} di ingresso e uscita), e selezionando l'interfaccia giusta attraverso un bit di indirizzo (\lstinline|a0|).
@@ -269,6 +271,16 @@ Come vediamo dall'esempio, solitamente si mette a indirizzo \textbf{pari} la por
 Notiamo che un montaggio alternativo si ottiene ignorando il bit di indirizzo e accedendo direttamente alle due sottointerfacce con un unico select.
 A questo punto sarà compito del processore discriminare fra \lstinline|/ior| e \lstinline|/iow| per selezionare la sottointerfaccia desiderata.
 
+Vediamo la descrizione Verilog:
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-03/parallel_interfaces/parallel_in.v}
+
+\subsubsection{Interfacce di ingresso/uscita}
+Possiamo combinare le interfacce senza handshake viste finora in un unica interfaccia di ingresso/uscita.
+In questo caso i registri RBR e TBR verranno unificati, a quanto visto dal processore, in un unico registro RTBR, mentre i registri di stato RSR e TSR verranno unificati in un unico RTSR.
+
+In Verilog, mostrando un esempio con calcolo esplicito dei select (sulla base dell'LSB dell'offset) e uno a connessione diretta: 
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-03/parallel_interfaces/parallel_inout.v}
+
 \subsubsection{Interfacce di ingresso con handshake}
 Ricordiamo la visione funzionale delle interfacce di ingresso con handshake: dovremo avere i registri RBR e RSR, da cui ricaviamo il flag FI lato processore, mentre lato dispositivo dovremo avere sia le linee di ingresso dati che le linee di handshake, che assumiamo essere in forma \lstinline|/dav| e \lstinline|rfd|.
 
@@ -287,7 +299,8 @@ Si ha quindi la rete combinatoria per la generazione degli enable, dove \lstinli
 	\end{tabular}
 \end{table}
 
-# sintesi rete sequenziale
+Vediamo la descrizione Verilog:
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-03/parallel_interfaces/hs_parallel_in.v}
 
 Notiamo che, nella sintesi, si ritarda il clock dell'interfaccia rispetto a quello del processore per evitare condizioni di \textit{corsa} all'interfaccia.
 
@@ -309,11 +322,15 @@ La parte combinatoria obbedirà alla tabella di verità:
 
 Notiamo che compare comunque la linea di uscita in quanto vogliamo leggere lo stato del TSR.
 
-# sintesi parte sequenziale
+Vediamo la descrizione Verilog:
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-03/parallel_interfaces/hs_parallel_out.v}
 
 \subsubsection{Interfacce di ingresso/uscita con handshake}
 Possiamo combinare le interfacce con handhshake viste finora in un unica interfaccia di ingresso/uscita.
 Combineremo il registro di stato in un unico registro RTSR dotato dei flag FO e FI, e useremo un bit di indirizzo (\lstinline|a0|) per distinguere fra le porte di ingresso e uscita. 
+
+In Verilog: 
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-03/parallel_interfaces/hs_parallel_inout.v}
 
 \subsection{Interfacce seriali}
 Le interfacce seriali trasmettono informazioni un bit a volta.
@@ -335,7 +352,7 @@ Definiamo trama una sequenza di bit che rappresenta un frammento di comunicazion
 Infine, trasmettiamo un marking per segnalare la fine della trama (\textbf{bit di stop}).
 
 I bit di start e di stop rappresentano un \textbf{overhead}: una trama di $n$ bit utili è lunga almeno $n+2$ per segnalare inizio e fine della trama.
-Avremo quindi che la velocità netta della linea è $\frac{n}{n+2}$, che è comunque più efficiente di usare un clock secondario o effettuare un handshake per ogni bit. # se vuoi riguarda
+Avremo quindi che la velocità netta della linea è $\frac{n}{n+2}$, che è comunque più efficiente di usare un clock secondario o effettuare un handshake per ogni bit. 
 
 Converrebbe quindi usare $n$ arbitrariamente lunghi: purtroppo questo è fattibile fino ad un certo limite superiore, in quanto i clock di trasmettitore e ricevitore saranno necessariamente leggermente differenti in frequenza, ergo sul lungo termine si andrebbe ad accumulare un'errore troppo grande.
 
@@ -346,5 +363,23 @@ n \cdot \Delta T \leq \frac{T}{2} \implies \frac{\Delta T}{T} \leq \frac{1}{2n}
 $$
 
 Uno standard di \textit{interoperabilità} per le trasmissioni seriali è l EIA-RS232C, che fissa lo 0 logico a tensioni da 3V a 25V, e l'1 logico a tensione negativa da -25V a -3V.
+
+Vediamo quindi un implementazione Verilog, usando un clock al ricevitore con periodo $T + \Delta T = \frac{T}{16}$ per trasmissioni di trame da 10 bit (8 bit utili).
+
+Il trasmettitore sarà il seguente:
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-03/serial_interfaces/serial_transmitter.v}
+
+Il ricevitore, invece, sarà il seguente:
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-03/serial_interfaces/serial_receiver.v}
+
+\subsection{Vista funzionale delle interfacce seriali}
+L'interfaccia seriale è effettivamente un'interfaccia di ingresso uscita con handshake, dove ingressi e uscite sono i bit \lstinline|txd| di trasmissione e \lstinline|rxd| di ricezione.
+In particolare, questi sono gestiti rispettivamente da due sottointerfacce dette \textbf{ricevitore} e \textbf{trasmettitore}, sincronizzati da un \textbf{generatore di segnali di sincronizzazione} e interfacciati con una sottointerfaccia di gestione attraverso handshake \lstinline|dav| - \lstinline|/rfd|.
+Nell'handshake lato sottointerfaccia di gestione, il \textbf{ricevitore} è \textit{produttore} e il \textbf{trasmettitore} è il \textit{ricevitore}, cioè il ricevitore \textit{restituisce} i dati ricevuti e il trasmettitore \textit{prende} i dati da trasmettere.
+Lato processore si hanno comunque 8 bit di uscita, cioè un byte, e il bit di indirizzo che discrimina fra porte di ingresso / uscita (cioè fra ricevitore e trasmettitore).
+
+L'intera interfaccia, ricavata a partire da un interfaccia di ingresso uscita parallela con handshake (che approvigiona un trasmettitore e un ricevitore seriali), sarà quindi descritta in Verilog come:
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-03/serial_interfaces/serial_interface.v}
+sulla base delle definizioni di \lstinline|serial_receiver| e \lstinline|serial_transmitter| date alla scorsa lezione.
 
 \end{document}

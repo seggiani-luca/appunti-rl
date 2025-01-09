@@ -21,7 +21,7 @@ module n4_b2_integer_comparator(x3_x0, y3_y0,
 		.bout(bout),
 	);
 
-	assign flag_eq = (d4_d0 == 'B00000) & ~bout;
-	assign flag_gr = ~d4_d0[4] & ~(d4_d0 == 'B00000) & ~bout;
+	assign flag_eq = (d4_d0 == 'B00000);
+	assign flag_gr = ~d4_d0[4] & ~(d4_d0 == 'B00000);
 	assign flag_lr = d4_d0[4];
 endmodule

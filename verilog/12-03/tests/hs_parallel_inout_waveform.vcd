@@ -1,0 +1,659 @@
+$date
+	Mon Jan  6 23:28:54 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench $end
+$var wire 8 ! d7_d0 [7:0] $end
+$var wire 1 " rfd_in $end
+$var wire 1 # dav_out $end
+$var wire 8 $ byte_out [7:0] $end
+$var reg 1 % a0 $end
+$var reg 8 & byte_in [7:0] $end
+$var reg 1 ' clock $end
+$var reg 8 ( d7_d0_driver [7:0] $end
+$var reg 1 ) dav_in_ $end
+$var reg 1 * ior_ $end
+$var reg 1 + iow_ $end
+$var reg 1 , reset_ $end
+$var reg 1 - rfd_out $end
+$var reg 1 . s_ $end
+$scope module hs_inout $end
+$var wire 1 % a0 $end
+$var wire 8 / byte_in [7:0] $end
+$var wire 1 ' clock $end
+$var wire 8 0 d7_d0 [7:0] $end
+$var wire 1 ) dav_in_ $end
+$var wire 1 * ior_ $end
+$var wire 1 + iow_ $end
+$var wire 1 , reset_ $end
+$var wire 1 - rfd_out $end
+$var wire 1 . s_ $end
+$var wire 1 " rfd_in $end
+$var wire 1 # dav_out_ $end
+$var wire 8 1 byte_out [7:0] $end
+$scope module hs_in $end
+$var wire 1 % a0 $end
+$var wire 8 2 byte_in [7:0] $end
+$var wire 1 ' clock $end
+$var wire 8 3 d7_d0 [7:0] $end
+$var wire 1 ) dav_ $end
+$var wire 1 * ior_ $end
+$var wire 1 , reset_ $end
+$var wire 1 . s_ $end
+$var wire 1 " rfd $end
+$var wire 8 4 rbr [7:0] $end
+$var wire 1 5 fi $end
+$var wire 1 6 e_s $end
+$var wire 1 7 e_b $end
+$scope module comb $end
+$var wire 1 % a0 $end
+$var wire 1 * ior_ $end
+$var wire 1 . s_ $end
+$var wire 1 6 e_s $end
+$var wire 1 7 e_b $end
+$upscope $end
+$scope module seq $end
+$var wire 8 8 byte_in [7:0] $end
+$var wire 1 ' clock $end
+$var wire 1 ) dav_ $end
+$var wire 1 7 e_b $end
+$var wire 1 5 fi $end
+$var wire 8 9 rbr [7:0] $end
+$var wire 1 , reset_ $end
+$var wire 1 " rfd $end
+$var parameter 2 : s0 $end
+$var parameter 2 ; s1 $end
+$var parameter 2 < s2 $end
+$var parameter 2 = s3 $end
+$var reg 1 5 FI $end
+$var reg 8 > RBR [7:0] $end
+$var reg 1 ? RFD $end
+$var reg 2 @ STAR [1:0] $end
+$upscope $end
+$upscope $end
+$scope module hs_out $end
+$var wire 1 % a0 $end
+$var wire 1 ' clock $end
+$var wire 8 A d7_d0 [7:0] $end
+$var wire 1 * ior_ $end
+$var wire 1 + iow_ $end
+$var wire 1 , reset_ $end
+$var wire 1 - rfd $end
+$var wire 1 . s_ $end
+$var wire 1 B fo $end
+$var wire 1 C e_s $end
+$var wire 1 D e_b $end
+$var wire 1 # dav_ $end
+$var wire 8 E byte_out [7:0] $end
+$scope module comb $end
+$var wire 1 % a0 $end
+$var wire 1 * ior_ $end
+$var wire 1 + iow_ $end
+$var wire 1 . s_ $end
+$var wire 1 C e_s $end
+$var wire 1 D e_b $end
+$upscope $end
+$scope module seq $end
+$var wire 8 F byte_out [7:0] $end
+$var wire 1 ' clock $end
+$var wire 8 G d7_d0 [7:0] $end
+$var wire 1 # dav_ $end
+$var wire 1 D e_b $end
+$var wire 1 B fo $end
+$var wire 1 , reset_ $end
+$var wire 1 - rfd $end
+$var parameter 2 H s0 $end
+$var parameter 2 I s1 $end
+$var parameter 2 J s2 $end
+$var parameter 2 K s3 $end
+$var reg 1 L DAV $end
+$var reg 1 B FO $end
+$var reg 2 M STAR [1:0] $end
+$var reg 8 N TBR [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b11 K
+b10 J
+b1 I
+b0 H
+b11 =
+b10 <
+b1 ;
+b0 :
+$end
+#0
+$dumpvars
+bx N
+bx M
+xL
+bz G
+bx F
+bx E
+0D
+0C
+xB
+bz A
+bx @
+x?
+bx >
+bx 9
+bx 8
+07
+06
+x5
+bx 4
+bz 3
+bx 2
+bx 1
+bz 0
+bx /
+1.
+1-
+0,
+1+
+1*
+1)
+bz (
+0'
+bx &
+x%
+bx $
+x#
+x"
+bz !
+$end
+#1
+b0 M
+1B
+1#
+1L
+b0 @
+05
+1"
+1?
+#3
+1'
+#5
+1,
+#6
+0'
+#9
+1'
+#12
+bz $
+bz 1
+bz E
+bz F
+bz N
+0'
+#15
+bz1zzz0 !
+bz1zzz0 0
+bz1zzz0 3
+bz1zzz0 A
+bz1zzz0 G
+16
+1C
+1'
+0*
+0%
+0.
+#18
+bz1zzz0 $
+bz1zzz0 1
+bz1zzz0 E
+bz1zzz0 F
+bz1zzz0 N
+0'
+#21
+1'
+#24
+0'
+#27
+1'
+#30
+0'
+#33
+1'
+#35
+bz !
+bz 0
+bz 3
+bz A
+bz G
+06
+0C
+1*
+#36
+bz $
+bz 1
+bz E
+bz F
+bz N
+0'
+#39
+1'
+#42
+0'
+#45
+1'
+#48
+0'
+#51
+1'
+#54
+0'
+#55
+0)
+b11110100 &
+b11110100 /
+b11110100 2
+b11110100 8
+#57
+1'
+#60
+b1 @
+b11110100 4
+b11110100 9
+b11110100 >
+0'
+#63
+1'
+#66
+0"
+0?
+0'
+#69
+1'
+#72
+0'
+#75
+1'
+1)
+#78
+b10 @
+0'
+#81
+1'
+#84
+15
+0'
+#87
+1'
+#90
+0'
+#93
+1'
+#95
+bz1zzz1 !
+bz1zzz1 0
+bz1zzz1 3
+bz1zzz1 A
+bz1zzz1 G
+16
+1C
+0*
+#96
+bz1zzz1 $
+bz1zzz1 1
+bz1zzz1 E
+bz1zzz1 F
+bz1zzz1 N
+0'
+#99
+1'
+#102
+0'
+#105
+1'
+#108
+0'
+#111
+1'
+#114
+0'
+#115
+bz !
+bz 0
+bz 3
+bz A
+bz G
+06
+0C
+1*
+#117
+1'
+#120
+bz $
+bz 1
+bz E
+bz F
+bz N
+0'
+#123
+1'
+#126
+0'
+#129
+1'
+#132
+0'
+#135
+b11110100 !
+b11110100 0
+b11110100 3
+b11110100 A
+b11110100 G
+17
+1'
+0*
+1%
+#138
+b11 @
+b11110100 $
+b11110100 1
+b11110100 E
+b11110100 F
+b11110100 N
+0'
+#141
+1'
+#144
+0'
+#147
+1'
+#150
+0'
+#153
+1'
+#155
+bz !
+bz 0
+bz 3
+bz A
+bz G
+07
+1*
+#156
+bz $
+bz 1
+bz E
+bz F
+bz N
+b0 @
+0'
+#159
+1'
+#162
+05
+1"
+1?
+0'
+#165
+1'
+#168
+0'
+#171
+1'
+#174
+0'
+#175
+bz1zzz0 !
+bz1zzz0 0
+bz1zzz0 3
+bz1zzz0 A
+bz1zzz0 G
+16
+1C
+0*
+0%
+#177
+1'
+#180
+bz1zzz0 $
+bz1zzz0 1
+bz1zzz0 E
+bz1zzz0 F
+bz1zzz0 N
+0'
+#183
+1'
+#186
+0'
+#189
+1'
+#192
+0'
+#195
+bz !
+bz 0
+bz 3
+bz A
+bz G
+06
+0C
+1'
+1*
+#198
+bz $
+bz 1
+bz E
+bz F
+bz N
+0'
+#201
+1'
+#204
+0'
+#207
+1'
+#210
+0'
+#213
+1'
+#215
+1D
+0+
+b11110101 !
+b11110101 0
+b11110101 3
+b11110101 A
+b11110101 G
+b11110101 (
+1%
+#216
+b1 M
+b11110101 $
+b11110101 1
+b11110101 E
+b11110101 F
+b11110101 N
+0'
+#219
+1'
+#222
+0B
+0'
+#225
+1'
+#228
+0'
+#231
+1'
+#234
+0'
+#235
+0D
+bz !
+bz 0
+bz 3
+bz A
+bz G
+bz (
+1+
+#237
+1'
+#240
+b10 M
+0'
+#243
+1'
+#246
+0#
+0L
+0'
+#249
+1'
+#252
+0'
+#255
+bz0zzz0 !
+bz0zzz0 0
+bz0zzz0 3
+bz0zzz0 A
+bz0zzz0 G
+16
+1C
+1'
+0*
+0%
+#258
+0'
+#261
+1'
+#264
+0'
+#267
+1'
+#270
+0'
+#273
+1'
+#275
+bz !
+bz 0
+bz 3
+bz A
+bz G
+06
+0C
+1*
+#276
+0'
+#279
+1'
+#282
+0'
+#285
+1'
+#288
+0'
+#291
+1'
+#294
+0'
+#295
+0-
+#297
+1'
+#300
+b11 M
+0'
+#303
+1'
+#306
+1#
+1L
+0'
+#309
+1'
+#312
+0'
+#315
+1'
+1-
+#318
+b0 M
+0'
+#321
+1'
+#324
+1B
+bz $
+bz 1
+bz E
+bz F
+bz N
+0'
+#327
+1'
+#330
+0'
+#333
+1'
+#335
+bz1zzz0 !
+bz1zzz0 0
+bz1zzz0 3
+bz1zzz0 A
+bz1zzz0 G
+16
+1C
+0*
+#336
+bz1zzz0 $
+bz1zzz0 1
+bz1zzz0 E
+bz1zzz0 F
+bz1zzz0 N
+0'
+#339
+1'
+#342
+0'
+#345
+1'
+#348
+0'
+#351
+1'
+#354
+0'
+#355
+bz !
+bz 0
+bz 3
+bz A
+bz G
+06
+0C
+1*
+#357
+1'
+#360
+bz $
+bz 1
+bz E
+bz F
+bz N
+0'
+#363
+1'
+#366
+0'
+#369
+1'
+#372
+0'
+#375
+1'

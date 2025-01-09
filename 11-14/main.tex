@@ -285,8 +285,7 @@ Vogliamo creare una rete che conta, modulo 16, il numero di sequenze corrette 00
 Quindi, ogni volta che viene registrata una sequenza corretta, la rete incrementa di 1 l'uscita, rappresentata su 4 bit.
 Abbiamo quindi \textbf{2 ingressi}, \textbf{4 uscite}, e 3 stati interni per 16 stati di OUTR, cioè 48 stati interni totali.
 
-Modellizzare questa rete con un tale numero di ingressi risulta chiaramente molto laborioso: un apporccio migliore sarebbe creare una rete di Mealy ritardato che riconosce una sola sequenza, e mandarla in input a un contatore a 4 bit.
-# potresti fare disegnini però è laborioso pure quello
+Modellizzare questa rete con un tale numero di ingressi risulta chiaramente molto laborioso: un approccio migliore sarebbe creare una rete di Mealy ritardato che riconosce una sola sequenza, e mandarla in input a un contatore a 4 bit.
 
 \textit{Esplodendo} una rete siffatta troviamo un modello formato da una rete di Mealy ritardato (cioè da una rete combinatoria \textit{di riconoscimento} nel caso del riconoscitore di sequenza, annessa ai registri STAR e OUTR), e da un contatore (formato a sua volta da una rete combinatoria che implementa la logica del contatore e un altro registro, che chiameremo \textbf{COUNT}).
 L'uscita di questa rete sarà formata dal registro COUNT, e potremo inoltre racchiudere le due reti combinatorie in un unica RC totale.

@@ -245,18 +245,26 @@ Ad esempio:
 \end{itemize}
 
 Durante la fase di fetch, quindi, il processore deve procurarsi gli operandi necessari ad eseguire la prossima istruzione, che questi siano nei registri o in memoria.
-Questa operazione sarà comune a ogni istruzione, cioè le modalità di indirizzamento degli operandi saranno identiche che si parli di una \lstinline|ADD| come di una \lstinline|MOV|, ecc...
+Questa operazione sarà comune a ogni istruzione, cioè le modalità di indirizzamento degli operandi saranno identiche che si parli di una \lstinline|ADD| come di una \lstinline|MOV|, ecc... (finchè le istruzioni appartengono allo stesso \textit{formato}, vedi sotto).
 Dal punto di vista pratico, questo significa che la parte di \textbf{fetch} potrà essere messa \textit{in comune}, mentre la fase di \textbf{esecuzione} sarà \textit{specifica} ad ogni istruzione.
 
 \subsubsection{Formato delle istruzioni macchina}
-I primi 3 bit del codice operativo di un istruzione rappresentano il formato dell'istruzione:
+I primi 3 bit del codice operativo di un istruzione rappresentano il cosiddetto \textbf{formato} dell'istruzione, ovvero le modalità secondo cui si dovrebbero ricavare gli operandi in fase di fetch:
 \begin{itemize}
 	\item \textbf{Formato F0} (000): sono istruzioni per le quali il processore non deve compiere nessuna azione, in quanto accade alternativamente che:
 		\begin{itemize}
 			\item Gli operandi sono registri;
 			\item Le istruzioni non hanno operandi.
 		\end{itemize}
-		In questo caso il processore deve solo raccogliere l'indirizzo della prossima istruzione dall'instruction pointer # ??? ;
+		ergo una volta letto l'opcode puntato dall'instruction pointer, si può proseguire all'esecuzione;
+	\item \textbf{Formato F1} (001): raggruppa le istruzioni non classificabili negli altri formati, fra cui:
+		\begin{itemize}
+			\item Istruzioni I/O, con indirizzo a 16 bit sia sorgente (\lstinline|IN|) che destinatario (\lstinline|OUT|);
+			\item \lstinline|MOV| con uno dei registri a 24 bit (DP o SP), sia sorgente che destinatario.
+		\end{itemize}
+		Le operazioni in formato F1 si limitano in fase di fetch a prelevare l'OPCODE (fetch \textit{scarna}).
+		Gli operandi vengono gestiti successivamente in fase di esecuzione.
+		Questa soluzione è sì poco elegante, ma risulta più agevole dal punto di vista dell'implementazione.
 	\item \textbf{Formato F2} (010): l'operando \textbf{sorgente} si trova in memoria, indirizzato attraverso DP.
 		In questi casi tutta l'istruzione sta su un byte, ma l'operando sorgente va prelevato tramite un'ulteriore lettura in memoria di un byte;
 	\item \textbf{Formato F3} (011): l'operando \textbf{destinatario} si trova in memoria, indirizzato attraverso DP.
@@ -275,14 +283,6 @@ I primi 3 bit del codice operativo di un istruzione rappresentano il formato del
 \item \textbf{Formato F6} (110): l'operando \textbf{destinatario} si trova in memoria con indirizzamento \textbf{diretto}. Di nuovo, il processore dovrà leggere 4 byte consecutivi puntati dall'IP, ma a questo punto non ci saranno \textit{letture} in memoria, bensì \textit{scritture} sull'indirizzo prelevato del destinatario, in fase di \textbf{esecuzione};
 \item \textbf{Formato F7} (111): raggruppa le istruzioni di controllo seguite da indirizzo (quindi, ad esempio, non la \lstinline|RET|, ma le varie \lstinline|CALL|, \lstinline|JMP|, salti condizionali ecc..).
 	In questo caso, l'indirizzo viene specificato come prima su 3 byte, e bisogna nuovamente leggere 4 byte consecutivi puntati dall'indirizzo in IP.
-	\item \textbf{Formato F1} (001): raggruppa le istruzioni non classificabili nei precedenti formati, fra cui:
-		\begin{itemize}
-			\item Istruzioni I/O, con indirizzo a 16 bit sia sorgente (\lstinline|IN|) che destinatario (\lstinline|OUT|);
-			\item \lstinline|MOV| con uno dei registri a 24 bit (DP o SP), sia sorgente che destinatario.
-		\end{itemize}
-		Le operazioni in formato F1 si limitano in fase di fetch a prelevare l'OPCODE (fetch \textit{scarna}).
-		Gli operandi vengono gestiti successivamente in fase di esecuzione.
-		Questa soluzione è sì poco elegante, ma risulta più agevole dal punto di vista dell'implementazione.
 \end{itemize}
 
 \subsection{Architettura hardware del calcolatore}
@@ -305,11 +305,38 @@ Non servono "forchette" con porte tri-state in quanto il processore è sempre l'
 Notiamo come nel bus non figura la linea di selezione \lstinline|/s| per gli spazi di memoria, in quanto questo viene generato attraverso una maschera dalla memoria stessa sulla base degli indirizzo di lettura, cioè avrà il solo scopo di selezionare diversi banchi di memoria, a \textit{livello} di memoria.
 
 \subsubsection{Spazio di memoria}
-Abbiamo quindi che lo spazio di memoria è implementato, su 16 MB, in parte con tecnologia RAM, in parte con EPROM (che contiene il bootstrap), e in parte con memoria video dedicata.
-Diciamo di avere 64 KB di memoria EPROM e 64 KB di memoria video.
+Abbiamo quindi che lo spazio di memoria è implementato, su 16 MB, in parte con tecnologia RAM, in parte con EPROM (che contiene il programma bootstrap), e in parte con memoria video dedicata (che non vedremo affatto).
+Diciamo di avere 64 KB di memoria EPROM e 64 KB di memoria video, disposte come segue:
 
-Possiamo combinare queste memorie attraverso, come abbiamo visto prima, linee di select generate attraverso opportune maschere. 
-In particolare, # finisci quando ci arrivi vai
+\begin{table}[h!]
+	\center \rowcolors{2}{white}{black!10}
+	\begin{tabular} { c | c | c }
+		\bfseries Regione & \bfseries Indirizzi & \bfseries Num. locazioni \\
+		\hline 
+		RAM 1 & \lstinline|0x000000| & 589.824 byte \\
+					& \lstinline|0x09FFFF| & \\	
+		\hline
+		M. Video & \lstinline|0x0A0000| & 65.536 byte \\
+						 & \lstinline|0x0AFFFF| & \\	
+		\hline
+		RAM 2 & \lstinline|0x0B0000| & 16.056.320 byte \\
+					& \lstinline|0xFEFFFF| & \\	
+		\hline
+		EPROM & \lstinline|0xFF0000| & 65.536 byte \\
+					& \lstinline|0xFFFFFF| & \\
+	\end{tabular}
+\end{table}
+
+Notiamo come in effetti solo 16.646.144 delle $2^{24} =$ 16.777.216 locazioni da un byte indirizzabili su 24 bit siano disponibili in memoria RAM.  
+
+Possiamo combinare queste memorie attraverso, come abbiamo visto prima, linee di select generate attraverso opportune maschere:
+\begin{lstlisting}[language=verilog, style=codestyle]	
+wire sRAM_, sMV_, sEPROM_;
+assign {sRAM_, sMV_, sEPROM_} = (a23_a16 = 'H0A) ? 'B101:
+																(a23_a16 = 'HFF) ? 'B110:
+																/* 	don't care	*/ 'B011;
+\end{lstlisting}
+e indirizzare quindi i moduli corrispondenti ad ogni indirizzo.
 
 \subsubsection{Spazio di I/O}
 Lo spazio di I/O è realizzato fisicamente attraverso \textbf{interfacce}, che sono elementi di raccordo tra il bus e i dispositivi I/O.
@@ -326,24 +353,34 @@ Ci sono principalmente due ragioni:
 	\item Diversi dispositivi hanno \textbf{diverse modalità di trasferimento}: a volta un bit alla volta (\textbf{seriale}), a volte in gruppi di bit (\textbf{parallelo}).
 \end{itemize}
 
-Implementare interfaccie ci permette quindi di \textbf{standardizzare} l'input e l'output del calcolatore, rendendo le temporizzazioni e le modaità di trasferimento \textbf{omogenee}.
+Implementare interfaccie ci permette quindi di \textbf{standardizzare} l'input e l'output del calcolatore, rendendo le temporizzazioni e le modalità di trasferimento \textbf{omogenee}.
 
 \subsubsection{Processore}
 Possiamo quindi individuare, nel processore, tutti i registri effettivamente necessari:
 \begin{itemize}
 	\item Registri visibili al programmatore, cioè:
 		\begin{itemize}
-			\item # i soliti
+			\item \textbf{AH};
+			\item \textbf{AL};
+			\item \textbf{IP};
+			\item \textbf{DP};
+			\item \textbf{SP};
+			\item \textbf{F} (Flags);
 		\end{itemize}
 	\item Registri di supporto a uscite, fra cui:
 		\begin{itemize}
-			\item # i soliti
+			\item \textbf{D7\_D0} e \textbf{DIR} (supporta le forchette sulla linea dati);
+			\item \textbf{A23\_A0};
+			\item \textbf{/MR};
+			\item \textbf{/MW};
+			\item \textbf{/IOR};
+			\item \textbf{/MW};
 		\end{itemize}
 		Dove notiamo la particolarità dei registri che supportano le linee dati, che saranno innanzitutto \textit{forchettati}, cioè fatti passare attraverso una porta tri-state controllata da un enabler generato dal registro DIR (per \textit{direzione}).
 		DIR sarà a 0 di default, cioè scollegherà il registro dati di uscita dal bus, e lo porremo a 1 solo nel caso in cui dovremmo scrivere, attraverso tale registro, sul bus.
-	\item I registri STAR e MJR;
-	\item Registri di OPCODE, SOURCE e DEST\_ADDR necessari alla fase di fetch;
-	\item Registri di appoggio per operazioni, che saranno APP3, APP2, APP1, APP0 e NUMLOC.
+	\item I registri \textbf{STAR} e \textbf{MJR};
+	\item Registri di \textbf{OPCODE}, \textbf{SOURCE} e \textbf{DEST\_ADDR} necessari alla fase di fetch;
+	\item Registri di appoggio per operazioni, che saranno \textbf{APP3}, \textbf{APP2}, \textbf{APP1}, \textbf{APP0} (4 registri di appoggio) e \textbf{NUMLOC} (contiene il numero di locazioni a cui accedere quando si effettuano letture in memoria).
 \end{itemize}
 
 \subsubsection{Ciclo di fetch-execute}
@@ -367,6 +404,8 @@ Vediamo quindi i dettagli del ciclo fetch-execute.
 			\item Controlla il formato dell'OPCODE in modo da definire le modalità di indirizzamento.
 				A questo punto si ramifica, effettuando le letture necessarie in memoria come specificato qualche paragrafo fa. Nello specifico, si dovrannno eseguire le seguenti operazioni:
 				\begin{itemize}
+			\item F0: non si fa nulla;
+			\item F1: gli operandi verranno raccolti in fase execute (per ora non si fa nulla).
 					\item F2, F4, F5: operando sorgente da 8 bit in SOURCE
 						\begin{itemize}
 							\item F2: sorgente in memoria con indirizzamento indiretto: si fa accesso in memoria all'indirizzo contenuto in DP;
@@ -378,8 +417,6 @@ Vediamo quindi i dettagli del ciclo fetch-execute.
 					\item F3: indirizzo destinatario in memoria: si copia l'indirizzo da DP;
 					\item F6, F7: indirizzo destinatario in memoria: si fa accesso in memoria ai 3 byte puntati da IP. Bisogna incrementare IP di 3; 
 				\end{itemize}
-			\item F0: non si fa nulla;
-			\item F1: gli operandi verranno raccolti in fase execute (per ora non si fa nulla).
 				\end{itemize}
 			\item Come ultima cosa, si guarda al contenuto di OPCODE per iniziare l'esecuzione dell'istruzione desiderata.
 		\end{itemize}

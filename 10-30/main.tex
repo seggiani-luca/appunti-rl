@@ -432,7 +432,7 @@ Da cui si ricavano le due sintesi di $z_s$ e $z_r$:
 A questo punto, visto che il latch SR è realizzato a porte NOR, possiamo semplificare gli OR e i NOR in cascata: se assumiamo una NOR come una OR in serie ad una NOT, si ha che due OR equivalgono a una singola OR, ergo si possono mandare le uscite delle reti combinatorie appena sintetizzate direttamente ai NOR del latch SR, rimuovendo le OR che avremmo normalmento introdotto in una sintesi SP. 
 Questo processo viene a volte detto \textit{compenetrazione}.
 
-In Verilog, possiamo quindi descrivere il latch SR aggiornato con le entrate di $\mathrm{/preset}$ e $\mathrm{/preclear come segue:
+In Verilog, possiamo quindi descrivere il latch SR aggiornato con le entrate di $\mathrm{/preset}$ e $\mathrm{/preclear}$ come segue:
 
 \lstinputlisting[language=verilog, style=codestyle]{../verilog/10-30/sr_latches/sr_reset_latch.v}
 

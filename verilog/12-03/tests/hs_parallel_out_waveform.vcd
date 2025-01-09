@@ -1,0 +1,285 @@
+$date
+	Mon Jan  6 22:12:04 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench $end
+$var wire 8 ! t_d7_d0 [7:0] $end
+$var wire 1 " t_dav_ $end
+$var wire 8 # t_byte_out [7:0] $end
+$var reg 1 $ t_a0 $end
+$var reg 1 % t_clock $end
+$var reg 8 & t_d7_d0_driver [7:0] $end
+$var reg 1 ' t_ior_ $end
+$var reg 1 ( t_iow_ $end
+$var reg 1 ) t_reset_ $end
+$var reg 1 * t_rfd $end
+$var reg 1 + t_s_ $end
+$scope module hs_out $end
+$var wire 1 $ a0 $end
+$var wire 1 % clock $end
+$var wire 8 , d7_d0 [7:0] $end
+$var wire 1 ' ior_ $end
+$var wire 1 ( iow_ $end
+$var wire 1 ) reset_ $end
+$var wire 1 * rfd $end
+$var wire 1 + s_ $end
+$var wire 1 - fo $end
+$var wire 1 . e_s $end
+$var wire 1 / e_b $end
+$var wire 1 " dav_ $end
+$var wire 8 0 byte_out [7:0] $end
+$scope module comb $end
+$var wire 1 $ a0 $end
+$var wire 1 ' ior_ $end
+$var wire 1 ( iow_ $end
+$var wire 1 + s_ $end
+$var wire 1 . e_s $end
+$var wire 1 / e_b $end
+$upscope $end
+$scope module seq $end
+$var wire 8 1 byte_out [7:0] $end
+$var wire 1 % clock $end
+$var wire 8 2 d7_d0 [7:0] $end
+$var wire 1 " dav_ $end
+$var wire 1 / e_b $end
+$var wire 1 - fo $end
+$var wire 1 ) reset_ $end
+$var wire 1 * rfd $end
+$var parameter 2 3 s0 $end
+$var parameter 2 4 s1 $end
+$var parameter 2 5 s2 $end
+$var parameter 2 6 s3 $end
+$var reg 1 7 DAV $end
+$var reg 1 - FO $end
+$var reg 2 8 STAR [1:0] $end
+$var reg 8 9 TBR [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b11 6
+b10 5
+b1 4
+b0 3
+$end
+#0
+$dumpvars
+bx 9
+bx 8
+x7
+bz 2
+bx 1
+bx 0
+0/
+0.
+x-
+bz ,
+1+
+1*
+1)
+1(
+1'
+bz &
+0%
+x$
+bx #
+x"
+bz !
+$end
+#3
+1%
+#6
+b0 8
+1-
+bz #
+bz 0
+bz 1
+bz 9
+0%
+#9
+1%
+#12
+0%
+#15
+1%
+#18
+0%
+#20
+b10000 !
+b10000 ,
+b10000 2
+1.
+0'
+0$
+0+
+#21
+1%
+#24
+b10000 #
+b10000 0
+b10000 1
+b10000 9
+0%
+#27
+1%
+#30
+0%
+#33
+1%
+#36
+0%
+#39
+1%
+#40
+0.
+b1001111 !
+b1001111 ,
+b1001111 2
+b1001111 &
+1'
+1$
+#42
+b1001111 #
+b1001111 0
+b1001111 1
+b1001111 9
+0%
+#45
+1%
+#48
+0%
+#51
+1%
+#54
+0%
+#57
+1%
+#60
+1/
+0%
+0(
+#63
+1%
+#66
+b1 8
+0%
+#69
+1%
+#72
+0-
+0%
+#75
+1%
+#78
+0%
+#80
+0/
+1(
+bz !
+bz ,
+bz 2
+bz &
+#81
+1%
+#84
+b10 8
+0%
+#87
+1%
+#90
+0"
+07
+0%
+#93
+1%
+#96
+0%
+#99
+1%
+#100
+b0 !
+b0 ,
+b0 2
+1.
+0'
+0$
+#102
+0%
+#105
+1%
+#108
+0%
+#111
+1%
+#114
+0%
+#117
+1%
+#120
+bz !
+bz ,
+bz 2
+0.
+0%
+1'
+1$
+#123
+1%
+#126
+0%
+#129
+1%
+#132
+0%
+#135
+1%
+#138
+0%
+#140
+0*
+#141
+1%
+#144
+b11 8
+0%
+#147
+1%
+#150
+1"
+17
+0%
+#153
+1%
+#156
+0%
+#159
+1%
+#160
+1*
+#162
+b0 8
+0%
+#165
+1%
+#168
+1-
+bz #
+bz 0
+bz 1
+bz 9
+0%
+#171
+1%
+#174
+0%
+#177
+1%
+#180
+0%
