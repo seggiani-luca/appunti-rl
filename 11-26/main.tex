@@ -412,7 +412,7 @@ Vediamo quindi i dettagli del ciclo fetch-execute.
 							\item F4: sorgente immediato: si fa un accesso all'indirizzo contenuto in IP. Bisogna incrementare IP di 1;
 							\item F6: sorgente in mem. con indirizzamento diretto: si fanno due accessi in memoria, i 3 byte dell'indirizzo in IP e il byte all'indirizzo appena trovato. Bisogna incrementare IP di 3.
 						\end{itemize}
-				\item F4, F6, F7: indirizzo dell'operando destinatario da 24 bit in DEST\_ADDR
+				\item F3, F6, F7: indirizzo dell'operando destinatario da 24 bit in DEST\_ADDR
 				\begin{itemize}
 					\item F3: indirizzo destinatario in memoria: si copia l'indirizzo da DP;
 					\item F6, F7: indirizzo destinatario in memoria: si fa accesso in memoria ai 3 byte puntati da IP. Bisogna incrementare IP di 3; 

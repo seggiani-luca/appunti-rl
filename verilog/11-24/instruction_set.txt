@@ -1,0 +1,101 @@
+mnemonic 		  | opcode    	 | format | first exec state
+--------------+--------------+--------+-----------------
+hlt			 		  | 0000_0000 00 | F0			| hlt
+nop			 		  | 0000_1001 09 | F0			| nop
+--------------+--------------+--------+-----------------
+mov	%al, %ah  | 0000_1010	0a | F0			| ALtoAH
+mov	%ah, %al  | 0000_1011	0b | F0			| AHtoAL
+mov	$op, %dp  | 0010_0010 22 | F1			| lodImmDP0
+mov	$op, %sp  | 0010_0011	23 | F1			| lodImmSP0
+mov	addr, %dp | 0010_0100	24 | F1			| lodDP0
+mov	%dp, addr | 0010_0101	25 | F1			| stoDP0
+mov (dp), %al | 0100_0000 40 | F2			| lodAL
+mov (dp), %ah | 0100_0110 46 | F2			| lodAH
+mov %al, (dp) | 0110_0000 60 | F3			| stoAL
+mov %ah, (dp) | 0110_0001 61 | F3			| stoAH
+mov $op, %al  | 1000_0000 80 | F4			| lodAL
+mov $op, %ah  | 1000_0110 86 | F4			| lodAH
+mov addr, %al | 1010_0000 a0 | F5			| lodAL
+mov addr, %ah | 1010_0110 a6 | F5			| lodAH
+mov %al, addr | 1100_0000 c0 | F6			| stoAL
+mov %ah, addr | 1100_0001 c1 | F6			| stoAH
+--------------+--------------+--------+-----------------
+inc %dp				| 0001_1001 19 | F0			| incDP
+shl %al				| 0000_0101 06 | F0			| aluAL
+shr %al				| 0000_0110 07 | F0			| aluAL
+not %al				| 0000_0111 08 | F0			| aluAL
+shl %ah				| 0001_0101 16 | F0			| aluAH
+shr %ah				| 0001_0110 17 | F0			| aluAH
+not %ah				| 0001_0111 18 | F0			| aluAH
+cmp %ah, %al  | 0000_0001 01 | F0			| aluAH_AL
+cmp (dp), %al | 0100_0001 41 | F2			| aluAL
+cmp $op, %al  | 1000_0001 81 | F4			| aluAL
+cmp addr, %al | 1010_0001 a1 | F5			| aluAL
+add %ah, %al  | 0000_0010 02 | F0			| aluAH_AL
+add (dp), %al | 0100_0010 42 | F2			| aluAL
+add $op, %al  | 1000_0010 82 | F4			| aluAL
+add addr, %al | 1010_0010 a2 | F5			| aluAL
+sub %ah, %al  | 0000_0011 03 | F0			| aluAH_AL
+sub (dp), %al | 0100_0011 43 | F2			| aluAL
+sub $op, %al  | 1000_0011 83 | F4			| aluAL
+sub addr, %al | 1010_0011 a3 | F5			| aluAL
+and %ah, %al  | 0000_0100 04 | F0			| aluAH_AL
+and (dp), %al | 0100_0100 44 | F2			| aluAL
+and $op, %al  | 1000_0100 84 | F4			| aluAL
+and addr, %al | 1010_0100 a4 | F5			| aluAL
+or %ah, %al   | 0000_0101 05 | F0			| aluAH_AL
+or (dp), %al  | 0100_0101 45 | F2			| aluAL
+or $op, %al   | 1000_0101 85 | F4			| aluAL
+or addr, %al  | 1010_0101 a5 | F5			| aluAL
+cmp %al, %ah  | 0001_0001 11 | F0			| aluAL_AH
+cmp (dp), %ah | 0101_0001 51 | F2			| aluAH
+cmp $op, %ah  | 1001_0001 91 | F4			| aluAH
+cmp addr, %ah | 1011_0001 b1 | F5			| aluAH
+add %al, %ah  | 0001_0010 12 | F0			| aluAL_AH
+add (dp), %ah | 0101_0010 52 | F2			| aluAH
+add $op, %ah  | 1001_0010 92 | F4			| aluAH
+add addr, %ah | 1011_0010 b2 | F5			| aluAH
+sub %al, %ah  | 0001_0011 13 | F0			| aluAL_AH
+sub (dp), %ah | 0101_0011 53 | F2			| aluAH
+sub $op, %ah  | 1001_0011 93 | F4			| aluAH
+sub addr, %ah | 1011_0011 b3 | F5			| aluAH
+and %al, %ah  | 0001_0100 14 | F0			| aluAL_AH
+and (dp), %ah | 0101_0100 54 | F2			| aluAH
+and $op, %ah  | 1001_0100 94 | F4			| aluAH
+and addr, %ah | 1011_0100 b4 | F5			| aluAH
+or %al, %ah   | 0001_0101 15 | F0			| aluAL_AH
+or (dp), %ah  | 0101_0101 55 | F2			| aluAH
+or $op, %ah   | 1001_0101 95 | F4			| aluAH
+or addr, %ah  | 1011_0101 b5 | F5			| aluAH
+--------------+--------------+--------+--------------
+push %al			| 0001_1010 1a | F0			| pushAL
+pop %al				| 0001_1011 1b | F0			| popAL0
+push %ah			| 0001_1100 1c | F0			| pushAH
+pop %ah				| 0001_1101 1d | F0			| popAH0
+push %dp			| 0001_1110 1e | F0			| pushDP
+pop %dp				| 0001_1111 1f | F0			| popDP0
+ret						| 0001_0000 10 | F0			| ret0
+--------------+--------------+--------+--------------
+in off, %al 	| 0010_0000 20 | F1			| in0
+out off, %al	| 0010_0001 21 | F1			| out0
+--------------+--------------+--------+--------------
+jmp addr			| 1110_0000 e0 | F7			| jmp
+je addr				| 1110_0001 e1 | F7			| jmp
+jne addr			| 1110_0010 e2 | F7			| jmp
+ja addr				| 1110_0011 e3 | F7			| jmp
+jae addr			| 1110_0100 e4 | F7			| jmp
+jb addr				| 1110_0101 e5 | F7			| jmp
+jbe addr			| 1110_0110 e6 | F7			| jmp
+jg addr				| 1110_0111 e7 | F7			| jmp
+jge addr			| 1110_1000 e8 | F7			| jmp
+jl addr				| 1110_1001 e9 | F7			| jmp
+jle addr			| 1110_1010 ea | F7			| jmp
+jz addr				| 1110_1011 eb | F7			| jmp
+jnz addr			| 1110_1100 ec | F7			| jmp
+jc addr				| 1110_1101 ed | F7			| jmp
+jnc addr			| 1110_1110 ee | F7			| jmp
+jo addr				| 1110_1111 ef | F7			| jmp
+jno addr			| 1111_0000 f0 | F7			| jmp
+js addr				| 1111_0001 f1 | F7			| jmp
+jns addr			| 1111_0010 f2 | F7			| jmp
+call addr			| 1111_0011 f3 | F7			| call0

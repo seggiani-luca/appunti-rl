@@ -236,7 +236,89 @@
 Abbiamo visto quali erano i formati di indirizzamento degli operandi delle istruzioni, e le sottoliste per le letture e scritture in memoria. 
 Possiamo quindi descrivere in Verilog la fase di fetch del processore:
 
-# verilog
+\begin{lstlisting}[language=verilog, style=codestyle]	
+// fasi di fetch
+fetch0 : begin 
+	ADDR <= IP;
+	IP <= IP + 1;
+	MJR <= fetch1;
+	STAR <= readB;
+end
+fetch1 : begin
+	OPCODE <= APP[0];
+	STAR <= fetch2;
+end
+fetch2 : begin
+	MJR <= (OPCODE[7:5] == F0) ? fetch4:
+				 (OPCODE[7:5] == F1) ? fetch4:
+				 (OPCODE[7:5] == F2) ? F2fetch0:
+				 (OPCODE[7:5] == F3) ? F3fetch0:
+				 (OPCODE[7:5] == F4) ? F4fetch0:
+				 (OPCODE[7:5] == F5) ? F5fetch0:
+				 (OPCODE[7:5] == F6) ? F6_7fetch0:
+			 /*(OPCODE[7:5] == F7)?*/F6_7fetch0;
+	STAR <= fetch3;
+end
+fetch3 : begin
+	STAR <= MJR;
+end
+
+[...]
+
+// formati di fetch
+F2fetch0 : begin
+	ADDR <= DP;
+	MJR <= F2fetch1;
+	STAR <= readB;
+end
+F2fetch1 : begin
+	SOURCE <= APP[0];
+	STAR <= fetch4;
+end
+
+F3fetch0 : begin
+	DEST_ADDR <= DP;
+	STAR <= fetch4;
+end
+
+F4fetch0 : begin
+	ADDR <= IP;
+	IP = IP + 1;
+	MJR <= F4fetch1;
+	STAR <= readB;
+end
+F4fetch1 : begin
+	SOURCE <= APP[0];
+	STAR <= fetch4;
+end
+
+F5fetch0 : begin
+	ADDR <= IP;
+	IP = IP + 2;
+	MJR <= F5fetch1;
+	STAR <= readW;
+end
+F5fetch1 : begin
+	ADDR <= {APP[1], APP[0]};
+	MJR <= F5fetch2;
+	STAR <= readB;
+end
+F5fetch2 : begin
+	SOURCE <= APP[0];
+	STAR <= fetch4;
+end
+
+F6_7fetch0 : begin
+	ADDR <= IP;
+	IP = IP + 2;
+	MJR <= F6_7fetch1;
+	STAR <= readW;	
+end
+F6_7fetch1 : begin
+	DEST_ADDR <= {APP[1], APP[0]};
+	STAR <= fetch4;
+end
+\end{lstlisting}
 
 Alla fine della fase di fetch saremo riusciti con successo a mettere:
 \begin{itemize}
@@ -246,16 +328,39 @@ Alla fine della fase di fetch saremo riusciti con successo a mettere:
 	\item IP sulla prossima istruzione da prelevare.
 \end{itemize}
 
-\subsubsection{Fase di esecuzion}
-Nella fase di esecuzione, avremo quindi tutti gli operandi già inizializzati, e dovremo solo farli passare attraverso apposite reti combinatorie.
+\subsubsection{Fase di esecuzione}
+Nella fase di esecuzione, avremo quindi tutti gli operandi già inizializzati, e dovremo solo farli passare attraverso apposite reti combinatorie, o scegliere appositi stati di esecuzione del processore:
 
-# verilog
+\begin{lstlisting}[language=verilog, style=codestyle]	
+fetch4 : begin
+	MJR <= first_exec_state(OPCODE);
+	STAR <= fetch5;
+end
+fetch5 : begin
+	STAR <= MJR;
+end
 
-\subsubsection{Formato F1}
-Abbiamo visto come un'eccezione tra le istruzioni è rappresentata da quele in formato F1, in quanto il "fetch" effettivo dei loro operandi sorgenti e destinatari va fatto in fase di esecuzione.
-Queste, ricordiamo, sono le istruzioni di I/O (operandi su indirizzi a 16 bit) e MOV sui registri da 24 bit.
+[...]
 
-# verilog
+function[STATE_SIZE - 1:0] first_exec_state;
+	input[7:0] opcode;
+	first_exec_state = // istruzioni senza operandi 
+										 (opcode == 8'B0000_0000) ? hlt:
+										 (opcode == 8'B0000_1001) ? nop:
+											
+										 [...]
+
+										 /*			don't care		*/   nvi;
+endfunction
+\end{lstlisting}
+
+\par\medskip
+
+Notiamo che una trattazione più completa di quella fatta in questi appunti sulla struttura del calcolatore è fatta nella directory \lstinline|verilog/11-24|, dove è disponibile un'implementazione Verilog di un semplice calcolatore, compreso processore e spazio di memoria.
+Il calcolatore è programmabile secondo l'instruction set riportato in \lstinline|verilog/11-24/instruction_set.txt|, sfruttando l'assemblatore scritto in Python in \lstinline|verilog/11-24/assembler/assemble.py|.
+Sono inoltre disponibili una testbench e un file di impostazione per il pachetto GTKWave che evidenzia il comportamento dei registri interni del processore e delle linee del bus.
+
+Si nota che il calcolatore implementato ha un'architettura con indirizzi a 16 anzichè 24 bit, in quanto dump di memoria da soli 16 KB sono più gestibili.
 
 \subsection{Interfacce}
 Veniamo adesso alla descrizione di interfacce che completano il calcolatore, cioè gli permettono di comunicare col mondo esterno.

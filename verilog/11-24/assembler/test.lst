@@ -1,0 +1,18 @@
+// main (f000)
+09 // nop
+80 // mov $00, %al
+00
+22 // mov $0000, %dp
+00
+00
+// print (f006)
+60 // mov %al, (%dp)
+82 // add $1, %al
+01
+19 // inc %dp
+81 // cmp $10, %al
+10
+e2 // jne _print
+06
+f0
+00 // hlt

@@ -1,0 +1,109 @@
+[*]
+[*] GTKWave Analyzer v3.3.120 (w)1999-2024 BSI
+[*] Sat Jan 11 14:50:17 2025
+[*]
+[dumpfile] "/home/luca/Desktop/Uni/appunti/Reti Logiche/verilog/11-24/tests/computer_waveform.vcd"
+[dumpfile_mtime] "Sat Jan 11 14:49:56 2025"
+[dumpfile_size] 117644
+[savefile] "/home/luca/Desktop/Uni/appunti/Reti Logiche/verilog/11-24/tests/gtkwave_settings.gtkw"
+[timestart] 0
+[size] 1920 1032
+[pos] -1 -1
+*-10.200001 905 905 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] testbench.
+[treeopen] testbench.cmp.
+[treeopen] testbench.cmp.mem.
+[sst_width] 209
+[signals_width] 190
+[sst_expanded] 1
+[sst_vpaned_height] 305
+@200
+-power
+@28
+testbench.cmp.on_switch
+testbench.cmp.reset_switch
+@200
+-general
+@28
+testbench.cmp.clock
+testbench.cmp.reset_
+@200
+-
+-bus
+@22
+testbench.cmp.addr[15:0]
+testbench.cmp.d7_d0[7:0]
+@28
+testbench.cmp.mr_
+testbench.cmp.mw_
+testbench.cmp.ior_
+testbench.cmp.iow_
+@200
+-
+-processor
+@28
+testbench.cmp.proc.reset_
+testbench.cmp.proc.clock
+@24
+testbench.cmp.proc.STAR[7:0]
+testbench.cmp.proc.MJR[7:0]
+@200
+-programmer registers
+@22
+testbench.cmp.proc.AL[7:0]
+testbench.cmp.proc.AH[7:0]
+testbench.cmp.proc.IP[15:0]
+testbench.cmp.proc.DP[15:0]
+testbench.cmp.proc.SP[15:0]
+testbench.cmp.proc.FLAG[7:0]
+@200
+-internal registers
+@22
+testbench.cmp.proc.ADDR[15:0]
+testbench.cmp.proc.D7_D0[7:0]
+testbench.cmp.proc.SOURCE[7:0]
+testbench.cmp.proc.DEST_ADDR[15:0]
+@28
+testbench.cmp.proc.NUMLOC[1:0]
+@22
+testbench.cmp.proc.OPCODE[7:0]
+@28
+testbench.cmp.proc.DIR
+@200
+-
+@201
+-memory
+@200
+-eprom
+@22
+testbench.cmp.mem.prm.addr[11:0]
+testbench.cmp.mem.prm.d7_d0[7:0]
+@28
+testbench.cmp.mem.prm.mr_
+testbench.cmp.mem.prm.read
+testbench.cmp.mem.prm.s_
+@200
+-ram
+@22
+testbench.cmp.mem.rm.addr[15:0]
+testbench.cmp.mem.rm.d7_d0[7:0]
+@28
+testbench.cmp.mem.rm.mr_
+testbench.cmp.mem.rm.mw_
+testbench.cmp.mem.rm.read
+testbench.cmp.mem.rm.write
+testbench.cmp.mem.rm.s_
+@200
+-space
+@22
+testbench.cmp.mem.addr[15:0]
+testbench.cmp.mem.d7_d0[7:0]
+@28
+testbench.cmp.mem.mr_
+testbench.cmp.mem.mw_
+testbench.cmp.mem.seprom_
+testbench.cmp.mem.sram_
+@22
+testbench.cmp.mem.sel_addr[3:0]
+[pattern_trace] 1
+[pattern_trace] 0
