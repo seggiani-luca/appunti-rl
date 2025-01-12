@@ -258,57 +258,162 @@ I convertitori D/A sono praticamente "combinatori", e quindi estrememente veloci
 I convertitori A/D, di contro, hanno tempi di risposta variabili in base alle architetture.
 Noi vedremo i convertitori ad \textbf{approssimazioni successive} (\textbf{SAR}), che hanno tempi di risposta di qualche centinaio di nanosecondi.
 
-\subsubsection{Convertitori bipolari}
-I convertitori bipolari lavorano con rappresentazioni degli interi in traslazione (detta appunto anche \textit{binaria bipolare}).
+\subsubsection{Convertitori unipolari/bipolari}
+I convertitori D/A che lavorano con i numeri naturali usano la stessa rappresentazione in codice binario a cui siamo abituati.
+I convertitori bipolari che lavorano con interi usano invece rappresentazioni in traslazione (detta appunto anche \textit{binaria bipolare}), anziché in complemento a 2.
 Il numero intero $x$ viene quindi rappresentato dal naturale $X = x + 2^{N-1}$.
-In ogni caso, per riportare in complemento a 2 basterà complementare il MSB.
-
+In ogni caso, per riportare in complemento a 2 basterà complementare il MSB, o analogamente sommare all'intero in questione $2^{n-1}$.
 
 \subsection{Convertitore D/A}
-Un convertitore D/A può essere realizzato come segue:
+Un convertitore D/A può essere schematizzato come segue:
 
-# circuito
+\begin{center}\begin{circuitikz}\draw
+  (-1.5,6) to[resistor, l = $R$, i<=$i_N$] ++(3,0)
+  to[resistor, l = $R$] ++(3,0)
+  to[resistor, l = $2R$, i<=$i_0$] ++(3,0)
+  (7.5,6) node[ground]{}
+  (4.5,6) to[resistor, l = $2R$] ++(0,-2)
+  (1.5,6) to[resistor, l = $2R$] ++(0,-2)
+  (-1.5,6) to[resistor, l = $2R$] ++(0,-2)
+  (-1.5,6) to[short] ++(-1,0)
+	(-2,2.5) to[short, i = $i$] ++(1,0) to[short] ++(7,0)
+  (-1,3) to[short] ++(0,-1.5)
+  to[short] ++(7,0)
+  (8,2) to[short] ++(2,0)
+  (5.5,2.5) to[short] ++(0,1)
+	to[resistor, l = $R_\text{gain}$] ++(3,0)
+  (8.5,2) to[short, i = $i_a$] ++(0,1.5)
+  (5.5,3.5) to[short] ++(0,1)
+	(5.5,4.5) to[resistor, l = $R_\text{offset}$] ++(3,0)
+  (-2.5,6) node[circ]{}
+  (8.5,4.5) node[circ]{}
+  (-2,2.5) to[short] ++(0,0.5)
+  (1,3) to[short] ++(0,-0.5)
+  (2,1.5) to[short] ++(0,1.5)
+  (4,3) to[short] ++(0,-0.5)
+  (5,3) to[short] ++(0,-1.5)
+  (5.5,1.5) node[ground]{};
 
-# descrizione
+	\node at (-3.175, 6) {$FSR$};
+	\node at (9, 4.5) {$V_{pol}$};
+	\node at (10.5, 2) {$V_{out}$};
+
+	\draw (-1.5,3.45) node[spdt, rotate=-90, scale=1.59] {};
+	\node at (-1, 3.5) {$x_2$};
+	
+	\draw (1.5,3.45) node[spdt, rotate=-90, scale=1.59] {};
+	\node at (2, 3.5) {$x_1$};
+	
+	\draw (4.5, 3.45) node[spdt, rotate=-90, scale=1.59] {};
+	\node at (5, 3.5) {$x_0$};
+
+	\draw (7,2) node[op amp, scale = 1.02] {};
+
+	\draw(5.5,2.5) node[circ] {};
+	\node at (5.7,2.8) {A};
+
+	\node at (-2.5, 2.5) {$V^-$};
+	\node at (-1.5, 1.5) {$V^+$};
+
+\end{circuitikz}\end{center}
+
+La linea superiore è collegata a tensione $FSR$, cioè il valore massimo (fondo scala) del convertitore.
+Si ha che, per resistenze parallele, la resistenza a destra di ogni ramo verticale (con le resistenze da $2R$) vale $2R$, e quindi la resistenza a sinistra del ramo vale $R$.
+Assunte le due resistenze da $2R$ a destra collegate a massa (come sarà con gli interruttori commutati a destra, che per adesso assumiamo), si ha che la corrente che passa su di esse sarà $i_0$, quella che passa sulle due resistenze alla loro destra sarà $2 i_0$, e quindi che la corrente che passa su ogni ramo verticale sarà il doppio della corrente che passa sul ramo verticale immediatamente a destra.
+Il valore di questa $i_0$ è dato prendendo la corrente che esce al nodo $FSR$, che sarà chiaramente:
+$$
+i_n = \frac{FSR}{R}
+$$
+e osservando che la corrente che passa sulla prima resistenza da $2R$ (quella collegata a massa) dovrà essere:
+$$
+i_0 = \frac{FSR}{R} \cdot \frac{1}{2^n} = \frac{K}{R}
+$$
+
+Vediamo velocemente che la cosa si mantiene anche commutando gli interruttori a sinistra. L'amplificatore operazionale mantiene l'uscita $V_{out}$ a tensione:
+$$
+V_{out} = \alpha \cdot (V^+ - V^-) = \alpha \cdot V^-
+$$
+visto che che la linea $V^+$ è collegata a massa.
+Allo stesso tempo, dal lato sinistro dell'amplificatore, la resistenza $R_\text{gain}$ (che vedremo in seguito ha valenza, assieme alla resistenza $R_{offset}$, per la correzione dell'errore di non linearità del convertitore), ci fornisce:
+$$
+V_{out} = R_{gain} \cdot i_a + V^-
+$$
+da cui:
+$$
+R_{gain} \cdot i_a + V^- = \alpha \cdot V^-, \quad R_{gain} \cdot i_a = V^- (\alpha - 1) \implies V^- = \frac{R_{gain} \cdot i_a}{\alpha - 1}
+$$
+da cui, con $\alpha >> 1$, $V^- \approx 0$, cioè molto vicina a massa.
+
+Si ha quindi che la corrente che passa sulla linea $V^-$ vale:
+$$
+i = i_0 \cdot x_0 + 2 i_0 \cdot x_1 + 4 i_0 \cdot x_2
+$$
+che è esattamente il naturale codificato da $ X = \{x_2 x_1 x_0\}$, cioè su 3 cifre.
+Potremo infatti generalizzare a un numero $n$ di cifre arbitrario:
+$$
+i = i_0 \cdot x_0 + 2 i_0 \cdot x_1 + ... + 2^{n-1} i_0 \cdot x_{n-1} = i_0 \sum_{i=0}^{n-1} 2^i \cdot x_i = i_0 \cdot X
+$$
+
+Infine, sostituendo il valore ricavato prima per $i_0$, otteniamo:
+$$
+i = \frac{K}{R} \sum_{i = 0}^{n - 1} 2^i \cdot x_i = \frac{K}{R} \cdot X
+$$
+
+Vediamo allora come i resistori $R_\text{gain}$ e $R_\text{offset}$ influenzano il segnale $V_{out}$ in uscita, e come la tensione $V_{pol}$ trasforma il comportamento del convertitore da unipolare a bipolare.
+Sostituendo la formula trovata prima per $V^-$ nell'equazione dell'amplificatore operazionale, si trova immediatamente:
+$$
+V_{out} = \alpha \cdot \frac{R_{gain} \cdot i_a}{\alpha - 1}
+$$
+che assumendo come prima $\alpha >> 1$ restituisce:
+$$
+V_{out} = R_{gain} \cdot i_a
+$$
+cioè la resistenza $R_\text{gain}$ funge da fattore di scala per il voltaggio $V_{out}$ in uscita.
+
+Impostando poi il bilancio delle correnti al nodo A, si ottiene:
+$$
+i = \frac{K}{R} \cdot X = \frac{V_{out}}{R_\text{gain}} + \frac{V_{pol}}{R_\text{offset}} \implies V_{out} = R_\text{gain} \left( \frac{K}{R} \cdot X - \frac{V_{pol}}{R_\text{offset}} \right)
+$$
+da cui notiamo che la resistenza $R_\text{offset}$ regola l'intercetta, e la resistenza $R_\text{gain}$ la pendenza della retta che lega $X$ a $V_{out}$.
+Inoltre, impostando $V_{pol} = 0$ si ottiene un \textbf{converitore unipolare}, mentre impostando $V_{pol} = \frac{FSR}{2}$ si ottiene un \textbf{converitore bipolare}.
 
 \par\smallskip
 
 Anche se non si considerano resistori e amplificatori operazionali come componenti combinatori, il circuito è effettivamente "combinatorio" nel senso che ha tempi di risposta estremamente veloci.
 Il problema è però quello delle transizioni multiple dello stato di uscita: questo si risolve attraverso un filtro \textit{passa-basso} in uscita.
 
+\lstset{language=verilog}
+
+In Verilog, un implementazione semplificata di un convertitore D/A può essere la seguente, che emula un segnale analogico usando variabili di tipo \lstinline|real|:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-10/digital_analog_converters/digital_analog_converter.v}
+
 \subsubsection{Interfaccia per la conversione D/A}
 Vediamo un'interfaccia parallela per l'operazione di un convertitore D/A.
-Sul lato di uscita non si avranno handshake (sola uscita) ma il convertitore D/A stesso.
+Sul lato di uscita non si avranno handshake, in quanto il convertitore è in sé più veloce del clock del processore.
 
-# rete
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-10/digital_analog_converters/digital_analog_interface.v}
 
 \subsection{Convertitore A/D}
-Descriviamo un particolare tipo di convertitori A/D detto convertitore ad \textbf{approssimazioni successive}:
-
-# circuito
-
-# descrizione
-
+Descriviamo un particolare tipo di convertitori A/D detto convertitore ad \textbf{approssimazioni successive} (alternative potrebbero essere i convertitori \textit{paralleli} o i convertitori \textit{a rampa}, anch'essi basati su comparatori).
 Il cuore di un convertitore di questo tipo è una rete sequenziale detta \textbf{SAR} (Successive Approximation Register).
 L'uscita del SAR viene fatta passare attraverso un convertitore D/A dello stesso tipo dell'A/D, e confrontata attraverso un \textbf{comparatore} con l'ingresso corrente in modo da migliorare la previsione, in quella che è effettivamente una \textbf{ricerca logaritmica} (o \textit{binaria} o \textit{dicotomica}).
 In particolare, ad ogni iterazione della ricerca si ricava il valore di un singolo bit, per cui $n$ bit richiedono $n$ iterazioni.
-Lato processore, il SAR dovrà implementare inoltre un handshake \lstinline|soc|/\lstinline|eoc|.
+Lato processore, il SAR dovrà implementare inoltre un handshake, che scegliamo \lstinline|soc|/\lstinline|eoc|.
 
-Una descrizione in verilog della SAR potrebbe essere:
+Una descrizione in linguaggio Verilog della SAR potrebbe essere la seguente.
+Si noti che si presentano due versioni: il problema della prima è che abbiamo bisogno di un nuovo stato per ogni iterazione di aggiornamento di RBR; si introducono quindi nella seconda versione un registro COUNT e una rete combinatoria per il calcolo dei bit di RBR.
 
-# descrizione verilog corsini
-
-Il problema di questa descrizione, supper questa sia perfettamente chiara, è che abbiamo bisogno di un nuovo stato per ogni iterazione di aggiornamento di RBR.
-Una soluzione alternativa potrebbe essere allora:
-
-# descrizione verilog stea
-
-dove si introduce un registro COUNT e una rete combinatoria per il calcolo di RBR.
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-10/analog_digital_converters/analog_digital_converter.v}
 
 \subsubsection{Interfaccia per la conversione A/D}
 Vediamo un'interfaccia parallela per l'operazione di un convertitore A/D.
-Lato processore si implementerà un handshake \lstinline|soc|/\lstinline|eoc|.
+Lato processore si implementerà, come abbiamo visto, un handshake \lstinline|soc|/\lstinline|eoc|.
 
-# rivedi
+Un'implementazione in Verilog può essere la seguente:
+
+\lstinputlisting[language=verilog, style=codestyle]{../verilog/12-10/analog_digital_converters/analog_digital_interface.v}
+
+Si nota che l'interfaccia lascia al processore il compito di completare manualmente l'handshake, fornendo i bit soc e oc rispettivamente alle posizioni 1 e 0 della linea dati \lstinline|d7_d0|. 
 
 \end{document}

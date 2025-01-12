@@ -3,12 +3,12 @@ mnemonic       | opcode       | format | first exec state
 hlt            | 0000_0000 00 | F0     | hlt
 nop            | 0000_1001 09 | F0     | nop
 ---------------+--------------+--------+-----------------
-mov  %al, %ah  | 0000_1010  0a | F0    | ALtoAH
-mov  %ah, %al  | 0000_1011  0b | F0    | AHtoAL
+mov  %al, %ah  | 0000_1010 0a | F0     | ALtoAH
+mov  %ah, %al  | 0000_1011 0b | F0     | AHtoAL
 mov  $op, %dp  | 0010_0010 22 | F1     | lodImmDP0
-mov  $op, %sp  | 0010_0011  23 | F1    | lodImmSP0
-mov  addr, %dp | 0010_0100  24 | F1    | lodDP0
-mov  %dp, addr | 0010_0101  25 | F1    | stoDP0
+mov  $op, %sp  | 0010_0011 23 | F1     | lodImmSP0
+mov  addr, %dp | 0010_0100 24 | F1     | lodDP0
+mov  %dp, addr | 0010_0101 25 | F1     | stoDP0
 mov (dp), %al  | 0100_0000 40 | F2     | lodAL
 mov (dp), %ah  | 0100_0110 46 | F2     | lodAH
 mov %al, (dp)  | 0110_0000 60 | F3     | stoAL
