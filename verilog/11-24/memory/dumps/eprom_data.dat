@@ -1,18 +1,66 @@
-// main (f000)
+// firmware del calcolatore
+// zero (f000)
 09 // nop
-80 // mov $00, %al
+// inizializza 256 byte di pila
+23 // mov $00FF, %sp
+FF
 00
-22 // mov $0000, %dp
+// salta all'entrata _main
+e0 // jmp _main
+21
+f0
+// sottoprogrammi di ingresso / uscita
+// in_char (f007)
+// leggi l'RSR
+20 // in $0000
 00
 00
-// print (f006)
-60 // mov %al, (%dp)
-82 // add $1, %al
+// FI è il bit 0
+84 // and $01, %al
 01
-19 // inc %dp
-81 // cmp $10, %al
+// se FI è a 0, riprova
+eb // jz _in_char
+07
+f0
+// FI è a 1, leggi l'RBR
+20 // in $0001
+01
+00
+10 // ret
+// out_char (f013)
+1a // push %al
+// leggi il TSR
+20 // in $0002
+02
+00
+// FO è il bit 4
+84 // and $10, %al
 10
-e2 // jne _print
-06
+// se FO è a 0, riprova
+eb // jz _out_char
+13
+f0
+// FI è a 1, scrivi in TBR
+1b // pop %al
+21 // out $0003
+03
+00
+10 // ret
+// entrata del programma principale
+// main (f021)
+09 // nop
+86 // mov $10, %ah
+10
+// loop (f024)
+f3 // call _in_char
+07
+f0
+f3 // call _out_char
+13
+f0
+93 // sub $1, %ah
+01
+ec // jnz _loop
+24
 f0
 00 // hlt

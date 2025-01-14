@@ -61,6 +61,7 @@ module computer (
 	);
 
 	io_space io (
+		clock, reset_,
 		addr[IO_SIZE - 1:0],
 		d7_d0,
 		ior_, iow_

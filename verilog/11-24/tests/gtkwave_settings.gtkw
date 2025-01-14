@@ -1,17 +1,22 @@
 [*]
 [*] GTKWave Analyzer v3.3.120 (w)1999-2024 BSI
-[*] Sat Jan 11 14:50:17 2025
+[*] Tue Jan 14 00:12:54 2025
 [*]
 [dumpfile] "/home/luca/Desktop/Uni/appunti/Reti Logiche/verilog/11-24/tests/computer_waveform.vcd"
-[dumpfile_mtime] "Sat Jan 11 14:49:56 2025"
-[dumpfile_size] 117644
+[dumpfile_mtime] "Mon Jan 13 23:49:15 2025"
+[dumpfile_size] 1240754
 [savefile] "/home/luca/Desktop/Uni/appunti/Reti Logiche/verilog/11-24/tests/gtkwave_settings.gtkw"
-[timestart] 0
+[timestart] 1986
 [size] 1920 1032
 [pos] -1 -1
-*-10.200001 905 905 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-3.599999 1216 905 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [treeopen] testbench.cmp.
+[treeopen] testbench.cmp.io.
+[treeopen] testbench.cmp.io.dp.
+[treeopen] testbench.cmp.io.dp.interface.
+[treeopen] testbench.cmp.io.kb.
+[treeopen] testbench.cmp.io.kb.interface.
 [treeopen] testbench.cmp.mem.
 [sst_width] 209
 [signals_width] 190
@@ -49,12 +54,16 @@ testbench.cmp.proc.STAR[7:0]
 testbench.cmp.proc.MJR[7:0]
 @200
 -programmer registers
-@22
+@820
 testbench.cmp.proc.AL[7:0]
+@28
+testbench.cmp.proc.AL[7:0]
+@22
 testbench.cmp.proc.AH[7:0]
 testbench.cmp.proc.IP[15:0]
 testbench.cmp.proc.DP[15:0]
 testbench.cmp.proc.SP[15:0]
+@28
 testbench.cmp.proc.FLAG[7:0]
 @200
 -internal registers
@@ -71,9 +80,7 @@ testbench.cmp.proc.OPCODE[7:0]
 testbench.cmp.proc.DIR
 @200
 -
-@201
 -memory
-@200
 -eprom
 @22
 testbench.cmp.mem.prm.addr[11:0]
@@ -105,5 +112,98 @@ testbench.cmp.mem.seprom_
 testbench.cmp.mem.sram_
 @22
 testbench.cmp.mem.sel_addr[3:0]
+@200
+-
+-devices
+-keyboard
+@800028
+testbench.cmp.io.kb.interface.seq.STAR[1:0]
+@28
+(0)testbench.cmp.io.kb.interface.seq.STAR[1:0]
+(1)testbench.cmp.io.kb.interface.seq.STAR[1:0]
+@1001200
+-group_end
+@820
+testbench.cmp.io.kb.CHAR[7:0]
+@28
+testbench.cmp.io.kb.s_
+testbench.cmp.io.kb.a0
+testbench.cmp.io.kb.clock
+@22
+testbench.cmp.io.kb.d7_d0[7:0]
+@28
+testbench.cmp.io.kb.ior_
+testbench.cmp.io.kb.reset_
+testbench.cmp.io.kb.DAV
+testbench.cmp.io.kb.rfd
+@420
+testbench.cmp.io.kb.s0
+testbench.cmp.io.kb.s1
+@200
+-keyboard interface
+@29
+testbench.cmp.io.kb.interface.seq.STAR[1:0]
+@28
+testbench.cmp.io.kb.interface.a0
+@22
+testbench.cmp.io.kb.interface.byte_in[7:0]
+@28
+testbench.cmp.io.kb.interface.clock
+@820
+testbench.cmp.io.kb.interface.d7_d0[7:0]
+@28
+testbench.cmp.io.kb.interface.e_b
+testbench.cmp.io.kb.interface.e_s
+testbench.cmp.io.kb.interface.fi
+testbench.cmp.io.kb.interface.ior_
+@22
+testbench.cmp.io.kb.interface.rbr[7:0]
+@28
+testbench.cmp.io.kb.interface.reset_
+testbench.cmp.io.kb.interface.dav_
+testbench.cmp.io.kb.interface.rfd
+testbench.cmp.io.kb.interface.s_
+@200
+-
+-display
+@28
+testbench.cmp.io.dp.RFD
+testbench.cmp.io.dp.STAR[1:0]
+testbench.cmp.io.dp.a0
+@22
+testbench.cmp.io.dp.char[7:0]
+@28
+testbench.cmp.io.dp.clock
+testbench.cmp.io.dp.d7_d0[7:0]
+testbench.cmp.io.dp.dav_
+testbench.cmp.io.dp.ior_
+testbench.cmp.io.dp.iow_
+testbench.cmp.io.dp.reset_
+@420
+testbench.cmp.io.dp.s0
+testbench.cmp.io.dp.s1
+@28
+testbench.cmp.io.dp.s_
+@200
+-display_interface
+@28
+testbench.cmp.io.dp.interface.seq.STAR[1:0]
+testbench.cmp.io.dp.interface.a0
+@22
+testbench.cmp.io.dp.interface.byte_out[7:0]
+@28
+testbench.cmp.io.dp.interface.clock
+@22
+testbench.cmp.io.dp.interface.d7_d0[7:0]
+@28
+testbench.cmp.io.dp.interface.dav_
+testbench.cmp.io.dp.interface.e_b
+testbench.cmp.io.dp.interface.e_s
+testbench.cmp.io.dp.interface.fo
+testbench.cmp.io.dp.interface.ior_
+testbench.cmp.io.dp.interface.iow_
+testbench.cmp.io.dp.interface.reset_
+testbench.cmp.io.dp.interface.rfd
+testbench.cmp.io.dp.interface.s_
 [pattern_trace] 1
 [pattern_trace] 0

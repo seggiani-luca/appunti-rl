@@ -357,6 +357,7 @@ module processor #(
 		end
 	endfunction
 
+	// alu
 	wire[7:0] al_result;
 	wire[7:0] al_flag;
 	alu al_alu (
@@ -385,6 +386,7 @@ module processor #(
 		.result(al_ah_result), .flag(al_ah_flag)
 	);
 
+	// microprogramma
 	always @(reset_ == 0) begin
 		IP <= {{RAM_SIZE - EPROM_SIZE{1'B1}}, {EPROM_SIZE{1'B0}}};
 		FLAG <= 8'H00;
@@ -488,7 +490,9 @@ module processor #(
 							 (OPCODE[7:5] == F5) ? F5fetch0:
 							 (OPCODE[7:5] == F6) ? F6_7fetch0:
 						 /*(OPCODE[7:5] == F7)?*/F6_7fetch0;
-				STAR <= fetch3;
+
+				// sarebbe valid_fetch
+				STAR <= (first_exec_state(OPCODE) == nvi) ? nvi : fetch3;
 			end
 			fetch3 : begin
 				STAR <= MJR;
@@ -790,7 +794,7 @@ module processor #(
 
 			// istruzioni di salto
 			jmp : begin
-				IP <= (jmp_condition(OPCODE[4:0], FLAG) == 1) ? DEST_ADDR : IP;
+				IP <= (jmp_condition(OPCODE[4:0], FLAG) == 1'B1) ? DEST_ADDR : IP;
 				STAR <= fetch0;
 			end
 
@@ -816,20 +820,23 @@ module alu(opcode, source, dest, result, flag);
 	output[7:0] result, flag;
 
 	wire t_cf;
-	wire[7:0] t_result;
-
-	assign {t_cf, t_result} = (opcode == 4'B0010) ? dest + source:	// add
-														/* 		don't care	 */ dest - source;	// cmp, sub
 	
 	assign result = (opcode == 4'B0110) ? {dest[6:0], 1'B0}:	// shl
 									(opcode == 4'B0111) ? {1'B0, dest[7:1]}:	// shr
 									(opcode == 4'B1000) ? ~dest:							// not
 									(opcode == 4'B0001) ? dest:					 			// cmp
-									(opcode == 4'B0010) ? t_result:					  // add
-									(opcode == 4'B0011) ? t_result:					  // sub
+									(opcode == 4'B0010) ? dest + source:			// add
+									(opcode == 4'B0011) ? dest - source:			// sub
 									(opcode == 4'B0100) ? source & dest:			// and
 								/*(opcode == 4'B0101)?*/source | dest;			// or
-				
+	
+	assign {t_cf, t_result} = (opcode == 4'B0001) ? dest:						// cmp
+														(opcode == 4'B0010) ? dest + source:	// add
+														(opcode == 4'B0011) ? dest - source:	// sub
+														/* 		don't care	 */ {1'B0, result};
+
+	wire[7:0] t_result;
+
 	wire is_neg, is_zero, is_ow;
 	assign is_neg = t_result[7];
 	assign is_zero = (t_result == 0) ? 1'B1 : 1'B0;

@@ -1,18 +1,37 @@
-// main (f000)
+// firmware del calcolatore
+// zero (f000)
 09 // nop
-80 // mov $00, %al
-00
-22 // mov $0000, %dp
-00
-00
-// print (f006)
-60 // mov %al, (%dp)
-82 // add $1, %al
-01
-19 // inc %dp
-81 // cmp $10, %al
-10
-e2 // jne _print
-06
+e0 // jmp _main
+1c
 f0
+// sottoprogrammi di ingresso / uscita
+// in_char (f004)
+20 // in $0000
+00
+00
+84 // and $01, %al
+01
+eb // jz _in_char
+04
+f0
+20 // in $0001
+01
+00
+10 // ret
+// out_char (f010)
+1a // push %al
+20 // in $0002
+02
+00
+84 // and $02, %al
+02
+eb // jz _out_char
+10
+f0
+1b // pop %al
+21 // out %0003
+10 // ret
+// entrata del programma principale
+// main (f01c)
+09 // nop
 00 // hlt

@@ -27,16 +27,16 @@ PARSE_TABLE = {
     },
     "inc": {"opcode": "19"},
     "shl": {
-        ("%al"): {"opcode": "06"},
-        ("%ah"): {"opcode": "16"}
+        ("%al",): {"opcode": "06"},
+        ("%ah",): {"opcode": "16"}
     },
     "shr": {
-        ("%al"): {"opcode": "07"},
-        ("%ah"): {"opcode": "17"}
+        ("%al",): {"opcode": "07"},
+        ("%ah",): {"opcode": "17"}
     },
     "not": {
-        ("%al"): {"opcode": "08"},
-        ("%ah"): {"opcode": "18"}
+        ("%al",): {"opcode": "08"},
+        ("%ah",): {"opcode": "18"}
     },
     "cmp": {
         ("%ah", "%al"): {"opcode": "01"},
@@ -89,14 +89,14 @@ PARSE_TABLE = {
         ("adr", "%ah"): {"opcode": "b5"}
     },
     "push": {
-        ("%al"): {"opcode": "1a"},
-        ("%ah"): {"opcode": "1c"},
-        ("%dp"): {"opcode": "1e"},
+        ("%al",): {"opcode": "1a"},
+        ("%ah",): {"opcode": "1c"},
+        ("%dp",): {"opcode": "1e"},
     },
     "pop": {
-        ("%al"): {"opcode": "1b"},
-        ("%ah"): {"opcode": "1d"},
-        ("%dp"): {"opcode": "1f"},
+        ("%al",): {"opcode": "1b"},
+        ("%ah",): {"opcode": "1d"},
+        ("%dp",): {"opcode": "1f"},
     },
     "ret": {"opcode": "10"},
     "in": {"opcode": "20"},
@@ -122,8 +122,6 @@ PARSE_TABLE = {
     "jns": {"opcode": "f2"},
     "call": {"opcode": "f3"}
 }
-
-labels = dict()
 
 
 def tokenize(line):
@@ -154,7 +152,7 @@ def match(mnem, args, rule, l_num):
         exit()
 
 
-def strip_args(args, l_num):
+def strip_args(args, l_num, labels=dict()):
     if len(args) == 0:
         return []
 
@@ -186,7 +184,52 @@ def strip_args(args, l_num):
     return [arg]
 
 
-def assemble(in_file, out_file):
+def first_pass(in_file):
+    byte = 0
+    l_num = 0
+    labels = dict()
+
+    for line in in_file:
+        line = line.strip()
+        l_num = l_num + 1
+
+        if not line:
+            continue
+
+        tokens = tokenize(line)
+
+        mnem = tokens[0]
+        args = tokens[1:]
+
+        if mnem == "//":
+            continue
+
+        if mnem[0] == "_":
+            # label
+            if mnem[len(mnem) - 1] != ":":
+                print(f"Label must terminate in ':' at line {l_num}")
+
+            label = mnem[1:len(mnem) - 1]
+            label_offset = hex(byte + BASE_OFFSET)[2:]
+
+            labels[label] = label_offset
+        else:
+            byte = byte + 1
+
+            if len(args) == 0:
+                continue
+
+            if args[0][0] == "_":
+                byte = byte + 2
+            else:
+                opargs = strip_args(args, l_num)
+                for oparg in opargs:
+                    byte = byte + 1
+
+    return labels
+
+
+def second_pass(in_file, out_file, labels):
     byte = 0
     l_num = 0
 
@@ -201,6 +244,10 @@ def assemble(in_file, out_file):
 
         mnem = tokens[0]
         args = tokens[1:]
+
+        if mnem == "//":
+            print(line, file=out_file)
+            continue
 
         if mnem[0] == "_":
             # label
@@ -218,7 +265,7 @@ def assemble(in_file, out_file):
             rule = PARSE_TABLE[mnem]
 
             opcode = match(mnem, args, rule, l_num)
-            opargs = strip_args(args, l_num)
+            opargs = strip_args(args, l_num, labels)
 
             print(opcode + " // " + line, file=out_file)
             byte = byte + 1
@@ -244,4 +291,6 @@ except FileNotFoundError:
 out_file_name = sys.argv[2]
 out_file = open(out_file_name, "wt")
 
-assemble(in_file, out_file)
+labels = first_pass(in_file)
+in_file.seek(0)
+second_pass(in_file, out_file, labels)
